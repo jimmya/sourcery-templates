@@ -21,6 +21,7 @@ let package = Package(
             ],
             exclude: [
                 "AutoMockable.swifttemplate",
+                "AutoStubbable.swifttemplate",
             ]
         ),
         .target(

@@ -1,0 +1,41 @@
+<%# Include our helpers -%>
+<%- includeFile("helpers.swift") -%>
+
+<%# Add testable imports -%>
+<%  for type in (argument["autoStubbableTestableImports"] as? [String]) ?? [] { -%>
+@testable import <%= type %>
+<%  } -%>
+<%# Add regular imports -%>
+<% for type in (argument["autoStubbableImports"] as? [String]) ?? [] { -%>
+import <%= type %>
+<% } -%>
+<%# Get stubbable types (structs and classes) and sort them by name -%>
+<% let allTypes = types.structs + types.classes -%>
+<% for type in allTypes.sorted(by: { $0.name < $1.name }) where type.isAutoStubbable { %>
+<%# Generate stub method in extenion at similar accessLevel -%>
+<%= type.accessLevel %> extension <%= type.name %> {
+    <%_ for (index, method) in type.initMethods.enumerated() { %>
+    <%_ let implicitlyUnwrappedVariables = type.storedVariables.filter { $0.isImplicitlyUnwrappedOptional } -%>
+    static func <%= stubMethodName(index: index, count: type.initMethods.count) %>(
+        <%_ for parameter in method.parameters { -%>
+        <%= parameter.name %>: <%= generateTypeName(typeName: parameter.typeName, type: parameter.type) %> = <%= generateDefaultValue(type: parameter.type, typeName: parameter.typeName, includeComplexType: true) %><% if parameter != method.parameters.last || !implicitlyUnwrappedVariables.isEmpty { %>,<% } %>
+        <%_ } -%>
+        <%_ for variable in implicitlyUnwrappedVariables { -%>
+        <%= variable.name %>: <%= generateTypeName(typeName: variable.typeName, type: variable.type) %> = <%= generateDefaultValue(type: variable.type, typeName: variable.typeName, includeComplexType: true) %><% if variable != implicitlyUnwrappedVariables.last { %>,<% } %>
+        <%_ } -%>
+    ) -> <%= type.name %><% if method.isFailableInitializer { %>?<% } %> {
+        <%= generateStubbableInit(objectType: type, parameterNames: method.parameters.map { $0.name }) %>
+    }
+    <%_ } -%>
+    <%_ if type.initMethods.isEmpty { -%>
+    <%_ let availableVariables = type.storedVariables.filter { !$0.hasDefaultValue } -%>
+    static func <%= stubMethodName(index: 0, count: 1) %>(
+        <%_ for variable in availableVariables { -%>
+        <%= variable.name %>: <%= generateTypeName(typeName: variable.typeName, type: variable.type) %> = <%= generateDefaultValue(type: variable.type, typeName: variable.typeName, includeComplexType: true) %><% if variable != availableVariables.last { %>,<% } %>
+        <%_ } -%>
+    ) -> <%= type.name %> {
+        <%= generateStubbableInit(objectType: type, variables: type.storedVariables) %>
+    }
+    <%_ } -%>
+}
+<% } -%>
