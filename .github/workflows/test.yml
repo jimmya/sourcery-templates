@@ -5,7 +5,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  tsest:
+  test:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
