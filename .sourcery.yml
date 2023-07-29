@@ -1,0 +1,9 @@
+configurations:
+  - sources:
+      - Sources/MockDeclarations
+    templates:
+      - Sources/Templates/AutoMockable.swifttemplate
+    output: Tests/TemplateTests
+    args:
+      imports: [Foundation, XCTest]
+      testableImports: [MockDeclarations]

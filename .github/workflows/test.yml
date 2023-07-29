@@ -1,0 +1,17 @@
+name: Test
+on: [push]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tsest:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install sourcery
+        run: brew install sourcery
+      - name: Run sourcery
+        run: sourcery
+      - name: Test
+        run: swift test
