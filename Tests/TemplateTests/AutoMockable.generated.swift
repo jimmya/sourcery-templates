@@ -81,14 +81,18 @@ class DefaultMockProtocolDeclarationMock: MockProtocolDeclaration {
         invokedAnotherMethodCount += 1
     }
 
+    var stubbedAnotherMethodWithThrowableError: Error?
     var invokedAnotherMethodWith = false
     var invokedAnotherMethodWithCount = 0
     var invokedAnotherMethodWithParameters: (input: String, Void)?
     var invokedAnotherMethodWithParametersList: [(input: String, Void)] = []
     var invokedAnotherMethodWithExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func anotherMethod(with input: String) {
+    func anotherMethod(with input: String) async throws {
         defer { invokedAnotherMethodWithExpectation.fulfill() }
+        if let error = stubbedAnotherMethodWithThrowableError {
+            throw error
+        }
         invokedAnotherMethodWith = true
         invokedAnotherMethodWithCount += 1
         invokedAnotherMethodWithParameters = (input: input, ())

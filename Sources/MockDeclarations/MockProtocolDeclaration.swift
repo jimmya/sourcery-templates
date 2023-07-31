@@ -7,5 +7,5 @@ protocol MockProtocolDeclaration {
 
     func method(property: Int, optionalProperty: Int?, closureProperty: @escaping (Bool, Int) -> Int) -> Int
     func anotherMethod()
-    func anotherMethod(with input: String)
+    func anotherMethod(with input: String) async throws
 }

@@ -1,30 +1,39 @@
 import SourceryRuntime
 
 extension Method {
+    /// Generate mock for a method
+    /// - Parameters:
+    ///   - takenNames: Names that already have mocks, used to avoid collisions when methods have similar signatures
+    ///   - allMethods: List containing all methods in the type, used to avoid collisions
+    ///   - type: The type this mock is generated for
+    /// - Returns: List of lines containing the mock
     func generateMock(takenNames: inout Set<String>, allMethods: [Method], in type: Type) -> [String] {
         let methodName = generateMockName(allMethods: allMethods, takenNames: &takenNames).replacingOccurrences(of: "?", with: "")
-        var lines = [
-            mockStubParameters(name: methodName, type: type),
-            mockAttributes(),
-        ]
-        if isInitializer {
-            lines.append(contentsOf: [
-                "required \(name.replacingOccurrences(of: "?", with: "")) {".addingIndent(),
-                mockReceivedParameters(methodName: methodName),
-                "}".addingIndent(),
-            ])
-        } else {
-            lines.append(contentsOf: [
-                mockFunctionDeclaration(type: type).addingIndent(),
-                mockReceivedParameters(methodName: methodName),
-                "}".addingIndent(),
-            ])
-        }
+        // Parameters captured or returned when method is called
+        var lines = mockStubParameters(name: methodName, type: type)
+        // Attributes `@objc` etc.
+        lines.append(mockAttributes())
+        // Function declaration `func something() {`
+        lines.append(mockFunctionDeclaration(type: type).addingIndent())
+        // Filling or captured variables or returning stubbed values when method is called
+        lines.append(contentsOf: mockReceivedParameters(methodName: methodName))
+        // Close method
+        lines.append("}".addingIndent())
         return lines
     }
 }
 
 private extension Method {
+
+    /// Generates a unique name to store method parameters or stub values `var invokedFoo` etc.
+    ///
+    /// - Parameters:
+    ///   - allMethods: All the method declared in the type
+    ///   - takenNames: Set of names that are already taken
+    /// - Returns: A unique mock name
+    ///
+    /// Ensures the name is unique when methods have duplicate names e.g. `func foo()` `func foo(bar: Int`
+    /// The example above will generate `Foo` and `FooBar` as mock names.
     func generateMockName(allMethods: [Method], takenNames: inout Set<String>) -> String {
         let name = callName.capitalizingFirstLetter()
         let duplicateMethods = allMethods.filter { $0.callName == callName && $0.parameters.count == parameters.count }
@@ -59,14 +68,20 @@ private extension Method {
         fatalError("Something terrible happened")
     }
 
-    func mockStubParameters(name: String, type: Type) -> String {
-        var ret: [String] = []
+
+    /// Generates parameters that are captured or returned
+    /// - Parameters:
+    ///   - name: Unique name of the method to generate stub parameters for
+    ///   - type: Used to construct a return type in case return type is `Self`
+    /// - Returns: List of lines containing the generated parameters
+    func mockStubParameters(name: String, type: Type) -> [String] {
+        var lines: [String] = []
         if self.throws {
-            ret.append("var stubbed\(name)ThrowableError: Error?")
+            lines.append("var stubbed\(name)ThrowableError: Error?")
         }
         if !isInitializer {
-            ret.append("var invoked\(name) = false")
-            ret.append("var invoked\(name)Count = 0")
+            lines.append("var invoked\(name) = false")
+            lines.append("var invoked\(name)Count = 0")
         }
         let mockableParameters = parameters.filter { !$0.typeName.isClosure || $0.typeAttributes.isEscaping }
         if !mockableParameters.isEmpty {
@@ -74,48 +89,53 @@ private extension Method {
             if mockableParameters.count == 1 {
                 parameters.append(", Void")
             }
-            ret.append("var invoked\(name)Parameters: (\(parameters))?")
-            ret.append("var invoked\(name)ParametersList: [(\(parameters))] = []")
+            lines.append("var invoked\(name)Parameters: (\(parameters))?")
+            lines.append("var invoked\(name)ParametersList: [(\(parameters))] = []")
         }
         parameters.filter { $0.typeName.isClosure }.forEach { parameter in
             guard let closure = parameter.typeName.closure else { return }
             if closure.parameters.count == 0 {
-                ret.append("var shouldInvoke\(name)\(parameter.name.capitalizingFirstLetter()) = false")
+                lines.append("var shouldInvoke\(name)\(parameter.name.capitalizingFirstLetter()) = false")
             } else if closure.parameters.count == 1, let closureParameter = closure.parameters.first, !closureParameter.typeName.isOptional {
-                ret.append("var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: \(closureParameter.typeName.name)?")
+                lines.append("var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: \(closureParameter.typeName.name)?")
             } else {
                 var parameters = closure.parameters.map { $0.typeName.name }.joined(separator: ", ")
                 if closure.parameters.count == 1 {
                     parameters.append(", Void")
                 }
-                ret.append("var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: (\(parameters))?")
+                lines.append("var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: (\(parameters))?")
             }
         }
         if !returnTypeName.isVoid && !isInitializer {
             let returnTypeNameString = returnTypeName.name == "Self" ? "Default\(type.name)Mock" : returnTypeName.name
             let defaultValue = returnTypeName.generateDefaultValue(type: returnType, includeComplexType: false)
             let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
-            ret.append("var stubbed\(name)Result: \(returnTypeNameString)\(isOptionalReturnType ? "" : nonOptionalSignature)")
+            lines.append("var stubbed\(name)Result: \(returnTypeNameString)\(isOptionalReturnType ? "" : nonOptionalSignature)")
         }
-        ret.append("var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
-        return ret.map { $0.addingIndent() }.joined(separator: "\n")
+        lines.append("var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
+        return lines.map { $0.addingIndent() }
     }
 
+    /// Attributes of method, e.g. `@objc` etc.
     func mockAttributes() -> String {
         attributes.flatMap(\.value).map { "\($0.description.addingIndent())\n" }.joined()
     }
 
-    func mockReceivedParameters(methodName: String) -> String {
-        var ret: [String] = []
-        ret.append("defer { invoked\(methodName)Expectation.fulfill() }")
+    /// Generates filling captured variables, calling closures or returning stub value in a function
+    /// - Parameter methodName: Unique name of the method to generate stub parameters for
+    /// - Returns: List of lines containing the generated code
+    func mockReceivedParameters(methodName: String) -> [String] {
+        var lines: [String] = []
+        // Call expectation in defer
+        lines.append("defer { invoked\(methodName)Expectation.fulfill() }")
         if self.throws {
-            ret.append("if let error = stubbed\(methodName)ThrowableError {")
-            ret.append("    throw error")
-            ret.append("}")
+            lines.append("if let error = stubbed\(methodName)ThrowableError {")
+            lines.append("    throw error")
+            lines.append("}")
         }
         if !isInitializer {
-            ret.append("invoked\(methodName) = true")
-            ret.append("invoked\(methodName)Count += 1")
+            lines.append("invoked\(methodName) = true")
+            lines.append("invoked\(methodName)Count += 1")
         }
         let mockableParameters = parameters.filter { !$0.typeName.isClosure || $0.typeAttributes.isEscaping }
         if !mockableParameters.isEmpty {
@@ -123,31 +143,55 @@ private extension Method {
             if mockableParameters.count == 1 {
                 parameters.append(", ()")
             }
-            ret.append("invoked\(methodName)Parameters = (\(parameters))")
-            ret.append("invoked\(methodName)ParametersList.append((\(parameters)))")
+            lines.append("invoked\(methodName)Parameters = (\(parameters))")
+            lines.append("invoked\(methodName)ParametersList.append((\(parameters)))")
         }
         parameters.filter { $0.typeName.isClosure }.forEach { parameter in
             guard let closure = parameter.typeName.closure else { return }
             if closure.parameters.count == 0 {
-                ret.append("if shouldInvoke\(methodName)\(parameter.name.capitalizingFirstLetter()) {")
-                ret.append("    \(mockClosureInvocation(closure: closure, parameter: parameter))")
-                ret.append("}")
+                lines.append("if shouldInvoke\(methodName)\(parameter.name.capitalizingFirstLetter()) {")
+                lines.append("    \(mockClosureInvocation(closure: closure, parameter: parameter))")
+                lines.append("}")
             } else {
-                ret.append("if let result = stubbed\(methodName)\(parameter.name.capitalizingFirstLetter())Result {")
-                ret.append("    \(mockClosureInvocation(closure: closure, parameter: parameter))")
-                ret.append("}")
+                lines.append("if let result = stubbed\(methodName)\(parameter.name.capitalizingFirstLetter())Result {")
+                lines.append("    \(mockClosureInvocation(closure: closure, parameter: parameter))")
+                lines.append("}")
             }
         }
         if !returnTypeName.isVoid && !isInitializer {
-            ret.append("return stubbed\(methodName)Result")
+            lines.append("return stubbed\(methodName)Result")
         }
-        return ret.map { $0.addingIndent(count: 2) }.joined(separator: "\n")
+        return lines.map { $0.addingIndent(count: 2) }
     }
 
+
+    /// Generate function declaration: `func doSomething() async throws -> String`
+    /// - Parameter type: Used to construct a return type in case return type is `Self`
+    /// - Returns: Generated function declaration
     func mockFunctionDeclaration(type: Type) -> String {
-        "func \(name)\(isAsync ? " async" : "")\(self.throws ? " throws" : "")\(mockReturnType(type: type)) {"
+        let parts: [String?]
+        if isInitializer {
+            parts = [
+                "required",
+                name.replacingOccurrences(of: "?", with: ""), // Remove `?` from failable initialisers.
+                "{",
+            ]
+            return "required \(name.replacingOccurrences(of: "?", with: "")) {"
+        } else {
+            parts = [
+                "func",
+                name,
+                isAsync ? "async" : nil,
+                self.throws ? "throws" : nil,
+                mockReturnType(type: type),
+                "{",
+            ]
+        }
+        return parts.compactMap { $0 }.joined(separator: " ")
     }
+}
 
+private extension Method {
     func makeNameWithParameterNames(index: Int) -> String {
         guard index < parameters.count else { fatalError("Something terrible happened") }
         return callName.capitalizingFirstLetter() + parameters[0...index].compactMap { ($0.argumentLabel ?? $0.name).capitalizingFirstLetter() }.joined()
@@ -171,26 +215,12 @@ private extension Method {
         return "\(closure.isAsync ? "await " : "")\(closure.returnTypeName.isVoid ? "" : "_ = ")\(parameter.name)\(parameter.typeName.isOptional ? "?" : "")(\(invocations))"
     }
 
-    func mockReturnType(type: Type) -> String {
-        guard !returnTypeName.isVoid else { return "" }
+    func mockReturnType(type: Type) -> String? {
+        guard !returnTypeName.isVoid else { return nil }
         if returnTypeName.name == "Self" {
-            return " -> Default\(type.name)Mock"
+            return "-> Default\(type.name)Mock"
         }
-        return " -> \(returnTypeName.name)"
-    }
-
-}
-
-extension Array where Element == Method {
-
-    func sorted() -> Self {
-        sorted { one, two in
-            if one.callName == two.callName {
-                return one.parameters.count < two.parameters.count
-            } else {
-                return one.callName < two.callName
-            }
-        }
+        return "-> \(returnTypeName.name)"
     }
 }
 

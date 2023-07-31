@@ -44,3 +44,16 @@ private extension Protocol {
         return isFinal ? "final class" : "class"
     }
 }
+
+private extension Array where Element == Method {
+
+    func sorted() -> Self {
+        sorted { one, two in
+            if one.callName == two.callName {
+                return one.parameters.count < two.parameters.count
+            } else {
+                return one.callName < two.callName
+            }
+        }
+    }
+}
