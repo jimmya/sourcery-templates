@@ -8,9 +8,10 @@ enum AutoMockable {
         lines.append(.emptyLine)
 
         let sortedProtocols = types.protocols.sorted(by: { $0.name < $1.name }).filter(\.isAutoMockable)
-        sortedProtocols.forEach { protocolType in
-            lines.append(contentsOf: protocolType.generateMock())
+        let protocolLines = sortedProtocols.map { protocolType in
+            protocolType.generateMock()
         }
+        lines.append(contentsOf: protocolLines.joined(separator: [.emptyLine]))
         
         return lines.joined(separator: .newLine)
     }

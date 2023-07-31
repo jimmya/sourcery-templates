@@ -4,23 +4,23 @@
 @testable import MockDeclarations
 import Foundation
 
-internal extension MockDomainModelDeclaration {
+internal extension MockModelDeclaration {
     static func stub(
         property: Int = 0,
         optionalProperty: String? = nil
-    ) -> MockDomainModelDeclaration {
-        MockDomainModelDeclaration(
+    ) -> MockModelDeclaration {
+        MockModelDeclaration(
             property: property,
             optionalProperty: optionalProperty
         )
     }
 }
-internal extension MockDomainModelWithInitMethodDeclaration {
+internal extension MockModelWithInitMethodDeclaration {
     static func stub0(
         property: Int = 0,
         somesome: String? = nil
-    ) -> MockDomainModelWithInitMethodDeclaration {
-        MockDomainModelWithInitMethodDeclaration(
+    ) -> MockModelWithInitMethodDeclaration {
+        MockModelWithInitMethodDeclaration(
             property: property,
             somesome: somesome
         )
@@ -28,8 +28,8 @@ internal extension MockDomainModelWithInitMethodDeclaration {
     static func stub1(
         property: Int = 0,
         optionalProperty: String? = nil
-    ) -> MockDomainModelWithInitMethodDeclaration {
-        MockDomainModelWithInitMethodDeclaration(
+    ) -> MockModelWithInitMethodDeclaration {
+        MockModelWithInitMethodDeclaration(
             property: property,
             optionalProperty: optionalProperty
         )
@@ -37,8 +37,8 @@ internal extension MockDomainModelWithInitMethodDeclaration {
     static func stub2(
         property: Int = 0,
         failableOptionalProperty: String? = nil
-    ) -> MockDomainModelWithInitMethodDeclaration? {
-        MockDomainModelWithInitMethodDeclaration(
+    ) -> MockModelWithInitMethodDeclaration? {
+        MockModelWithInitMethodDeclaration(
             property: property,
             failableOptionalProperty: failableOptionalProperty
         )

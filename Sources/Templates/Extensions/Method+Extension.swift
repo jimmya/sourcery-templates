@@ -35,7 +35,7 @@ private extension Method {
     /// Ensures the name is unique when methods have duplicate names e.g. `func foo()` `func foo(bar: Int`
     /// The example above will generate `Foo` and `FooBar` as mock names.
     func generateMockName(allMethods: [Method], takenNames: inout Set<String>) -> String {
-        let name = callName.capitalizingFirstLetter()
+        let name = callName.replacingOccurrences(of: "?", with: "").capitalizingFirstLetter()
         let duplicateMethods = allMethods.filter { $0.callName == callName && $0.parameters.count == parameters.count }
         guard duplicateMethods.count > 1 else {
             var newName = name
@@ -112,7 +112,9 @@ private extension Method {
             let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
             lines.append("var stubbed\(name)Result: \(returnTypeNameString)\(isOptionalReturnType ? "" : nonOptionalSignature)")
         }
-        lines.append("var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
+        if !isInitializer { // Expectations aren't possible in the initializer
+            lines.append("var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
+        }
         return lines.map { $0.addingIndent() }
     }
 
@@ -126,8 +128,10 @@ private extension Method {
     /// - Returns: List of lines containing the generated code
     func mockReceivedParameters(methodName: String) -> [String] {
         var lines: [String] = []
-        // Call expectation in defer
-        lines.append("defer { invoked\(methodName)Expectation.fulfill() }")
+        if !isInitializer {
+            // Call expectation in defer, only makes sense in a non-init method.
+            lines.append("defer { invoked\(methodName)Expectation.fulfill() }")
+        }
         if self.throws {
             lines.append("if let error = stubbed\(methodName)ThrowableError {")
             lines.append("    throw error")

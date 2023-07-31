@@ -1,5 +1,5 @@
 // sourcery: AutoStubbable
-struct MockDomainModelWithInitMethodDeclaration {
+struct MockModelWithInitMethodDeclaration {
     let property: Int
     let optionalProperty: String?
 
@@ -23,7 +23,7 @@ struct MockDomainModelWithInitMethodDeclaration {
 }
 
 // sourcery: AutoStubbable
-struct MockDomainModelDeclaration {
+struct MockModelDeclaration {
     let property: Int
     let optionalProperty: String?
 }
