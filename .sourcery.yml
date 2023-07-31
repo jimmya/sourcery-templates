@@ -1,10 +1,17 @@
 configurations:
   - sources:
-      - Sources/MockDeclarations
+      - Sources/MockDeclarations/
     templates:
       - Sources/Templates/AutoMockable.swifttemplate
-      - Sources/Templates/AutoStubbable.swifttemplate
     output: Tests/TemplateTests
     args:
       imports: [Foundation, XCTest]
+      testableImports: [MockDeclarations]
+  - sources:
+      - Sources/MockDeclarations/
+    templates:
+      - Sources/Templates/AutoStubbable.swifttemplate
+    output: Tests/TemplateTests
+    args:
+      imports: [Foundation]
       testableImports: [MockDeclarations]

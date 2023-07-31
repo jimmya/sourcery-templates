@@ -71,6 +71,30 @@ class DefaultMockProtocolDeclarationMock: MockProtocolDeclaration {
         }
     }
 
+    var invokedAnotherMethod = false
+    var invokedAnotherMethodCount = 0
+    var invokedAnotherMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    func anotherMethod() {
+        defer { invokedAnotherMethodExpectation.fulfill() }
+        invokedAnotherMethod = true
+        invokedAnotherMethodCount += 1
+    }
+
+    var invokedAnotherMethodWith = false
+    var invokedAnotherMethodWithCount = 0
+    var invokedAnotherMethodWithParameters: (input: String, Void)?
+    var invokedAnotherMethodWithParametersList: [(input: String, Void)] = []
+    var invokedAnotherMethodWithExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    func anotherMethod(with input: String) {
+        defer { invokedAnotherMethodWithExpectation.fulfill() }
+        invokedAnotherMethodWith = true
+        invokedAnotherMethodWithCount += 1
+        invokedAnotherMethodWithParameters = (input: input, ())
+        invokedAnotherMethodWithParametersList.append((input: input, ()))
+    }
+
     var invokedMethod = false
     var invokedMethodCount = 0
     var invokedMethodParameters: (property: Int, optionalProperty: Int?, closureProperty: (Bool, Int) -> Int)?

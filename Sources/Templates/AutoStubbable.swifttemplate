@@ -1,14 +1,15 @@
-<%# Include our helpers -%>
+<%# TODO: Break helpers up into extensions -%>
 <%- includeFile("helpers.swift") -%>
+<%- includeFile("Extensions/Annotations+Extension.swift") -%>
+<%- includeFile("Extensions/Annotated+Extension.swift") -%>
+<%- includeFile("Extensions/Method+Extension.swift") -%>
+<%- includeFile("Extensions/Protocol+Extension.swift") -%>
+<%- includeFile("Extensions/String+Extension.swift") -%>
+<%- includeFile("Extensions/TypeName+Extension.swift") -%>
+<%- includeFile("Extensions/Variable+Extension.swift") -%>
+<%- includeFile("AutoStubbable.swift") -%>
 
-<%# Add testable imports -%>
-<%  for type in (argument["autoStubbableTestableImports"] as? [String]) ?? [] { -%>
-@testable import <%= type %>
-<%  } -%>
-<%# Add regular imports -%>
-<% for type in (argument["autoStubbableImports"] as? [String]) ?? [] { -%>
-import <%= type %>
-<% } -%>
+<%= AutoStubbable.generate(types: types, annotations: argument) -%>
 <%# Get stubbable types (structs and classes) and sort them by name -%>
 <% let allTypes = types.structs + types.classes -%>
 <% for type in allTypes.sorted(by: { $0.name < $1.name }) where type.isAutoStubbable { %>
@@ -18,10 +19,10 @@ import <%= type %>
     <%_ let implicitlyUnwrappedVariables = type.storedVariables.filter { $0.isImplicitlyUnwrappedOptional } -%>
     static func <%= stubMethodName(index: index, count: type.initMethods.count) %>(
         <%_ for parameter in method.parameters { -%>
-        <%= parameter.name %>: <%= generateTypeName(typeName: parameter.typeName, type: parameter.type) %> = <%= generateDefaultValue(type: parameter.type, typeName: parameter.typeName, includeComplexType: true) %><% if parameter != method.parameters.last || !implicitlyUnwrappedVariables.isEmpty { %>,<% } %>
+        <%= parameter.name %>: <%= parameter.typeName.generateStubbableName(type: parameter.type) %> = <%= parameter.typeName.generateDefaultValue(type: parameter.type, includeComplexType: true) %><% if parameter != method.parameters.last || !implicitlyUnwrappedVariables.isEmpty { %>,<% } %>
         <%_ } -%>
         <%_ for variable in implicitlyUnwrappedVariables { -%>
-        <%= variable.name %>: <%= generateTypeName(typeName: variable.typeName, type: variable.type) %> = <%= generateDefaultValue(type: variable.type, typeName: variable.typeName, includeComplexType: true) %><% if variable != implicitlyUnwrappedVariables.last { %>,<% } %>
+        <%= variable.name %>: <%= variable.typeName.generateStubbableName(type: variable.type) %> = <%= variable.typeName.generateDefaultValue(type: variable.type, includeComplexType: true) %><% if variable != implicitlyUnwrappedVariables.last { %>,<% } %>
         <%_ } -%>
     ) -> <%= type.name %><% if method.isFailableInitializer { %>?<% } %> {
         <%= generateStubbableInit(objectType: type, parameterNames: method.parameters.map { $0.name }) %>
@@ -31,7 +32,7 @@ import <%= type %>
     <%_ let availableVariables = type.storedVariables.filter { !$0.hasDefaultValue } -%>
     static func <%= stubMethodName(index: 0, count: 1) %>(
         <%_ for variable in availableVariables { -%>
-        <%= variable.name %>: <%= generateTypeName(typeName: variable.typeName, type: variable.type) %> = <%= generateDefaultValue(type: variable.type, typeName: variable.typeName, includeComplexType: true) %><% if variable != availableVariables.last { %>,<% } %>
+        <%= variable.name %>: <%= variable.typeName.generateStubbableName(type: variable.type) %> = <%= variable.typeName.generateDefaultValue(type: variable.type, includeComplexType: true) %><% if variable != availableVariables.last { %>,<% } %>
         <%_ } -%>
     ) -> <%= type.name %> {
         <%= generateStubbableInit(objectType: type, variables: type.storedVariables) %>
