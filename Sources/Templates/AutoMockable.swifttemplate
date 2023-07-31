@@ -1,12 +1,4 @@
-<%# TODO: Break helpers up into extensions -%>
-<%- includeFile("helpers.swift") -%>
-<%- includeFile("Extensions/Annotated+Extension.swift") -%>
-<%- includeFile("Extensions/Annotations+Extension.swift") -%>
-<%- includeFile("Extensions/Method+Extension.swift") -%>
-<%- includeFile("Extensions/Protocol+Extension.swift") -%>
-<%- includeFile("Extensions/String+Extension.swift") -%>
-<%- includeFile("Extensions/TypeName+Extension.swift") -%>
-<%- includeFile("Extensions/Variable+Extension.swift") -%>
+<%- include("Imports.swifttemplate") -%>
 <%- includeFile("AutoMockable.swift") -%>
 
 <%= AutoMockable.generate(types: types, annotations: argument) -%>

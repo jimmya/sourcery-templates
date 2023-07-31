@@ -18,7 +18,7 @@ extension TypeName {
             return "(\(combinedElements))"
         }
         if includeComplexType, let enumType = type as? Enum, let firstCase = enumType.cases.first {
-            return generateEnumDefaultValue(enum: enumType, firstCase: firstCase, includeComplexType: includeComplexType)
+            return generateEnumDefaultValue(firstCase: firstCase, includeComplexType: includeComplexType)
         }
         if isClosure, let closure {
             return "{ \(closure.returnTypeName.generateDefaultValue(type: closure.returnType, includeComplexType: includeComplexType)) } "
@@ -71,4 +71,17 @@ extension TypeName {
         return (type?.name ?? unwrappedTypeName) + addition
     }
 
+}
+
+private extension TypeName {
+    func generateEnumDefaultValue(firstCase: EnumCase, includeComplexType: Bool) -> String {
+        guard firstCase.hasAssociatedValue else {
+            return ".\(firstCase.name)"
+        }
+        let associatedValue = firstCase.associatedValues.map { value in
+            let defaultValue = value.defaultValue ?? value.typeName.generateDefaultValue(type: value.type, includeComplexType: includeComplexType)
+            return [value.localName, defaultValue].compactMap { $0 }.joined(separator: ": ")
+        }.joined(separator: ", ")
+        return ".\(firstCase.name)(\(associatedValue))"
+    }
 }
