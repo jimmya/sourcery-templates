@@ -56,3 +56,9 @@ struct MockModelWithProtocolProperty {
 struct MockModelWithClosure {
     let doSomething: (() -> Void)
 }
+
+// sourcery: AutoStubbable
+struct MockModelWithImplicitlyUnwrappedOptional {
+    var property: Int
+    var implicitlyUnwrappedProperty: Int!
+}

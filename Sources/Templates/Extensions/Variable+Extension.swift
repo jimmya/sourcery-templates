@@ -8,6 +8,10 @@ extension Variable {
     func generateMock(types: Types) -> String {
         isMutable ? generateMutableMock(types: types) : generateComputedMock(types: types)
     }
+
+    func generateInitAssignment(types: Types) -> String {
+        "\(name): \(typeName.generateStubbableName(type: type)) = \(typeName.generateDefaultValue(type: type, includeComplexType: true, types: types))"
+    }
 }
 
 private extension Variable {

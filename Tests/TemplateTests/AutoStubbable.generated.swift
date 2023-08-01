@@ -36,13 +36,28 @@ internal extension MockModelWithClosure {
     }
 }
 
+internal extension MockModelWithImplicitlyUnwrappedOptional {
+    static func stub(
+        property: Int = 0,
+        implicitlyUnwrappedProperty: Int = 0
+    ) -> MockModelWithImplicitlyUnwrappedOptional {
+        MockModelWithImplicitlyUnwrappedOptional(
+            property: property,
+            implicitlyUnwrappedProperty: implicitlyUnwrappedProperty
+        )
+    }
+}
+
 internal extension MockModelWithInitMethodAndImplicitlyUnwrappedOptionalDeclaration {
     static func stub(
-        property: Int = 0
+        property: Int = 0,
+        implicitlyUnwrappedProperty: Int = 0
     ) -> MockModelWithInitMethodAndImplicitlyUnwrappedOptionalDeclaration {
-        MockModelWithInitMethodAndImplicitlyUnwrappedOptionalDeclaration(
+        var object = MockModelWithInitMethodAndImplicitlyUnwrappedOptionalDeclaration(
             property: property
         )
+        object.implicitlyUnwrappedProperty = implicitlyUnwrappedProperty
+        return object
     }
 }
 
