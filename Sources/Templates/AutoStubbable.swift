@@ -42,7 +42,7 @@ extension Type {
             return lines
         }
         lines.append(contentsOf: initMethodLines.joined(separator: [.emptyLine]))
-        
+
         if initMethods.isEmpty {
             lines.append("static func \(stubMethodName(index: 0, count: 1))(".addingIndent())
             let availableVariables = storedVariables.filter { !$0.hasDefaultValue }
@@ -67,18 +67,6 @@ extension Type {
 }
 
 // TODO: Move and improve this stuff
-extension Type {
-    var initMethods: [Method] {
-        methods.filter { ($0.isInitializer || $0.isFailableInitializer) && !$0.isConvenienceInitializer }
-    }
-}
-
-extension Variable {
-    var hasDefaultValue: Bool {
-        defaultValue != nil
-    }
-}
-
 func stubMethodName(index: Int, count: Int) -> String {
     count > 1 ? "stub\(index)" : "stub"
 }

@@ -1,6 +1,10 @@
 import SourceryRuntime
 
 extension Variable {
+    var hasDefaultValue: Bool {
+        defaultValue != nil
+    }
+
     func generateMock() -> String {
         isMutable ? generateMutableMock() : generateComputedMock()
     }
