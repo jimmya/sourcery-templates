@@ -24,22 +24,21 @@ extension TypeName {
             return "{ \(closure.returnTypeName.generateDefaultValue(type: closure.returnType, includeComplexType: includeComplexType)) } "
         }
 
-        switch unwrappedTypeName {
-        case "String", "Character": return "\"\""
-        case "Int", "Double", "TimeInterval", "CGFloat", "Float": return "0"
-        case "Bool": return "false"
-        case "URL": return "URL(fileURLWithPath: \"\")"
-        case "UIApplication": return ".shared" // UIApplication is special
-        default:
-            if includeComplexType {
-                if type?.isAutoStubbable == true {
-                    return "\(generateStubbableName(type: type)).stub()"
-                } else if type?.isAutoMockable == true {
-                    return "Default\(unwrappedTypeName)Mock()"
-                }
-
-                return ".init()"
+        switch (unwrappedTypeName, includeComplexType) {
+        case ("String", _), ("Character", _): return "\"\""
+        case ("Int", _), ("Double", _), ("TimeInterval", _), ("CGFloat", _), ("Float", _): return "0"
+        case ("Bool", _): return "false"
+        case ("URL", true): return "URL(fileURLWithPath: \"\")"
+        case ("UIApplication", true): return ".shared" // UIApplication is special
+        case (_, true):
+            if type?.isAutoStubbable == true {
+                return "\(generateStubbableName(type: type)).stub()"
+            } else if type?.isAutoMockable == true {
+                return "Default\(unwrappedTypeName)Mock()"
             }
+
+            return ".init()"
+        default:
             return ""
         }
     }

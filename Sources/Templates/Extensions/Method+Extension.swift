@@ -68,7 +68,6 @@ private extension Method {
         fatalError("Something terrible happened")
     }
 
-
     /// Generates parameters that are captured or returned
     /// - Parameters:
     ///   - name: Unique name of the method to generate stub parameters for
@@ -107,6 +106,7 @@ private extension Method {
             }
         }
         if !returnTypeName.isVoid && !isInitializer {
+            // Stored property cannot have covariant `Self` type
             let returnTypeNameString = returnTypeName.name == "Self" ? "Default\(type.name)Mock" : returnTypeName.name
             let defaultValue = returnTypeName.generateDefaultValue(type: returnType, includeComplexType: false)
             let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
@@ -221,6 +221,7 @@ private extension Method {
 
     func mockReturnType(type: Type) -> String? {
         guard !returnTypeName.isVoid else { return nil }
+        // We have to return a concrete type instead of `Self`
         if returnTypeName.name == "Self" {
             return "-> Default\(type.name)Mock"
         }

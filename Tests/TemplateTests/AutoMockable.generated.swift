@@ -192,3 +192,18 @@ class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPropertyAndM
         invokedMethodCount += 1
     }
 }
+
+final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithReturnSelf {
+
+    var invokedMethod = false
+    var invokedMethodCount = 0
+    var stubbedMethodResult: DefaultMockProtocolWithReturnSelfMock!
+    var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    func method() -> DefaultMockProtocolWithReturnSelfMock {
+        defer { invokedMethodExpectation.fulfill() }
+        invokedMethod = true
+        invokedMethodCount += 1
+        return stubbedMethodResult
+    }
+}

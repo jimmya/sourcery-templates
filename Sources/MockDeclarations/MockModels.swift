@@ -23,6 +23,16 @@ struct MockModelWithInitMethodDeclaration {
 }
 
 // sourcery: AutoStubbable
+struct MockModelWithInitMethodAndImplicitlyUnwrappedOptionalDeclaration {
+    let property: Int
+    var implicitlyUnwrappedProperty: Int!
+
+    init(property: Int) {
+        self.property = property
+    }
+}
+
+// sourcery: AutoStubbable
 struct MockModelDeclaration {
     let property: Int
     let optionalProperty: String?

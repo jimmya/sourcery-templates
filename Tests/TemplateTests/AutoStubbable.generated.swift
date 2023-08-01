@@ -15,6 +15,17 @@ internal extension MockModelDeclaration {
         )
     }
 }
+
+internal extension MockModelWithInitMethodAndImplicitlyUnwrappedOptionalDeclaration {
+    static func stub(
+        property: Int = 0
+    ) -> MockModelWithInitMethodAndImplicitlyUnwrappedOptionalDeclaration {
+        MockModelWithInitMethodAndImplicitlyUnwrappedOptionalDeclaration(
+            property: property
+        )
+    }
+}
+
 internal extension MockModelWithInitMethodDeclaration {
     static func stub0(
         property: Int = 0,
@@ -25,6 +36,7 @@ internal extension MockModelWithInitMethodDeclaration {
             somesome: somesome
         )
     }
+
     static func stub1(
         property: Int = 0,
         optionalProperty: String? = nil
@@ -34,6 +46,7 @@ internal extension MockModelWithInitMethodDeclaration {
             optionalProperty: optionalProperty
         )
     }
+
     static func stub2(
         property: Int = 0,
         failableOptionalProperty: String? = nil

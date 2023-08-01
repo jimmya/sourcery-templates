@@ -42,7 +42,9 @@ private extension Protocol {
         if based.contains(where: { $0.key == "AnyActor"}) {
             return "actor"
         }
-        return isFinal ? "final class" : "class"
+        // If we have a method that returns `Self` we must declare the class final
+        let shouldBeFinal = methods.contains(where: { $0.returnTypeName.name == "Self"} )
+        return shouldBeFinal ? "final class" : "class"
     }
 }
 

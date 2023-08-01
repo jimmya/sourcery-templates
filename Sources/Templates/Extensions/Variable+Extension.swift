@@ -2,12 +2,12 @@ import SourceryRuntime
 
 extension Variable {
     func generateMock() -> String {
-        isMutable ? mockMutable : mockComputed
+        isMutable ? generateMutableMock() : generateComputedMock()
     }
 }
 
 private extension Variable {
-    var mockMutable: String {
+    func generateMutableMock() -> String {
         let capitalizedName = name.capitalizingFirstLetter()
         let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false)
         let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
@@ -38,7 +38,7 @@ private extension Variable {
         """
     }
 
-    var mockComputed: String {
+    func generateComputedMock() -> String {
         let capitalizedName = name.capitalizingFirstLetter()
         let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false)
         let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"

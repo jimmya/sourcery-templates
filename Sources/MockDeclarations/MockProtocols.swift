@@ -29,6 +29,11 @@ protocol MockProtocolWithPropertyAndMethod {
     func method()
 }
 
+// sourcery: AutoMockable
+protocol MockProtocolWithReturnSelf {
+    func method() -> Self
+}
+
 class SomeType { }
 
 // sourcery: AutoMockable

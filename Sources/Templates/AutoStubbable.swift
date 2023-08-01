@@ -8,10 +8,11 @@ enum AutoStubbable {
         lines.append("")
 
         let sortedTypes = (types.structs + types.classes).sorted(by: { $0.name < $1.name }).filter(\.isAutoStubbable)
-        lines.append(contentsOf: sortedTypes.flatMap { type in
+        let types = sortedTypes.map { type in
             type.generateStub()
-        })
-
+        }.joined(separator: [.emptyLine])
+        lines.append(contentsOf: types)
+        
         return lines.joined(separator: .newLine)
     }
 }
@@ -20,8 +21,9 @@ extension Type {
     func generateStub() -> [String] {
         var lines: [String] = []
         lines.append("\(accessLevel) extension \(name) {")
-        let implicitlyUnwrappedVariables = storedVariables.filter(\.isImplicitlyUnwrappedOptional)
-        initMethods.enumerated().forEach { index, method in
+
+        let initMethodLines = initMethods.enumerated().map { index, method in
+            var lines: [String] = []
             lines.append("static func \(stubMethodName(index: index, count: initMethods.count))(".addingIndent())
             let methodParameterLines = method.parameters.map { parameter in
                 "\(parameter.argumentLabel ?? parameter.name): \(parameter.typeName.generateStubbableName(type: parameter.type)) = \(parameter.typeName.generateDefaultValue(type: parameter.type, includeComplexType: true))".addingIndent(count: 2)
@@ -37,7 +39,10 @@ extension Type {
             lines.append(joinedMethodAssignmentLines)
             lines.append(")".addingIndent(count: 2))
             lines.append("}".addingIndent())
+            return lines
         }
+        lines.append(contentsOf: initMethodLines.joined(separator: [.emptyLine]))
+        
         if initMethods.isEmpty {
             lines.append("static func \(stubMethodName(index: 0, count: 1))(".addingIndent())
             let availableVariables = storedVariables.filter { !$0.hasDefaultValue }
