@@ -9,7 +9,7 @@ enum AutoStubbable {
 
         let sortedTypes = (types.structs + types.classes).sorted(by: { $0.name < $1.name }).filter(\.isAutoStubbable)
         let types = sortedTypes.map { type in
-            type.generateStub()
+            type.generateStub(types: types)
         }.joined(separator: [.emptyLine])
         lines.append(contentsOf: types)
         
@@ -18,7 +18,7 @@ enum AutoStubbable {
 }
 
 extension Type {
-    func generateStub() -> [String] {
+    func generateStub(types: Types) -> [String] {
         var lines: [String] = []
         lines.append("\(accessLevel) extension \(name) {")
 
@@ -26,7 +26,7 @@ extension Type {
             var lines: [String] = []
             lines.append("static func \(stubMethodName(index: index, count: initMethods.count))(".addingIndent())
             let methodParameterLines = method.parameters.map { parameter in
-                "\(parameter.argumentLabel ?? parameter.name): \(parameter.typeName.generateStubbableName(type: parameter.type)) = \(parameter.typeName.generateDefaultValue(type: parameter.type, includeComplexType: true))".addingIndent(count: 2)
+                "\(parameter.argumentLabel ?? parameter.name): \(parameter.typeName.generateStubbableName(type: parameter.type)) = \(parameter.typeName.generateDefaultValue(type: parameter.type, includeComplexType: true, types: types))".addingIndent(count: 2)
             }
             let joinedMethodParameterLines = methodParameterLines.joined(separator: ",\n")
             lines.append(joinedMethodParameterLines)
@@ -47,7 +47,7 @@ extension Type {
             lines.append("static func \(stubMethodName(index: 0, count: 1))(".addingIndent())
             let availableVariables = storedVariables.filter { !$0.hasDefaultValue }
             let variableLines = availableVariables.map { variable in
-                "\(variable.name): \(variable.typeName.generateStubbableName(type: variable.type)) = \(variable.typeName.generateDefaultValue(type: variable.type, includeComplexType: true))".addingIndent(count: 2)
+                "\(variable.name): \(variable.typeName.generateStubbableName(type: variable.type)) = \(variable.typeName.generateDefaultValue(type: variable.type, includeComplexType: true, types: types))".addingIndent(count: 2)
             }
             let joinedVariableLines = variableLines.joined(separator: ",\n")
             lines.append(joinedVariableLines)

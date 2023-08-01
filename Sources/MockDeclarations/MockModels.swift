@@ -37,3 +37,22 @@ struct MockModelDeclaration {
     let property: Int
     let optionalProperty: String?
 }
+
+protocol SomeProtocol {
+    var property: Int { get }
+}
+
+// sourcery: AutoStubbable
+struct MockImplementingSomeProtocol: SomeProtocol {
+    let property: Int
+}
+
+// sourcery: AutoStubbable
+struct MockModelWithProtocolProperty {
+    let property: SomeProtocol
+}
+
+// sourcery: AutoStubbable
+struct MockModelWithClosure {
+    let doSomething: (() -> Void)
+}

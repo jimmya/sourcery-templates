@@ -5,15 +5,15 @@ extension Variable {
         defaultValue != nil
     }
 
-    func generateMock() -> String {
-        isMutable ? generateMutableMock() : generateComputedMock()
+    func generateMock(types: Types) -> String {
+        isMutable ? generateMutableMock(types: types) : generateComputedMock(types: types)
     }
 }
 
 private extension Variable {
-    func generateMutableMock() -> String {
+    func generateMutableMock(types: Types) -> String {
         let capitalizedName = name.capitalizingFirstLetter()
-        let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false)
+        let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false, types: types)
         let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
         let typeName = typeName.isClosure ? "(\(typeName))" : typeName.name
         let listTypeName = self.typeName.isClosure ? "(\(typeName))" : self.typeName.name
@@ -42,9 +42,9 @@ private extension Variable {
         """
     }
 
-    func generateComputedMock() -> String {
+    func generateComputedMock(types: Types) -> String {
         let capitalizedName = name.capitalizingFirstLetter()
-        let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false)
+        let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false, types: types)
         let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
         return """
             var invoked\(capitalizedName)Getter = false

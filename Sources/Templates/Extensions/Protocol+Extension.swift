@@ -1,18 +1,18 @@
 import SourceryRuntime
 
 extension Protocol {
-    func generateMock() -> [String] {
+    func generateMock(types: Types) -> [String] {
         let variables = allVariables.filter { $0.definedInType?.isExtension == false }
         let variableLines = variables.map { variable in
             [
-                variable.generateMock(),
+                variable.generateMock(types: types),
             ]
         }
 
         let allMethods = allMethods.filter { $0.definedInType?.isExtension == false }.sorted()
         var takenMethodNames: Set<String> = []
         let methodLines: [[String]] = allMethods.map { method in
-            method.generateMock(takenNames: &takenMethodNames, allMethods: allMethods, in: self)
+            method.generateMock(takenNames: &takenMethodNames, allMethods: allMethods, in: self, types: types)
         }
 
         let hasVariablesAndMethods = !variableLines.isEmpty && !methodLines.isEmpty

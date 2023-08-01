@@ -7,10 +7,10 @@ extension Method {
     ///   - allMethods: List containing all methods in the type, used to avoid collisions
     ///   - type: The type this mock is generated for
     /// - Returns: List of lines containing the mock
-    func generateMock(takenNames: inout Set<String>, allMethods: [Method], in type: Type) -> [String] {
+    func generateMock(takenNames: inout Set<String>, allMethods: [Method], in type: Type, types: Types) -> [String] {
         let methodName = generateMockName(allMethods: allMethods, takenNames: &takenNames).replacingOccurrences(of: "?", with: "")
         // Parameters captured or returned when method is called
-        var lines = mockStubParameters(name: methodName, type: type)
+        var lines = mockStubParameters(name: methodName, type: type, types: types)
         // Attributes `@objc` etc.
         lines.append(mockAttributes())
         // Function declaration `func something() {`
@@ -73,7 +73,7 @@ private extension Method {
     ///   - name: Unique name of the method to generate stub parameters for
     ///   - type: Used to construct a return type in case return type is `Self`
     /// - Returns: List of lines containing the generated parameters
-    func mockStubParameters(name: String, type: Type) -> [String] {
+    func mockStubParameters(name: String, type: Type, types: Types) -> [String] {
         var lines: [String] = []
         if self.throws {
             lines.append("var stubbed\(name)ThrowableError: Error?")
@@ -108,7 +108,7 @@ private extension Method {
         if !returnTypeName.isVoid && !isInitializer {
             // Stored property cannot have covariant `Self` type
             let returnTypeNameString = returnTypeName.name == "Self" ? "Default\(type.name)Mock" : returnTypeName.name
-            let defaultValue = returnTypeName.generateDefaultValue(type: returnType, includeComplexType: false)
+            let defaultValue = returnTypeName.generateDefaultValue(type: returnType, includeComplexType: false, types: types)
             let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
             lines.append("var stubbed\(name)Result: \(returnTypeNameString)\(isOptionalReturnType ? "" : nonOptionalSignature)")
         }
