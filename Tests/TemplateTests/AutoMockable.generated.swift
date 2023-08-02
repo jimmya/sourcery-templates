@@ -7,7 +7,7 @@ import XCTest
 
 class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosureMethod {
 
-    var invokedMethod = false
+    var invokedMethod: Bool { invokedMethodCount > 0 }
     var invokedMethodCount = 0
     var invokedMethodParameters: (closureProperty: (Bool, Int) -> Int, Void)?
     var invokedMethodParametersList: [(closureProperty: (Bool, Int) -> Int, Void)] = []
@@ -16,7 +16,6 @@ class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosureMethod {
 
     func method(closureProperty: @escaping (Bool, Int) -> Int) {
         defer { invokedMethodExpectation.fulfill() }
-        invokedMethod = true
         invokedMethodCount += 1
         invokedMethodParameters = (closureProperty: closureProperty, ())
         invokedMethodParametersList.append((closureProperty: closureProperty, ()))
@@ -44,31 +43,29 @@ class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeType, MockPr
         invokedInitSomeFailableParameterParametersList.append((someFailableParameter: someFailableParameter, ()))
     }
 
-    var invokedMethod = false
+    var invokedMethod: Bool { invokedMethodCount > 0 }
     var invokedMethodCount = 0
     var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
 
     func method() {
         defer { invokedMethodExpectation.fulfill() }
-        invokedMethod = true
         invokedMethodCount += 1
     }
 }
 
 class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMultipleMethods {
 
-    var invokedAnotherMethod = false
+    var invokedAnotherMethod: Bool { invokedAnotherMethodCount > 0 }
     var invokedAnotherMethodCount = 0
     var invokedAnotherMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
 
     func anotherMethod() {
         defer { invokedAnotherMethodExpectation.fulfill() }
-        invokedAnotherMethod = true
         invokedAnotherMethodCount += 1
     }
 
     var stubbedAnotherMethodWithThrowableError: Error?
-    var invokedAnotherMethodWith = false
+    var invokedAnotherMethodWith: Bool { invokedAnotherMethodWithCount > 0 }
     var invokedAnotherMethodWithCount = 0
     var invokedAnotherMethodWithParameters: (input: String, Void)?
     var invokedAnotherMethodWithParametersList: [(input: String, Void)] = []
@@ -79,7 +76,6 @@ class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMultipleMethod
         if let error = stubbedAnotherMethodWithThrowableError {
             throw error
         }
-        invokedAnotherMethodWith = true
         invokedAnotherMethodWithCount += 1
         invokedAnotherMethodWithParameters = (input: input, ())
         invokedAnotherMethodWithParametersList.append((input: input, ()))
@@ -88,14 +84,13 @@ class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMultipleMethod
 
 class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWithOptionalClosureMethod {
 
-    var invokedMethod = false
+    var invokedMethod: Bool { invokedMethodCount > 0 }
     var invokedMethodCount = 0
     var stubbedMethodClosurePropertyResult: (Bool, Int)?
     var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
 
     func method(closureProperty: ((Bool, Int) -> Int)?) {
         defer { invokedMethodExpectation.fulfill() }
-        invokedMethod = true
         invokedMethodCount += 1
         if let result = stubbedMethodClosurePropertyResult {
             _ = closureProperty?(result.0, result.1)
@@ -182,27 +177,25 @@ class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPropertyAndM
         return stubbedProperty
     }
 
-    var invokedMethod = false
+    var invokedMethod: Bool { invokedMethodCount > 0 }
     var invokedMethodCount = 0
     var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
 
     func method() {
         defer { invokedMethodExpectation.fulfill() }
-        invokedMethod = true
         invokedMethodCount += 1
     }
 }
 
 final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithReturnSelf {
 
-    var invokedMethod = false
+    var invokedMethod: Bool { invokedMethodCount > 0 }
     var invokedMethodCount = 0
     var stubbedMethodResult: DefaultMockProtocolWithReturnSelfMock!
     var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
 
     func method() -> DefaultMockProtocolWithReturnSelfMock {
         defer { invokedMethodExpectation.fulfill() }
-        invokedMethod = true
         invokedMethodCount += 1
         return stubbedMethodResult
     }

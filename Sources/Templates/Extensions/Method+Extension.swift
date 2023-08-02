@@ -14,11 +14,11 @@ extension Method {
         // Attributes `@objc` etc.
         lines.append(mockAttributes())
         // Function declaration `func something() {`
-        lines.append(mockFunctionDeclaration(type: type).addingIndent())
+        lines.append(mockFunctionDeclaration(type: type).indent())
         // Filling or captured variables or returning stubbed values when method is called
         lines.append(contentsOf: mockReceivedParameters(methodName: methodName))
         // Close method
-        lines.append("}".addingIndent())
+        lines.append("}".indent())
         return lines
     }
 }
@@ -79,7 +79,7 @@ private extension Method {
             lines.append("var stubbed\(name)ThrowableError: Error?")
         }
         if !isInitializer {
-            lines.append("var invoked\(name) = false")
+            lines.append("var invoked\(name): Bool { invoked\(name)Count > 0 }")
             lines.append("var invoked\(name)Count = 0")
         }
         let mockableParameters = parameters.filter { !$0.typeName.isClosure || $0.typeAttributes.isEscaping }
@@ -115,12 +115,12 @@ private extension Method {
         if !isInitializer { // Expectations aren't possible in the initializer
             lines.append("var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
         }
-        return lines.map { $0.addingIndent() }
+        return lines.map { $0.indent() }
     }
 
     /// Attributes of method, e.g. `@objc` etc.
     func mockAttributes() -> String {
-        attributes.flatMap(\.value).map { "\($0.description.addingIndent())\n" }.joined()
+        attributes.flatMap(\.value).map { "\($0.description.indent())" + .newLine }.joined()
     }
 
     /// Generates filling captured variables, calling closures or returning stub value in a function
@@ -138,7 +138,6 @@ private extension Method {
             lines.append("}")
         }
         if !isInitializer {
-            lines.append("invoked\(methodName) = true")
             lines.append("invoked\(methodName)Count += 1")
         }
         let mockableParameters = parameters.filter { !$0.typeName.isClosure || $0.typeAttributes.isEscaping }
@@ -165,7 +164,7 @@ private extension Method {
         if !returnTypeName.isVoid && !isInitializer {
             lines.append("return stubbed\(methodName)Result")
         }
-        return lines.map { $0.addingIndent(count: 2) }
+        return lines.map { $0.indent(level: 2) }
     }
 
 

@@ -37,6 +37,10 @@ extension TypeName {
         case ("UIApplication", true): return ".shared" // UIApplication is special
         case (_, true):
             if type?.isAutoStubbable == true {
+                // If we have multiple init methods, just use the first as a stub.
+                if let type, type.initMethods.count > 1 {
+                    return "\(generateStubbableName(type: type)).stub0()"
+                }
                 return "\(generateStubbableName(type: type)).stub()"
             } else if type?.isAutoMockable == true {
                 return "Default\(unwrappedTypeName)Mock()"

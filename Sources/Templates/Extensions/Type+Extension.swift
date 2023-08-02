@@ -28,22 +28,22 @@ private extension Type {
     /// The init is generated based on the order of the properties of the struct.
     func generateMemberwiseInitMethodStub(types: Types) -> [String] {
         var lines: [String] = []
-        lines.append("static func stub(".addingIndent())
+        lines.append("static func stub(".indent())
         let availableVariables = storedVariables.filter { !$0.hasDefaultValue }
         let variableLines = availableVariables.map { variable in
-            variable.generateInitAssignment(types: types).addingIndent(count: 2)
+            variable.generateInitAssignment(types: types).indent(level: 2)
         }
-        let joinedVariableLines = variableLines.joined(separator: ",\n")
+        let joinedVariableLines = variableLines.joined(separator: "," + .newLine)
         lines.append(joinedVariableLines)
-        lines.append(") -> \(name) {".addingIndent())
-        lines.append("\(name)(".addingIndent(count: 2))
+        lines.append(") -> \(name) {".indent())
+        lines.append("\(name)(".indent(level: 2))
         let variableAssignmentLines = availableVariables.map { variable in
-            "\(variable.name): \(variable.name)".addingIndent(count: 3)
+            "\(variable.name): \(variable.name)".indent(level: 3)
         }
-        let joinedVariableAssignmentLines = variableAssignmentLines.joined(separator: ",\n")
+        let joinedVariableAssignmentLines = variableAssignmentLines.joined(separator: "," + .newLine)
         lines.append(joinedVariableAssignmentLines)
-        lines.append(")".addingIndent(count: 2))
-        lines.append("}".addingIndent())
+        lines.append(")".indent(level: 2))
+        lines.append("}".indent())
         return lines
     }
 
@@ -51,16 +51,16 @@ private extension Type {
     func generateInitMethodStub(types: Types, index: Int, method: Method) -> [String] {
         let implicitlyUnwrappedVariables = storedVariables.filter { $0.isImplicitlyUnwrappedOptional }
         var lines: [String] = []
-        lines.append("static func \(stubMethodName(index: index, count: initMethods.count))(".addingIndent())
-        var initParameters: [String] = method.parameters.map { $0.generateInitAssignment(types: types).addingIndent(count: 2) }
-        initParameters.append(contentsOf: implicitlyUnwrappedVariables.map { $0.generateInitAssignment(types: types).addingIndent(count: 2) })
-        lines.append(initParameters.joined(separator: ",\n"))
-        lines.append(") -> \(name)\(method.isFailableInitializer ? "?" : "") {".addingIndent())
+        lines.append("static func \(stubMethodName(index: index, count: initMethods.count))(".indent())
+        var initParameters: [String] = method.parameters.map { $0.generateInitAssignment(types: types).indent(level: 2) }
+        initParameters.append(contentsOf: implicitlyUnwrappedVariables.map { $0.generateInitAssignment(types: types).indent(level: 2) })
+        lines.append(initParameters.joined(separator: "," + .newLine))
+        lines.append(") -> \(name)\(method.isFailableInitializer ? "?" : "") {".indent())
         let parameterNames = method.parameters.map { parameter in
             parameter.argumentLabel ?? parameter.name
         }
         lines.append(generateStubbableInit(parameterNames: parameterNames))
-        lines.append("}".addingIndent())
+        lines.append("}".indent())
         return lines
     }
 
@@ -78,18 +78,18 @@ private extension Type {
         if parameterNames.isEmpty {
             objectInit.append(")")
         }
-        lines.append(objectInit.addingIndent(count: 2))
+        lines.append(objectInit.indent(level: 2))
 
-        let parameterLines = parameterNames.map { "\($0): \($0)".addingIndent(count: 3) }
+        let parameterLines = parameterNames.map { "\($0): \($0)".indent(level: 3) }
         lines.append(parameterLines.joined(separator: "," + .newLine))
         if !parameterLines.isEmpty {
-            lines.append(")".addingIndent(count: 2))
+            lines.append(")".indent(level: 2))
         }
 
         if containsImplicitlyUnwrappedOptionals {
-            let implicitUnwrappedVariableLines = implicitlyUnwrappedVariables.map { "object.\($0.name) = \($0.name)".addingIndent(count: 2) }
+            let implicitUnwrappedVariableLines = implicitlyUnwrappedVariables.map { "object.\($0.name) = \($0.name)".indent(level: 2) }
             lines.append(implicitUnwrappedVariableLines.joined(separator: .newLine))
-            lines.append("return object".addingIndent(count: 2))
+            lines.append("return object".indent(level: 2))
         }
 
         return lines.joined(separator: .newLine)

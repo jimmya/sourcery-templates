@@ -102,3 +102,13 @@ internal extension MockModelWithProtocolProperty {
         )
     }
 }
+
+internal extension MockModelWithStubbablePropertyWithMultipleInitDeclaration {
+    static func stub(
+        property: MockModelWithInitMethodDeclaration = MockModelWithInitMethodDeclaration.stub0()
+    ) -> MockModelWithStubbablePropertyWithMultipleInitDeclaration {
+        MockModelWithStubbablePropertyWithMultipleInitDeclaration(
+            property: property
+        )
+    }
+}
