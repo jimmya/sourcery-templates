@@ -13,6 +13,6 @@ enum AutoMockable {
         }
         lines.append(contentsOf: protocolLines.joined(separator: [.emptyLine]))
         
-        return lines.joined(separator: .newLine)
+        return lines.joined(separator: .newLine) + .newLine
     }
 }

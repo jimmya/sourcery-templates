@@ -3,3 +3,4 @@
 // swiftlint:disable all
 
 <%= AutoMockable.generate(types: types, annotations: argument) -%>
+// swiftlint:enable all

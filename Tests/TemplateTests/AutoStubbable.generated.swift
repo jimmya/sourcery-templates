@@ -113,3 +113,5 @@ internal extension MockModelWithStubbablePropertyWithMultipleInitDeclaration {
         )
     }
 }
+
+// swiftlint:disable all

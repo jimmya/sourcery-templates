@@ -13,6 +13,6 @@ enum AutoStubbable {
         }.joined(separator: [.emptyLine])
         lines.append(contentsOf: types)
         
-        return lines.joined(separator: .newLine)
+        return lines.joined(separator: .newLine) + .newLine
     }
 }

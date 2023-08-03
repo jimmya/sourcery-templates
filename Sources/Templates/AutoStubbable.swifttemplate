@@ -3,3 +3,5 @@
 // swiftlint:disable all
 
 <%= AutoStubbable.generate(types: types, annotations: argument) -%>
+
+// swiftlint:disable all

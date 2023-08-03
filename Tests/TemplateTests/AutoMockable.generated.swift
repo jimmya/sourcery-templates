@@ -217,3 +217,4 @@ final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithReturnSelf {
         return stubbedMethodResult
     }
 }
+// swiftlint:enable all
