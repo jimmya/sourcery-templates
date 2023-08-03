@@ -43,3 +43,8 @@ protocol MockProtocolWithGenericInheritanceDeclaration where Self: SomeType {
     
     func method()
 }
+
+// sourcery: AutoMockable
+protocol MockProtocolWithGenericFunction {
+    func doSomething<T>(parameter: T, anotherParameter: Int)
+}

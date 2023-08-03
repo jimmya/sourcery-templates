@@ -1,4 +1,5 @@
 <%- include("Imports.swifttemplate") -%>
 <%- includeFile("AutoMockable.swift") -%>
+// swiftlint:disable all
 
 <%= AutoMockable.generate(types: types, annotations: argument) -%>

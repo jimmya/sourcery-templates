@@ -1,5 +1,6 @@
 // Generated using Sourcery 2.0.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+// swiftlint:disable all
 
 @testable import MockDeclarations
 import Foundation
@@ -22,6 +23,22 @@ class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosureMethod {
         if let result = stubbedMethodClosurePropertyResult {
             _ = closureProperty(result.0, result.1)
         }
+    }
+}
+
+class DefaultMockProtocolWithGenericFunctionMock: MockProtocolWithGenericFunction {
+
+    var invokedDoSomething: Bool { invokedDoSomethingCount > 0 }
+    var invokedDoSomethingCount = 0
+    var invokedDoSomethingParameters: (parameter: Any, anotherParameter: Any)?
+    var invokedDoSomethingParametersList: [(parameter: Any, anotherParameter: Any)] = []
+    var invokedDoSomethingExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    func doSomething<T>(parameter: T, anotherParameter: Int) {
+        defer { invokedDoSomethingExpectation.fulfill() }
+        invokedDoSomethingCount += 1
+        invokedDoSomethingParameters = (parameter: parameter, anotherParameter: anotherParameter)
+        invokedDoSomethingParametersList.append((parameter: parameter, anotherParameter: anotherParameter))
     }
 }
 

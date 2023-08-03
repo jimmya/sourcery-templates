@@ -1,4 +1,5 @@
 <%- include("Imports.swifttemplate") -%>
 <%- includeFile("AutoStubbable.swift") -%>
+// swiftlint:disable all
 
 <%= AutoStubbable.generate(types: types, annotations: argument) -%>

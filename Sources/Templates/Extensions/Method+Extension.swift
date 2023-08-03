@@ -84,7 +84,7 @@ private extension Method {
         }
         let mockableParameters = parameters.filter { !$0.typeName.isClosure || $0.typeAttributes.isEscaping }
         if !mockableParameters.isEmpty {
-            var parameters = mockableParameters.map { "\($0.name): \($0.settableType)" }.joined(separator: ", ")
+            var parameters = mockableParameters.map { "\($0.name): \($0.settableType(method: self))" }.joined(separator: ", ")
             if mockableParameters.count == 1 {
                 parameters.append(", Void")
             }
