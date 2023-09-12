@@ -1,10 +1,68 @@
-// Generated using Sourcery 2.0.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.0.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable all
 
 @testable import MockDeclarations
 import Foundation
 import XCTest
+
+class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
+
+    var stubbedExecuteURLRequestThrowableError: Error?
+    var invokedExecuteURLRequest: Bool { invokedExecuteURLRequestCount > 0 }
+    var invokedExecuteURLRequestCount = 0
+    var invokedExecuteURLRequestParameters: (urlRequest: URLRequest, Void)?
+    var invokedExecuteURLRequestParametersList: [(urlRequest: URLRequest, Void)] = []
+    var invokedExecuteURLRequestExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    func execute(_ urlRequest: URLRequest) async throws {
+        defer { invokedExecuteURLRequestExpectation.fulfill() }
+        invokedExecuteURLRequestCount += 1
+        invokedExecuteURLRequestParameters = (urlRequest: urlRequest, ())
+        invokedExecuteURLRequestParametersList.append((urlRequest: urlRequest, ()))
+        if let error = stubbedExecuteURLRequestThrowableError {
+            throw error
+        }
+    }
+
+    var stubbedExecuteURLRequestResponseThrowableError: Error?
+    var invokedExecuteURLRequestResponse: Bool { invokedExecuteURLRequestResponseCount > 0 }
+    var invokedExecuteURLRequestResponseCount = 0
+    var invokedExecuteURLRequestResponseParameters: (urlRequest: URLRequest, Void)?
+    var invokedExecuteURLRequestResponseParametersList: [(urlRequest: URLRequest, Void)] = []
+    var stubbedExecuteURLRequestResponseResult: Decodable!
+    var invokedExecuteURLRequestResponseExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    func execute<Response>(_ urlRequest: URLRequest) async throws -> Response where Response: Decodable {
+        defer { invokedExecuteURLRequestResponseExpectation.fulfill() }
+        invokedExecuteURLRequestResponseCount += 1
+        invokedExecuteURLRequestResponseParameters = (urlRequest: urlRequest, ())
+        invokedExecuteURLRequestResponseParametersList.append((urlRequest: urlRequest, ()))
+        if let error = stubbedExecuteURLRequestResponseThrowableError {
+            throw error
+        }
+        return stubbedExecuteURLRequestResponseResult as! Response
+    }
+
+    var stubbedExecuteUrlRequestDecoderThrowableError: Error?
+    var invokedExecuteUrlRequestDecoder: Bool { invokedExecuteUrlRequestDecoderCount > 0 }
+    var invokedExecuteUrlRequestDecoderCount = 0
+    var invokedExecuteUrlRequestDecoderParameters: (urlRequest: URLRequest, decoder: JSONDecoder)?
+    var invokedExecuteUrlRequestDecoderParametersList: [(urlRequest: URLRequest, decoder: JSONDecoder)] = []
+    var stubbedExecuteUrlRequestDecoderResult: Decodable!
+    var invokedExecuteUrlRequestDecoderExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    func execute<Response>(_ urlRequest: URLRequest, decoder: JSONDecoder) async throws -> Response where Response: Decodable {
+        defer { invokedExecuteUrlRequestDecoderExpectation.fulfill() }
+        invokedExecuteUrlRequestDecoderCount += 1
+        invokedExecuteUrlRequestDecoderParameters = (urlRequest: urlRequest, decoder: decoder)
+        invokedExecuteUrlRequestDecoderParametersList.append((urlRequest: urlRequest, decoder: decoder))
+        if let error = stubbedExecuteUrlRequestDecoderThrowableError {
+            throw error
+        }
+        return stubbedExecuteUrlRequestDecoderResult as! Response
+    }
+}
 
 class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosureMethod {
 
@@ -30,8 +88,8 @@ class DefaultMockProtocolWithGenericFunctionMock: MockProtocolWithGenericFunctio
 
     var invokedDoSomething: Bool { invokedDoSomethingCount > 0 }
     var invokedDoSomethingCount = 0
-    var invokedDoSomethingParameters: (parameter: Any, anotherParameter: Any)?
-    var invokedDoSomethingParametersList: [(parameter: Any, anotherParameter: Any)] = []
+    var invokedDoSomethingParameters: (parameter: Any, anotherParameter: Int)?
+    var invokedDoSomethingParametersList: [(parameter: Any, anotherParameter: Int)] = []
     var invokedDoSomethingExpectation = XCTestExpectation(description: "\(#function) expectation")
 
     func doSomething<T>(parameter: T, anotherParameter: Int) {
@@ -90,12 +148,12 @@ class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMultipleMethod
 
     func anotherMethod(with input: String) async throws {
         defer { invokedAnotherMethodWithExpectation.fulfill() }
-        if let error = stubbedAnotherMethodWithThrowableError {
-            throw error
-        }
         invokedAnotherMethodWithCount += 1
         invokedAnotherMethodWithParameters = (input: input, ())
         invokedAnotherMethodWithParametersList.append((input: input, ()))
+        if let error = stubbedAnotherMethodWithThrowableError {
+            throw error
+        }
     }
 }
 
@@ -215,6 +273,28 @@ final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithReturnSelf {
         defer { invokedMethodExpectation.fulfill() }
         invokedMethodCount += 1
         return stubbedMethodResult
+    }
+}
+
+class DefaultURLSessionLogicMock: URLSessionLogic {
+
+    var stubbedDataThrowableError: Error?
+    var invokedData: Bool { invokedDataCount > 0 }
+    var invokedDataCount = 0
+    var invokedDataParameters: (request: URLRequest, Void)?
+    var invokedDataParametersList: [(request: URLRequest, Void)] = []
+    var stubbedDataResult: (Data, URLResponse)!
+    var invokedDataExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+        defer { invokedDataExpectation.fulfill() }
+        invokedDataCount += 1
+        invokedDataParameters = (request: request, ())
+        invokedDataParametersList.append((request: request, ()))
+        if let error = stubbedDataThrowableError {
+            throw error
+        }
+        return stubbedDataResult
     }
 }
 // swiftlint:enable all

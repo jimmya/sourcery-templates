@@ -21,6 +21,46 @@ extension Method {
         lines.append("}".indent())
         return lines
     }
+
+    /// Extract generics from a method e.g. `func foo<T: String>` -> `[("T", "String"]`
+    var generics: [(name: String, constraints: String?)] {
+        guard let combinedGenerics = shortName.matches(for: "<([^<>]*)>")
+            .first?
+            .replacingOccurrences(of: ">", with: "")
+            .replacingOccurrences(of: "<", with: "")
+        else {
+            return []
+        }
+        let generics = combinedGenerics.components(separatedBy: ",")
+        return generics.map {
+            let components = $0.components(separatedBy: ":")
+            if components.count == 2 {
+                return (components[0].trimmed, components[1].trimmed)
+            }
+            if let returnTypeGenericClause {
+                let components = returnTypeGenericClause.components(separatedBy: ",")
+                if
+                    let matchingComponent = components.first(where: { $0.hasPrefix($0.trimmed) }),
+                    let clause = matchingComponent.components(separatedBy: ":").last
+                {
+                    return ($0.trimmed, clause.trimmed)
+                }
+            }
+            return ($0.trimmed, nil)
+        }
+    }
+
+    var sanitizedReturnTypeName: String {
+        returnTypeName.name.components(separatedBy: " where ").first ?? returnTypeName.name
+    }
+
+    var returnTypeGenericClause: String? {
+        let components = returnTypeName.name.components(separatedBy: " where ")
+        guard components.count == 2 else {
+            return nil
+        }
+        return components[1]
+    }
 }
 
 private extension Method {
@@ -62,6 +102,12 @@ private extension Method {
         for index in (0..<parameters.count) {
             let newName = makeNameWithParameterNamesAndTypes(index: index)
             if duplicateMethods.filter({ $0.makeNameWithParameterNamesAndTypes(index: index) == newName }).count == 1 {
+                return newName.replacingOccurrences(of: ".", with: "")
+            }
+        }
+        for index in (0..<parameters.count) {
+            let newName = makeNameWithParameterNamesTypesAndGenerics(index: index)
+            if duplicateMethods.filter({ $0.makeNameWithParameterNamesTypesAndGenerics(index: index) == newName }).count == 1 {
                 return newName.replacingOccurrences(of: ".", with: "")
             }
         }
@@ -107,10 +153,13 @@ private extension Method {
         }
         if !returnTypeName.isVoid && !isInitializer {
             // Stored property cannot have covariant `Self` type
-            let returnTypeNameString = returnTypeName.name == "Self" ? "Default\(type.name)Mock" : returnTypeName.name
-            let defaultValue = returnTypeName.generateDefaultValue(type: returnType, includeComplexType: false, types: types)
-            let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
-            lines.append("var stubbed\(name)Result: \(returnTypeNameString)\(isOptionalReturnType ? "" : nonOptionalSignature)")
+            let returnTypeNameString = returnTypeName.name == "Self" ? "Default\(type.name)Mock" : sanitizedReturnTypeName
+            if let generic = generics.first(where: { $0.name == returnTypeNameString }) {
+                let genericConstraint = generic.constraints ?? "Any"
+                lines.append("var stubbed\(name)Result: \(genericConstraint)\(isOptionalReturnType ? "" : "!")")
+            } else {
+                lines.append("var stubbed\(name)Result: \(returnTypeNameString)\(isOptionalReturnType ? "" : "!")")
+            }
         }
         if !isInitializer { // Expectations aren't possible in the initializer
             lines.append("var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
@@ -131,11 +180,6 @@ private extension Method {
         if !isInitializer {
             // Call expectation in defer, only makes sense in a non-init method.
             lines.append("defer { invoked\(methodName)Expectation.fulfill() }")
-        }
-        if self.throws {
-            lines.append("if let error = stubbed\(methodName)ThrowableError {")
-            lines.append("    throw error")
-            lines.append("}")
         }
         if !isInitializer {
             lines.append("invoked\(methodName)Count += 1")
@@ -161,8 +205,17 @@ private extension Method {
                 lines.append("}")
             }
         }
+        if self.throws {
+            lines.append("if let error = stubbed\(methodName)ThrowableError {")
+            lines.append("    throw error")
+            lines.append("}")
+        }
         if !returnTypeName.isVoid && !isInitializer {
-            lines.append("return stubbed\(methodName)Result")
+            if generics.contains(where: { $0.name == sanitizedReturnTypeName }) {
+                lines.append("return stubbed\(methodName)Result as! \(sanitizedReturnTypeName)")
+            } else {
+                lines.append("return stubbed\(methodName)Result")
+            }
         }
         return lines.map { $0.indent(level: 2) }
     }
@@ -206,6 +259,16 @@ private extension Method {
             return (parameter.argumentLabel?.capitalizingFirstLetter() ?? "") + parameter.maskedTypeName.capitalizingFirstLetter()
         }.joined()
         return newName + parameters[(index + 1)..<parameters.count].compactMap { $0.argumentLabel?.capitalizingFirstLetter() }.joined()
+    }
+
+    func makeNameWithParameterNamesTypesAndGenerics(index: Int) -> String {
+        guard index < parameters.count else { fatalError("Something terrible happened") }
+        var newName = callName.capitalizingFirstLetter() + parameters[0...index].map { parameter in
+            return (parameter.argumentLabel?.capitalizingFirstLetter() ?? "") + parameter.maskedTypeName.capitalizingFirstLetter()
+        }.joined()
+        newName = newName + parameters[(index + 1)..<parameters.count].compactMap { $0.argumentLabel?.capitalizingFirstLetter() }.joined()
+        newName = newName + generics.map(\.name).joined()
+        return newName
     }
 
     func mockClosureInvocation(closure: ClosureType, parameter: MethodParameter) -> String {

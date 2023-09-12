@@ -8,6 +8,11 @@ let package = Package(
     platforms: [
         .macOS(.v10_15),
     ],
+    products: [
+        .library(name: "MockDeclarations", targets: [
+            "MockDeclarations",
+        ])
+    ],
     dependencies: [
         .package(url: "https://github.com/krzysztofzablocki/Sourcery", exact: "2.0.2"),
     ],
@@ -25,7 +30,13 @@ let package = Package(
             ]
         ),
         .target(
-            name: "MockDeclarations"
+            name: "MockDeclarations",
+            dependencies: [
+                "NestedMockDeclarations",
+            ]
+        ),
+        .target(
+            name: "NestedMockDeclarations"
         ),
         .testTarget(
             name: "TemplateTests",

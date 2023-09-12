@@ -2,10 +2,10 @@ import SourceryRuntime
 
 extension MethodParameter {
     func settableType(method: Method) -> String {
-        guard !method.isGeneric else {
-            return "Any"
-        }
         var type = typeAttributes.isEscaping ? unwrappedTypeName : typeName.asSource
+        if let generic = method.generics.first(where: { $0.name == type }) {
+            return generic.constraints ?? "Any"
+        }
         if isVariadic {
             type = "[\(type)]"
         }

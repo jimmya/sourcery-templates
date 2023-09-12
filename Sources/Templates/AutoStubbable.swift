@@ -7,7 +7,15 @@ enum AutoStubbable {
         lines.append(contentsOf: annotations.imports.map { "import \($0)" })
         lines.append("")
 
-        let sortedTypes = (types.structs + types.classes).sorted(by: { $0.name < $1.name }).filter(\.isAutoStubbable)
+        let sortedTypes = (types.structs + types.classes)
+            .sorted(by: { $0.name < $1.name })
+            .filter(\.isAutoStubbable)
+            .filter { type in
+                guard let module = annotations.module else {
+                    return true
+                }
+                return type.module == module
+            }
         let types = sortedTypes.map { type in
             type.generateStub(types: types)
         }.joined(separator: [.emptyLine])

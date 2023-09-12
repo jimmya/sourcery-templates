@@ -1,3 +1,5 @@
+import Foundation
+
 // sourcery: AutoMockable
 protocol MockProtocolWithProperties {
     var immutableProperty: Int { get }
@@ -47,4 +49,31 @@ protocol MockProtocolWithGenericInheritanceDeclaration where Self: SomeType {
 // sourcery: AutoMockable
 protocol MockProtocolWithGenericFunction {
     func doSomething<T>(parameter: T, anotherParameter: Int)
+}
+
+// sourcery: AutoMockable
+protocol URLSessionLogic {
+    func data(for request: URLRequest) async throws -> (Data, URLResponse)
+}
+
+// sourcery: AutoMockable
+protocol BasicRequestExecutorLogic {
+
+    /// Execute a `URLRequest` and ignore the response
+    /// - Parameter urlRequest: The `URLRequest` to execute
+    func execute(_ urlRequest: URLRequest) async throws
+
+    /// Execute a `URLRequest` and JSON decode the response into the generic response type using the
+    /// `JSONDecoder.polarsteps()` JSON decoder.
+    /// - Parameters:
+    ///   - urlRequest: The `URLRequest` to execute
+    /// - Returns: The JSON decoded response object with the generic response type
+    func execute<Response>(_ urlRequest: URLRequest) async throws -> Response where Response: Decodable
+
+    /// Execute a `URLRequest` and JSON decode the response into the generic response type
+    /// - Parameters:
+    ///   - urlRequest: The `URLRequest` to execute
+    ///   - decoder: The `JSONDecoder` to use for decoding the response object
+    /// - Returns: The JSON decoded response object with the generic response type
+    func execute<Response>(_ urlRequest: URLRequest, decoder: JSONDecoder) async throws -> Response where Response: Decodable
 }

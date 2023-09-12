@@ -7,7 +7,15 @@ enum AutoMockable {
         lines.append(contentsOf: annotations.imports.map { "import \($0)" })
         lines.append(.emptyLine)
 
-        let sortedProtocols = types.protocols.sorted(by: { $0.name < $1.name }).filter(\.isAutoMockable)
+        let sortedProtocols = types.protocols
+            .sorted(by: { $0.name < $1.name })
+            .filter(\.isAutoMockable)
+            .filter { type in
+                guard let module = annotations.module else {
+                    return true
+                }
+                return type.module == module
+            }
         let protocolLines = sortedProtocols.map { protocolType in
             protocolType.generateMock(types: types)
         }

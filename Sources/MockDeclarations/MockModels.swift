@@ -1,3 +1,11 @@
+import NestedMockDeclarations
+
+// sourcery: AutoStubbable
+struct MockModelWithNestedModel {
+    let id: Int
+    let nested: SomeNestedModel
+}
+
 // sourcery: AutoStubbable
 struct MockModelWithInitMethodDeclaration {
     let property: Int

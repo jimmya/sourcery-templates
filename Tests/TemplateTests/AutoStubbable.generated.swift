@@ -1,9 +1,10 @@
-// Generated using Sourcery 2.0.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.0.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable all
 
 @testable import MockDeclarations
 import Foundation
+import NestedMockDeclarations
 
 internal extension MockImplementingSomeProtocol {
     static func stub(
@@ -90,6 +91,18 @@ internal extension MockModelWithInitMethodDeclaration {
         MockModelWithInitMethodDeclaration(
             property: property,
             failableOptionalProperty: failableOptionalProperty
+        )
+    }
+}
+
+internal extension MockModelWithNestedModel {
+    static func stub(
+        id: Int = 0,
+        nested: SomeNestedModel = SomeNestedModel.stub()
+    ) -> MockModelWithNestedModel {
+        MockModelWithNestedModel(
+            id: id,
+            nested: nested
         )
     }
 }
