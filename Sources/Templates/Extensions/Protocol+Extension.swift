@@ -30,7 +30,7 @@ extension Protocol {
 private extension Protocol {
     /// Returns `class DefaultProtocolNameMock: InheritedTypes {`
     func generateClassDeclaration() -> String {
-        "\(mockType) Default\(name)Mock: \(mockInheritedTypes) {"
+        "\(accessLevel) \(mockType) Default\(name)Mock: \(mockInheritedTypes) {"
     }
 
     var mockInheritedTypes: String {

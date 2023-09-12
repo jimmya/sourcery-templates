@@ -39,6 +39,11 @@ protocol MockProtocolWithReturnSelf {
 class SomeType { }
 
 // sourcery: AutoMockable
+public protocol MockProtocolWithPublicAccessLevel {
+    func method()
+}
+
+// sourcery: AutoMockable
 protocol MockProtocolWithGenericInheritanceDeclaration where Self: SomeType {
     init(someParameter: Int)
     init?(someFailableParameter: Int)

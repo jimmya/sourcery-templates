@@ -6,7 +6,7 @@
 import Foundation
 import XCTest
 
-class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
+internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
 
     var stubbedExecuteURLRequestThrowableError: Error?
     var invokedExecuteURLRequest: Bool { invokedExecuteURLRequestCount > 0 }
@@ -64,7 +64,7 @@ class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
     }
 }
 
-class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosureMethod {
+internal class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosureMethod {
 
     var invokedMethod: Bool { invokedMethodCount > 0 }
     var invokedMethodCount = 0
@@ -84,7 +84,7 @@ class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosureMethod {
     }
 }
 
-class DefaultMockProtocolWithGenericFunctionMock: MockProtocolWithGenericFunction {
+internal class DefaultMockProtocolWithGenericFunctionMock: MockProtocolWithGenericFunction {
 
     var invokedDoSomething: Bool { invokedDoSomethingCount > 0 }
     var invokedDoSomethingCount = 0
@@ -100,7 +100,7 @@ class DefaultMockProtocolWithGenericFunctionMock: MockProtocolWithGenericFunctio
     }
 }
 
-class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeType, MockProtocolWithGenericInheritanceDeclaration {
+internal class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeType, MockProtocolWithGenericInheritanceDeclaration {
 
     var invokedInitParameters: (someParameter: Int, Void)?
     var invokedInitParametersList: [(someParameter: Int, Void)] = []
@@ -128,7 +128,7 @@ class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeType, MockPr
     }
 }
 
-class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMultipleMethods {
+internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMultipleMethods {
 
     var invokedAnotherMethod: Bool { invokedAnotherMethodCount > 0 }
     var invokedAnotherMethodCount = 0
@@ -157,7 +157,7 @@ class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMultipleMethod
     }
 }
 
-class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWithOptionalClosureMethod {
+internal class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWithOptionalClosureMethod {
 
     var invokedMethod: Bool { invokedMethodCount > 0 }
     var invokedMethodCount = 0
@@ -173,7 +173,7 @@ class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWithOptional
     }
 }
 
-class DefaultMockProtocolWithPropertiesMock: MockProtocolWithProperties {
+internal class DefaultMockProtocolWithPropertiesMock: MockProtocolWithProperties {
 
     var invokedImmutablePropertyGetter = false
     var invokedImmutablePropertyGetterCount = 0
@@ -240,7 +240,7 @@ class DefaultMockProtocolWithPropertiesMock: MockProtocolWithProperties {
     }
 }
 
-class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPropertyAndMethod {
+internal class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPropertyAndMethod {
 
     var invokedPropertyGetter = false
     var invokedPropertyGetterCount = 0
@@ -262,7 +262,19 @@ class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPropertyAndM
     }
 }
 
-final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithReturnSelf {
+public class DefaultMockProtocolWithPublicAccessLevelMock: MockProtocolWithPublicAccessLevel {
+
+    var invokedMethod: Bool { invokedMethodCount > 0 }
+    var invokedMethodCount = 0
+    var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    func method() {
+        defer { invokedMethodExpectation.fulfill() }
+        invokedMethodCount += 1
+    }
+}
+
+internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithReturnSelf {
 
     var invokedMethod: Bool { invokedMethodCount > 0 }
     var invokedMethodCount = 0
@@ -276,7 +288,7 @@ final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithReturnSelf {
     }
 }
 
-class DefaultURLSessionLogicMock: URLSessionLogic {
+internal class DefaultURLSessionLogicMock: URLSessionLogic {
 
     var stubbedDataThrowableError: Error?
     var invokedData: Bool { invokedDataCount > 0 }
