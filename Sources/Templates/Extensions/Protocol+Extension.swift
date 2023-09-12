@@ -11,9 +11,13 @@ extension Protocol {
 
         let allMethods = allMethods.filter { $0.definedInType?.isExtension == false }.sorted()
         var takenMethodNames: Set<String> = []
-        let methodLines: [[String]] = allMethods.map { method in
-            method.generateMock(takenNames: &takenMethodNames, allMethods: allMethods, in: self, types: types, accessLevel: accessLevel)
+        var methodLines: [[String]] = []
+        if genericRequirements.isEmpty {
+            methodLines.append(["\(accessLevel) init() { }".indent()])
         }
+        methodLines.append(contentsOf: allMethods.map { method in
+            method.generateMock(takenNames: &takenMethodNames, allMethods: allMethods, in: self, types: types, accessLevel: accessLevel)
+        })
 
         let hasVariablesAndMethods = !variableLines.isEmpty && !methodLines.isEmpty
         return [

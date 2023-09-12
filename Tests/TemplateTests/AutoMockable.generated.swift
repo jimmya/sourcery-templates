@@ -8,6 +8,8 @@ import XCTest
 
 internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
 
+    internal init() { }
+
     internal var stubbedExecuteURLRequestThrowableError: Error?
     internal var invokedExecuteURLRequest: Bool { invokedExecuteURLRequestCount > 0 }
     internal var invokedExecuteURLRequestCount = 0
@@ -66,6 +68,8 @@ internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
 
 internal class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosureMethod {
 
+    internal init() { }
+
     internal var invokedMethod: Bool { invokedMethodCount > 0 }
     internal var invokedMethodCount = 0
     internal var invokedMethodParameters: (closureProperty: (Bool, Int) -> Int, Void)?
@@ -86,6 +90,8 @@ internal class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosure
 
 internal class DefaultMockProtocolWithGenericFunctionMock: MockProtocolWithGenericFunction {
 
+    internal init() { }
+
     internal var invokedDoSomething: Bool { invokedDoSomethingCount > 0 }
     internal var invokedDoSomethingCount = 0
     internal var invokedDoSomethingParameters: (parameter: Any, anotherParameter: Int)?
@@ -105,7 +111,7 @@ internal class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeTyp
     internal var invokedInitParameters: (someParameter: Int, Void)?
     internal var invokedInitParametersList: [(someParameter: Int, Void)] = []
 
-    required init(someParameter: Int) {
+    internal required init(someParameter: Int) {
         invokedInitParameters = (someParameter: someParameter, ())
         invokedInitParametersList.append((someParameter: someParameter, ()))
     }
@@ -113,7 +119,7 @@ internal class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeTyp
     internal var invokedInitSomeFailableParameterParameters: (someFailableParameter: Int, Void)?
     internal var invokedInitSomeFailableParameterParametersList: [(someFailableParameter: Int, Void)] = []
 
-    required init(someFailableParameter: Int) {
+    internal required init(someFailableParameter: Int) {
         invokedInitSomeFailableParameterParameters = (someFailableParameter: someFailableParameter, ())
         invokedInitSomeFailableParameterParametersList.append((someFailableParameter: someFailableParameter, ()))
     }
@@ -129,6 +135,8 @@ internal class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeTyp
 }
 
 internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMultipleMethods {
+
+    internal init() { }
 
     internal var invokedAnotherMethod: Bool { invokedAnotherMethodCount > 0 }
     internal var invokedAnotherMethodCount = 0
@@ -158,6 +166,8 @@ internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMulti
 }
 
 internal class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWithOptionalClosureMethod {
+
+    internal init() { }
 
     internal var invokedMethod: Bool { invokedMethodCount > 0 }
     internal var invokedMethodCount = 0
@@ -238,6 +248,8 @@ internal class DefaultMockProtocolWithPropertiesMock: MockProtocolWithProperties
             invokedMutableOptionalPropertyList.append(newValue)
         }
     }
+
+    internal init() { }
 }
 
 internal class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPropertyAndMethod {
@@ -252,6 +264,8 @@ internal class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPro
         return stubbedProperty
     }
 
+    internal init() { }
+
     internal var invokedMethod: Bool { invokedMethodCount > 0 }
     internal var invokedMethodCount = 0
     internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
@@ -264,6 +278,8 @@ internal class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPro
 
 public class DefaultMockProtocolWithPublicAccessLevelMock: MockProtocolWithPublicAccessLevel {
 
+    public init() { }
+
     public var invokedMethod: Bool { invokedMethodCount > 0 }
     public var invokedMethodCount = 0
     public var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
@@ -275,6 +291,8 @@ public class DefaultMockProtocolWithPublicAccessLevelMock: MockProtocolWithPubli
 }
 
 internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithReturnSelf {
+
+    internal init() { }
 
     internal var invokedMethod: Bool { invokedMethodCount > 0 }
     internal var invokedMethodCount = 0
@@ -289,6 +307,8 @@ internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithRetu
 }
 
 internal class DefaultURLSessionLogicMock: URLSessionLogic {
+
+    internal init() { }
 
     internal var stubbedDataThrowableError: Error?
     internal var invokedData: Bool { invokedDataCount > 0 }

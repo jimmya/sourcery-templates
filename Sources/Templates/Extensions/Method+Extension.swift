@@ -233,7 +233,6 @@ private extension Method {
                 name.replacingOccurrences(of: "?", with: ""), // Remove `?` from failable initialisers.
                 "{",
             ]
-            return "required \(name.replacingOccurrences(of: "?", with: "")) {"
         } else {
             parts = [
                 type.accessLevel,
