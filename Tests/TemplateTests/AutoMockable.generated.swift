@@ -8,14 +8,14 @@ import XCTest
 
 internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
 
-    var stubbedExecuteURLRequestThrowableError: Error?
-    var invokedExecuteURLRequest: Bool { invokedExecuteURLRequestCount > 0 }
-    var invokedExecuteURLRequestCount = 0
-    var invokedExecuteURLRequestParameters: (urlRequest: URLRequest, Void)?
-    var invokedExecuteURLRequestParametersList: [(urlRequest: URLRequest, Void)] = []
-    var invokedExecuteURLRequestExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var stubbedExecuteURLRequestThrowableError: Error?
+    internal var invokedExecuteURLRequest: Bool { invokedExecuteURLRequestCount > 0 }
+    internal var invokedExecuteURLRequestCount = 0
+    internal var invokedExecuteURLRequestParameters: (urlRequest: URLRequest, Void)?
+    internal var invokedExecuteURLRequestParametersList: [(urlRequest: URLRequest, Void)] = []
+    internal var invokedExecuteURLRequestExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func execute(_ urlRequest: URLRequest) async throws {
+    internal func execute(_ urlRequest: URLRequest) async throws {
         defer { invokedExecuteURLRequestExpectation.fulfill() }
         invokedExecuteURLRequestCount += 1
         invokedExecuteURLRequestParameters = (urlRequest: urlRequest, ())
@@ -25,15 +25,15 @@ internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
         }
     }
 
-    var stubbedExecuteURLRequestResponseThrowableError: Error?
-    var invokedExecuteURLRequestResponse: Bool { invokedExecuteURLRequestResponseCount > 0 }
-    var invokedExecuteURLRequestResponseCount = 0
-    var invokedExecuteURLRequestResponseParameters: (urlRequest: URLRequest, Void)?
-    var invokedExecuteURLRequestResponseParametersList: [(urlRequest: URLRequest, Void)] = []
-    var stubbedExecuteURLRequestResponseResult: Decodable!
-    var invokedExecuteURLRequestResponseExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var stubbedExecuteURLRequestResponseThrowableError: Error?
+    internal var invokedExecuteURLRequestResponse: Bool { invokedExecuteURLRequestResponseCount > 0 }
+    internal var invokedExecuteURLRequestResponseCount = 0
+    internal var invokedExecuteURLRequestResponseParameters: (urlRequest: URLRequest, Void)?
+    internal var invokedExecuteURLRequestResponseParametersList: [(urlRequest: URLRequest, Void)] = []
+    internal var stubbedExecuteURLRequestResponseResult: Decodable!
+    internal var invokedExecuteURLRequestResponseExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func execute<Response>(_ urlRequest: URLRequest) async throws -> Response where Response: Decodable {
+    internal func execute<Response>(_ urlRequest: URLRequest) async throws -> Response where Response: Decodable {
         defer { invokedExecuteURLRequestResponseExpectation.fulfill() }
         invokedExecuteURLRequestResponseCount += 1
         invokedExecuteURLRequestResponseParameters = (urlRequest: urlRequest, ())
@@ -44,15 +44,15 @@ internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
         return stubbedExecuteURLRequestResponseResult as! Response
     }
 
-    var stubbedExecuteUrlRequestDecoderThrowableError: Error?
-    var invokedExecuteUrlRequestDecoder: Bool { invokedExecuteUrlRequestDecoderCount > 0 }
-    var invokedExecuteUrlRequestDecoderCount = 0
-    var invokedExecuteUrlRequestDecoderParameters: (urlRequest: URLRequest, decoder: JSONDecoder)?
-    var invokedExecuteUrlRequestDecoderParametersList: [(urlRequest: URLRequest, decoder: JSONDecoder)] = []
-    var stubbedExecuteUrlRequestDecoderResult: Decodable!
-    var invokedExecuteUrlRequestDecoderExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var stubbedExecuteUrlRequestDecoderThrowableError: Error?
+    internal var invokedExecuteUrlRequestDecoder: Bool { invokedExecuteUrlRequestDecoderCount > 0 }
+    internal var invokedExecuteUrlRequestDecoderCount = 0
+    internal var invokedExecuteUrlRequestDecoderParameters: (urlRequest: URLRequest, decoder: JSONDecoder)?
+    internal var invokedExecuteUrlRequestDecoderParametersList: [(urlRequest: URLRequest, decoder: JSONDecoder)] = []
+    internal var stubbedExecuteUrlRequestDecoderResult: Decodable!
+    internal var invokedExecuteUrlRequestDecoderExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func execute<Response>(_ urlRequest: URLRequest, decoder: JSONDecoder) async throws -> Response where Response: Decodable {
+    internal func execute<Response>(_ urlRequest: URLRequest, decoder: JSONDecoder) async throws -> Response where Response: Decodable {
         defer { invokedExecuteUrlRequestDecoderExpectation.fulfill() }
         invokedExecuteUrlRequestDecoderCount += 1
         invokedExecuteUrlRequestDecoderParameters = (urlRequest: urlRequest, decoder: decoder)
@@ -66,14 +66,14 @@ internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
 
 internal class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosureMethod {
 
-    var invokedMethod: Bool { invokedMethodCount > 0 }
-    var invokedMethodCount = 0
-    var invokedMethodParameters: (closureProperty: (Bool, Int) -> Int, Void)?
-    var invokedMethodParametersList: [(closureProperty: (Bool, Int) -> Int, Void)] = []
-    var stubbedMethodClosurePropertyResult: (Bool, Int)?
-    var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedMethod: Bool { invokedMethodCount > 0 }
+    internal var invokedMethodCount = 0
+    internal var invokedMethodParameters: (closureProperty: (Bool, Int) -> Int, Void)?
+    internal var invokedMethodParametersList: [(closureProperty: (Bool, Int) -> Int, Void)] = []
+    internal var stubbedMethodClosurePropertyResult: (Bool, Int)?
+    internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func method(closureProperty: @escaping (Bool, Int) -> Int) {
+    internal func method(closureProperty: @escaping (Bool, Int) -> Int) {
         defer { invokedMethodExpectation.fulfill() }
         invokedMethodCount += 1
         invokedMethodParameters = (closureProperty: closureProperty, ())
@@ -86,13 +86,13 @@ internal class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosure
 
 internal class DefaultMockProtocolWithGenericFunctionMock: MockProtocolWithGenericFunction {
 
-    var invokedDoSomething: Bool { invokedDoSomethingCount > 0 }
-    var invokedDoSomethingCount = 0
-    var invokedDoSomethingParameters: (parameter: Any, anotherParameter: Int)?
-    var invokedDoSomethingParametersList: [(parameter: Any, anotherParameter: Int)] = []
-    var invokedDoSomethingExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedDoSomething: Bool { invokedDoSomethingCount > 0 }
+    internal var invokedDoSomethingCount = 0
+    internal var invokedDoSomethingParameters: (parameter: Any, anotherParameter: Int)?
+    internal var invokedDoSomethingParametersList: [(parameter: Any, anotherParameter: Int)] = []
+    internal var invokedDoSomethingExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func doSomething<T>(parameter: T, anotherParameter: Int) {
+    internal func doSomething<T>(parameter: T, anotherParameter: Int) {
         defer { invokedDoSomethingExpectation.fulfill() }
         invokedDoSomethingCount += 1
         invokedDoSomethingParameters = (parameter: parameter, anotherParameter: anotherParameter)
@@ -102,27 +102,27 @@ internal class DefaultMockProtocolWithGenericFunctionMock: MockProtocolWithGener
 
 internal class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeType, MockProtocolWithGenericInheritanceDeclaration {
 
-    var invokedInitParameters: (someParameter: Int, Void)?
-    var invokedInitParametersList: [(someParameter: Int, Void)] = []
+    internal var invokedInitParameters: (someParameter: Int, Void)?
+    internal var invokedInitParametersList: [(someParameter: Int, Void)] = []
 
     required init(someParameter: Int) {
         invokedInitParameters = (someParameter: someParameter, ())
         invokedInitParametersList.append((someParameter: someParameter, ()))
     }
 
-    var invokedInitSomeFailableParameterParameters: (someFailableParameter: Int, Void)?
-    var invokedInitSomeFailableParameterParametersList: [(someFailableParameter: Int, Void)] = []
+    internal var invokedInitSomeFailableParameterParameters: (someFailableParameter: Int, Void)?
+    internal var invokedInitSomeFailableParameterParametersList: [(someFailableParameter: Int, Void)] = []
 
     required init(someFailableParameter: Int) {
         invokedInitSomeFailableParameterParameters = (someFailableParameter: someFailableParameter, ())
         invokedInitSomeFailableParameterParametersList.append((someFailableParameter: someFailableParameter, ()))
     }
 
-    var invokedMethod: Bool { invokedMethodCount > 0 }
-    var invokedMethodCount = 0
-    var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedMethod: Bool { invokedMethodCount > 0 }
+    internal var invokedMethodCount = 0
+    internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func method() {
+    internal func method() {
         defer { invokedMethodExpectation.fulfill() }
         invokedMethodCount += 1
     }
@@ -130,23 +130,23 @@ internal class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeTyp
 
 internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMultipleMethods {
 
-    var invokedAnotherMethod: Bool { invokedAnotherMethodCount > 0 }
-    var invokedAnotherMethodCount = 0
-    var invokedAnotherMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedAnotherMethod: Bool { invokedAnotherMethodCount > 0 }
+    internal var invokedAnotherMethodCount = 0
+    internal var invokedAnotherMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func anotherMethod() {
+    internal func anotherMethod() {
         defer { invokedAnotherMethodExpectation.fulfill() }
         invokedAnotherMethodCount += 1
     }
 
-    var stubbedAnotherMethodWithThrowableError: Error?
-    var invokedAnotherMethodWith: Bool { invokedAnotherMethodWithCount > 0 }
-    var invokedAnotherMethodWithCount = 0
-    var invokedAnotherMethodWithParameters: (input: String, Void)?
-    var invokedAnotherMethodWithParametersList: [(input: String, Void)] = []
-    var invokedAnotherMethodWithExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var stubbedAnotherMethodWithThrowableError: Error?
+    internal var invokedAnotherMethodWith: Bool { invokedAnotherMethodWithCount > 0 }
+    internal var invokedAnotherMethodWithCount = 0
+    internal var invokedAnotherMethodWithParameters: (input: String, Void)?
+    internal var invokedAnotherMethodWithParametersList: [(input: String, Void)] = []
+    internal var invokedAnotherMethodWithExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func anotherMethod(with input: String) async throws {
+    internal func anotherMethod(with input: String) async throws {
         defer { invokedAnotherMethodWithExpectation.fulfill() }
         invokedAnotherMethodWithCount += 1
         invokedAnotherMethodWithParameters = (input: input, ())
@@ -159,12 +159,12 @@ internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMulti
 
 internal class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWithOptionalClosureMethod {
 
-    var invokedMethod: Bool { invokedMethodCount > 0 }
-    var invokedMethodCount = 0
-    var stubbedMethodClosurePropertyResult: (Bool, Int)?
-    var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedMethod: Bool { invokedMethodCount > 0 }
+    internal var invokedMethodCount = 0
+    internal var stubbedMethodClosurePropertyResult: (Bool, Int)?
+    internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func method(closureProperty: ((Bool, Int) -> Int)?) {
+    internal func method(closureProperty: ((Bool, Int) -> Int)?) {
         defer { invokedMethodExpectation.fulfill() }
         invokedMethodCount += 1
         if let result = stubbedMethodClosurePropertyResult {
@@ -175,25 +175,25 @@ internal class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWit
 
 internal class DefaultMockProtocolWithPropertiesMock: MockProtocolWithProperties {
 
-    var invokedImmutablePropertyGetter = false
-    var invokedImmutablePropertyGetterCount = 0
-    var stubbedImmutableProperty: Int! = 0
+    internal var invokedImmutablePropertyGetter = false
+    internal var invokedImmutablePropertyGetterCount = 0
+    internal var stubbedImmutableProperty: Int! = 0
 
-    var immutableProperty: Int {
+    internal var immutableProperty: Int {
         invokedImmutablePropertyGetter = true
         invokedImmutablePropertyGetterCount += 1
         return stubbedImmutableProperty
     }
 
-    var invokedMutablePropertySetter = false
-    var invokedMutablePropertySetterCount = 0
-    var invokedMutableProperty: Int?
-    var invokedMutablePropertyList: [Int] = []
-    var invokedMutablePropertyGetter = false
-    var invokedMutablePropertyGetterCount = 0
-    var stubbedMutableProperty: Int! = 0
+    internal var invokedMutablePropertySetter = false
+    internal var invokedMutablePropertySetterCount = 0
+    internal var invokedMutableProperty: Int?
+    internal var invokedMutablePropertyList: [Int] = []
+    internal var invokedMutablePropertyGetter = false
+    internal var invokedMutablePropertyGetterCount = 0
+    internal var stubbedMutableProperty: Int! = 0
 
-    var mutableProperty: Int {
+    internal var mutableProperty: Int {
         get {
             invokedMutablePropertyGetter = true
             invokedMutablePropertyGetterCount += 1
@@ -207,25 +207,25 @@ internal class DefaultMockProtocolWithPropertiesMock: MockProtocolWithProperties
         }
     }
 
-    var invokedImmutableOptionalPropertyGetter = false
-    var invokedImmutableOptionalPropertyGetterCount = 0
-    var stubbedImmutableOptionalProperty: Int?
+    internal var invokedImmutableOptionalPropertyGetter = false
+    internal var invokedImmutableOptionalPropertyGetterCount = 0
+    internal var stubbedImmutableOptionalProperty: Int?
 
-    var immutableOptionalProperty: Int? {
+    internal var immutableOptionalProperty: Int? {
         invokedImmutableOptionalPropertyGetter = true
         invokedImmutableOptionalPropertyGetterCount += 1
         return stubbedImmutableOptionalProperty
     }
 
-    var invokedMutableOptionalPropertySetter = false
-    var invokedMutableOptionalPropertySetterCount = 0
-    var invokedMutableOptionalProperty: Int?
-    var invokedMutableOptionalPropertyList: [Int?] = []
-    var invokedMutableOptionalPropertyGetter = false
-    var invokedMutableOptionalPropertyGetterCount = 0
-    var stubbedMutableOptionalProperty: Int?
+    internal var invokedMutableOptionalPropertySetter = false
+    internal var invokedMutableOptionalPropertySetterCount = 0
+    internal var invokedMutableOptionalProperty: Int?
+    internal var invokedMutableOptionalPropertyList: [Int?] = []
+    internal var invokedMutableOptionalPropertyGetter = false
+    internal var invokedMutableOptionalPropertyGetterCount = 0
+    internal var stubbedMutableOptionalProperty: Int?
 
-    var mutableOptionalProperty: Int? {
+    internal var mutableOptionalProperty: Int? {
         get {
             invokedMutableOptionalPropertyGetter = true
             invokedMutableOptionalPropertyGetterCount += 1
@@ -242,21 +242,21 @@ internal class DefaultMockProtocolWithPropertiesMock: MockProtocolWithProperties
 
 internal class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPropertyAndMethod {
 
-    var invokedPropertyGetter = false
-    var invokedPropertyGetterCount = 0
-    var stubbedProperty: String! = ""
+    internal var invokedPropertyGetter = false
+    internal var invokedPropertyGetterCount = 0
+    internal var stubbedProperty: String! = ""
 
-    var property: String {
+    internal var property: String {
         invokedPropertyGetter = true
         invokedPropertyGetterCount += 1
         return stubbedProperty
     }
 
-    var invokedMethod: Bool { invokedMethodCount > 0 }
-    var invokedMethodCount = 0
-    var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedMethod: Bool { invokedMethodCount > 0 }
+    internal var invokedMethodCount = 0
+    internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func method() {
+    internal func method() {
         defer { invokedMethodExpectation.fulfill() }
         invokedMethodCount += 1
     }
@@ -264,11 +264,11 @@ internal class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPro
 
 public class DefaultMockProtocolWithPublicAccessLevelMock: MockProtocolWithPublicAccessLevel {
 
-    var invokedMethod: Bool { invokedMethodCount > 0 }
-    var invokedMethodCount = 0
-    var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
+    public var invokedMethod: Bool { invokedMethodCount > 0 }
+    public var invokedMethodCount = 0
+    public var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func method() {
+    public func method() {
         defer { invokedMethodExpectation.fulfill() }
         invokedMethodCount += 1
     }
@@ -276,12 +276,12 @@ public class DefaultMockProtocolWithPublicAccessLevelMock: MockProtocolWithPubli
 
 internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithReturnSelf {
 
-    var invokedMethod: Bool { invokedMethodCount > 0 }
-    var invokedMethodCount = 0
-    var stubbedMethodResult: DefaultMockProtocolWithReturnSelfMock!
-    var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedMethod: Bool { invokedMethodCount > 0 }
+    internal var invokedMethodCount = 0
+    internal var stubbedMethodResult: DefaultMockProtocolWithReturnSelfMock!
+    internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func method() -> DefaultMockProtocolWithReturnSelfMock {
+    internal func method() -> DefaultMockProtocolWithReturnSelfMock {
         defer { invokedMethodExpectation.fulfill() }
         invokedMethodCount += 1
         return stubbedMethodResult
@@ -290,15 +290,15 @@ internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithRetu
 
 internal class DefaultURLSessionLogicMock: URLSessionLogic {
 
-    var stubbedDataThrowableError: Error?
-    var invokedData: Bool { invokedDataCount > 0 }
-    var invokedDataCount = 0
-    var invokedDataParameters: (request: URLRequest, Void)?
-    var invokedDataParametersList: [(request: URLRequest, Void)] = []
-    var stubbedDataResult: (Data, URLResponse)!
-    var invokedDataExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var stubbedDataThrowableError: Error?
+    internal var invokedData: Bool { invokedDataCount > 0 }
+    internal var invokedDataCount = 0
+    internal var invokedDataParameters: (request: URLRequest, Void)?
+    internal var invokedDataParametersList: [(request: URLRequest, Void)] = []
+    internal var stubbedDataResult: (Data, URLResponse)!
+    internal var invokedDataExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+    internal func data(for request: URLRequest) async throws -> (Data, URLResponse) {
         defer { invokedDataExpectation.fulfill() }
         invokedDataCount += 1
         invokedDataParameters = (request: request, ())

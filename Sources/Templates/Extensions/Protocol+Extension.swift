@@ -5,14 +5,14 @@ extension Protocol {
         let variables = allVariables.filter { $0.definedInType?.isExtension == false }
         let variableLines = variables.map { variable in
             [
-                variable.generateMock(types: types),
+                variable.generateMock(types: types, accessLevel: accessLevel),
             ]
         }
 
         let allMethods = allMethods.filter { $0.definedInType?.isExtension == false }.sorted()
         var takenMethodNames: Set<String> = []
         let methodLines: [[String]] = allMethods.map { method in
-            method.generateMock(takenNames: &takenMethodNames, allMethods: allMethods, in: self, types: types)
+            method.generateMock(takenNames: &takenMethodNames, allMethods: allMethods, in: self, types: types, accessLevel: accessLevel)
         }
 
         let hasVariablesAndMethods = !variableLines.isEmpty && !methodLines.isEmpty

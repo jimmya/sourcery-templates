@@ -7,10 +7,10 @@ extension Method {
     ///   - allMethods: List containing all methods in the type, used to avoid collisions
     ///   - type: The type this mock is generated for
     /// - Returns: List of lines containing the mock
-    func generateMock(takenNames: inout Set<String>, allMethods: [Method], in type: Type, types: Types) -> [String] {
+    func generateMock(takenNames: inout Set<String>, allMethods: [Method], in type: Type, types: Types, accessLevel: String) -> [String] {
         let methodName = generateMockName(allMethods: allMethods, takenNames: &takenNames).replacingOccurrences(of: "?", with: "")
         // Parameters captured or returned when method is called
-        var lines = mockStubParameters(name: methodName, type: type, types: types)
+        var lines = mockStubParameters(name: methodName, type: type, types: types, accessLevel: accessLevel)
         // Attributes `@objc` etc.
         lines.append(mockAttributes())
         // Function declaration `func something() {`
@@ -119,14 +119,14 @@ private extension Method {
     ///   - name: Unique name of the method to generate stub parameters for
     ///   - type: Used to construct a return type in case return type is `Self`
     /// - Returns: List of lines containing the generated parameters
-    func mockStubParameters(name: String, type: Type, types: Types) -> [String] {
+    func mockStubParameters(name: String, type: Type, types: Types, accessLevel: String) -> [String] {
         var lines: [String] = []
         if self.throws {
-            lines.append("var stubbed\(name)ThrowableError: Error?")
+            lines.append("\(accessLevel) var stubbed\(name)ThrowableError: Error?")
         }
         if !isInitializer {
-            lines.append("var invoked\(name): Bool { invoked\(name)Count > 0 }")
-            lines.append("var invoked\(name)Count = 0")
+            lines.append("\(accessLevel) var invoked\(name): Bool { invoked\(name)Count > 0 }")
+            lines.append("\(accessLevel) var invoked\(name)Count = 0")
         }
         let mockableParameters = parameters.filter { !$0.typeName.isClosure || $0.typeAttributes.isEscaping }
         if !mockableParameters.isEmpty {
@@ -134,21 +134,21 @@ private extension Method {
             if mockableParameters.count == 1 {
                 parameters.append(", Void")
             }
-            lines.append("var invoked\(name)Parameters: (\(parameters))?")
-            lines.append("var invoked\(name)ParametersList: [(\(parameters))] = []")
+            lines.append("\(accessLevel) var invoked\(name)Parameters: (\(parameters))?")
+            lines.append("\(accessLevel) var invoked\(name)ParametersList: [(\(parameters))] = []")
         }
         parameters.filter { $0.typeName.isClosure }.forEach { parameter in
             guard let closure = parameter.typeName.closure else { return }
             if closure.parameters.count == 0 {
-                lines.append("var shouldInvoke\(name)\(parameter.name.capitalizingFirstLetter()) = false")
+                lines.append("\(accessLevel) var shouldInvoke\(name)\(parameter.name.capitalizingFirstLetter()) = false")
             } else if closure.parameters.count == 1, let closureParameter = closure.parameters.first, !closureParameter.typeName.isOptional {
-                lines.append("var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: \(closureParameter.typeName.name)?")
+                lines.append("\(accessLevel) var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: \(closureParameter.typeName.name)?")
             } else {
                 var parameters = closure.parameters.map { $0.typeName.name }.joined(separator: ", ")
                 if closure.parameters.count == 1 {
                     parameters.append(", Void")
                 }
-                lines.append("var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: (\(parameters))?")
+                lines.append("\(accessLevel) var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: (\(parameters))?")
             }
         }
         if !returnTypeName.isVoid && !isInitializer {
@@ -156,13 +156,13 @@ private extension Method {
             let returnTypeNameString = returnTypeName.name == "Self" ? "Default\(type.name)Mock" : sanitizedReturnTypeName
             if let generic = generics.first(where: { $0.name == returnTypeNameString }) {
                 let genericConstraint = generic.constraints ?? "Any"
-                lines.append("var stubbed\(name)Result: \(genericConstraint)\(isOptionalReturnType ? "" : "!")")
+                lines.append("\(accessLevel) var stubbed\(name)Result: \(genericConstraint)\(isOptionalReturnType ? "" : "!")")
             } else {
-                lines.append("var stubbed\(name)Result: \(returnTypeNameString)\(isOptionalReturnType ? "" : "!")")
+                lines.append("\(accessLevel) var stubbed\(name)Result: \(returnTypeNameString)\(isOptionalReturnType ? "" : "!")")
             }
         }
         if !isInitializer { // Expectations aren't possible in the initializer
-            lines.append("var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
+            lines.append("\(accessLevel) var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
         }
         return lines.map { $0.indent() }
     }
@@ -228,6 +228,7 @@ private extension Method {
         let parts: [String?]
         if isInitializer {
             parts = [
+                type.accessLevel,
                 "required",
                 name.replacingOccurrences(of: "?", with: ""), // Remove `?` from failable initialisers.
                 "{",
@@ -235,6 +236,7 @@ private extension Method {
             return "required \(name.replacingOccurrences(of: "?", with: "")) {"
         } else {
             parts = [
+                type.accessLevel,
                 "func",
                 name,
                 isAsync ? "async" : nil,
