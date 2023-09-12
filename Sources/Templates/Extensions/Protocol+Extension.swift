@@ -57,6 +57,9 @@ private extension Array where Element == Method {
     func sorted() -> Self {
         sorted { one, two in
             if one.callName == two.callName {
+                if one.parameters.count == two.parameters.count {
+                    return one.generics.count < two.generics.count
+                }
                 return one.parameters.count < two.parameters.count
             } else {
                 return one.callName < two.callName

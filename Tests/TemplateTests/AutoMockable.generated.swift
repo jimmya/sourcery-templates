@@ -8,42 +8,44 @@ import XCTest
 
 internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
 
+execute, execute<Response>, execute<Response>
+
     internal init() { }
 
-    internal var stubbedExecuteURLRequestThrowableError: Error?
-    internal var invokedExecuteURLRequest: Bool { invokedExecuteURLRequestCount > 0 }
-    internal var invokedExecuteURLRequestCount = 0
-    internal var invokedExecuteURLRequestParameters: (urlRequest: URLRequest, Void)?
-    internal var invokedExecuteURLRequestParametersList: [(urlRequest: URLRequest, Void)] = []
-    internal var invokedExecuteURLRequestExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var stubbedExecuteThrowableError: Error?
+    internal var invokedExecute: Bool { invokedExecuteCount > 0 }
+    internal var invokedExecuteCount = 0
+    internal var invokedExecuteParameters: (urlRequest: URLRequest, Void)?
+    internal var invokedExecuteParametersList: [(urlRequest: URLRequest, Void)] = []
+    internal var invokedExecuteExpectation = XCTestExpectation(description: "\(#function) expectation")
 
     internal func execute(_ urlRequest: URLRequest) async throws {
-        defer { invokedExecuteURLRequestExpectation.fulfill() }
-        invokedExecuteURLRequestCount += 1
-        invokedExecuteURLRequestParameters = (urlRequest: urlRequest, ())
-        invokedExecuteURLRequestParametersList.append((urlRequest: urlRequest, ()))
-        if let error = stubbedExecuteURLRequestThrowableError {
+        defer { invokedExecuteExpectation.fulfill() }
+        invokedExecuteCount += 1
+        invokedExecuteParameters = (urlRequest: urlRequest, ())
+        invokedExecuteParametersList.append((urlRequest: urlRequest, ()))
+        if let error = stubbedExecuteThrowableError {
             throw error
         }
     }
 
-    internal var stubbedExecuteURLRequestResponseThrowableError: Error?
-    internal var invokedExecuteURLRequestResponse: Bool { invokedExecuteURLRequestResponseCount > 0 }
-    internal var invokedExecuteURLRequestResponseCount = 0
-    internal var invokedExecuteURLRequestResponseParameters: (urlRequest: URLRequest, Void)?
-    internal var invokedExecuteURLRequestResponseParametersList: [(urlRequest: URLRequest, Void)] = []
-    internal var stubbedExecuteURLRequestResponseResult: Decodable!
-    internal var invokedExecuteURLRequestResponseExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var stubbedExecuteUrlRequestThrowableError: Error?
+    internal var invokedExecuteUrlRequest: Bool { invokedExecuteUrlRequestCount > 0 }
+    internal var invokedExecuteUrlRequestCount = 0
+    internal var invokedExecuteUrlRequestParameters: (urlRequest: URLRequest, Void)?
+    internal var invokedExecuteUrlRequestParametersList: [(urlRequest: URLRequest, Void)] = []
+    internal var stubbedExecuteUrlRequestResult: Decodable!
+    internal var invokedExecuteUrlRequestExpectation = XCTestExpectation(description: "\(#function) expectation")
 
     internal func execute<Response>(_ urlRequest: URLRequest) async throws -> Response where Response: Decodable {
-        defer { invokedExecuteURLRequestResponseExpectation.fulfill() }
-        invokedExecuteURLRequestResponseCount += 1
-        invokedExecuteURLRequestResponseParameters = (urlRequest: urlRequest, ())
-        invokedExecuteURLRequestResponseParametersList.append((urlRequest: urlRequest, ()))
-        if let error = stubbedExecuteURLRequestResponseThrowableError {
+        defer { invokedExecuteUrlRequestExpectation.fulfill() }
+        invokedExecuteUrlRequestCount += 1
+        invokedExecuteUrlRequestParameters = (urlRequest: urlRequest, ())
+        invokedExecuteUrlRequestParametersList.append((urlRequest: urlRequest, ()))
+        if let error = stubbedExecuteUrlRequestThrowableError {
             throw error
         }
-        return stubbedExecuteURLRequestResponseResult as! Response
+        return stubbedExecuteUrlRequestResult as! Response
     }
 
     internal var stubbedExecuteUrlRequestDecoderThrowableError: Error?
@@ -68,6 +70,8 @@ internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
 
 internal class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosureMethod {
 
+method
+
     internal init() { }
 
     internal var invokedMethod: Bool { invokedMethodCount > 0 }
@@ -90,6 +94,8 @@ internal class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosure
 
 internal class DefaultMockProtocolWithGenericFunctionMock: MockProtocolWithGenericFunction {
 
+doSomething<T>
+
     internal init() { }
 
     internal var invokedDoSomething: Bool { invokedDoSomethingCount > 0 }
@@ -107,6 +113,8 @@ internal class DefaultMockProtocolWithGenericFunctionMock: MockProtocolWithGener
 }
 
 internal class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeType, MockProtocolWithGenericInheritanceDeclaration {
+
+init, init?, method
 
     internal var invokedInitParameters: (someParameter: Int, Void)?
     internal var invokedInitParametersList: [(someParameter: Int, Void)] = []
@@ -135,6 +143,8 @@ internal class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeTyp
 }
 
 internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMultipleMethods {
+
+anotherMethod, anotherMethod
 
     internal init() { }
 
@@ -166,6 +176,8 @@ internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMulti
 }
 
 internal class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWithOptionalClosureMethod {
+
+method
 
     internal init() { }
 
@@ -249,6 +261,8 @@ internal class DefaultMockProtocolWithPropertiesMock: MockProtocolWithProperties
         }
     }
 
+
+
     internal init() { }
 }
 
@@ -264,6 +278,8 @@ internal class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPro
         return stubbedProperty
     }
 
+method
+
     internal init() { }
 
     internal var invokedMethod: Bool { invokedMethodCount > 0 }
@@ -278,6 +294,8 @@ internal class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPro
 
 public class DefaultMockProtocolWithPublicAccessLevelMock: MockProtocolWithPublicAccessLevel {
 
+method
+
     public init() { }
 
     public var invokedMethod: Bool { invokedMethodCount > 0 }
@@ -291,6 +309,8 @@ public class DefaultMockProtocolWithPublicAccessLevelMock: MockProtocolWithPubli
 }
 
 internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithReturnSelf {
+
+method
 
     internal init() { }
 
@@ -307,6 +327,8 @@ internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithRetu
 }
 
 internal class DefaultURLSessionLogicMock: URLSessionLogic {
+
+data
 
     internal init() { }
 

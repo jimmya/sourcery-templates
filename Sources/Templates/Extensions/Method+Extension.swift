@@ -76,7 +76,7 @@ private extension Method {
     /// The example above will generate `Foo` and `FooBar` as mock names.
     func generateMockName(allMethods: [Method], takenNames: inout Set<String>) -> String {
         let name = callName.replacingOccurrences(of: "?", with: "").capitalizingFirstLetter()
-        let duplicateMethods = allMethods.filter { $0.callName == callName && $0.parameters.count == parameters.count }
+        let duplicateMethods = allMethods.filter { $0.callName == callName && $0.parameters.count == parameters.count && $0.generics.count == generics.count }
         guard duplicateMethods.count > 1 else {
             var newName = name
             var index = 0
