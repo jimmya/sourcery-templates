@@ -19,7 +19,7 @@ configurations:
     args:
       imports: [Foundation, NestedMockDeclarations]
       testableImports: [MockDeclarations]
-      module: MockDeclarations
+      modules: [MockDeclarations]
   - package:
       path: .
       target: NestedMockDeclarations

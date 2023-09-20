@@ -8,8 +8,6 @@ import XCTest
 
 internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
 
-execute, execute<Response>, execute<Response>
-
     internal init() { }
 
     internal var stubbedExecuteThrowableError: Error?
@@ -70,8 +68,6 @@ execute, execute<Response>, execute<Response>
 
 internal class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosureMethod {
 
-method
-
     internal init() { }
 
     internal var invokedMethod: Bool { invokedMethodCount > 0 }
@@ -94,8 +90,6 @@ method
 
 internal class DefaultMockProtocolWithGenericFunctionMock: MockProtocolWithGenericFunction {
 
-doSomething<T>
-
     internal init() { }
 
     internal var invokedDoSomething: Bool { invokedDoSomethingCount > 0 }
@@ -113,8 +107,6 @@ doSomething<T>
 }
 
 internal class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeType, MockProtocolWithGenericInheritanceDeclaration {
-
-init, init?, method
 
     internal var invokedInitParameters: (someParameter: Int, Void)?
     internal var invokedInitParametersList: [(someParameter: Int, Void)] = []
@@ -143,8 +135,6 @@ init, init?, method
 }
 
 internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMultipleMethods {
-
-anotherMethod, anotherMethod
 
     internal init() { }
 
@@ -176,8 +166,6 @@ anotherMethod, anotherMethod
 }
 
 internal class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWithOptionalClosureMethod {
-
-method
 
     internal init() { }
 
@@ -261,8 +249,6 @@ internal class DefaultMockProtocolWithPropertiesMock: MockProtocolWithProperties
         }
     }
 
-
-
     internal init() { }
 }
 
@@ -278,8 +264,6 @@ internal class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPro
         return stubbedProperty
     }
 
-method
-
     internal init() { }
 
     internal var invokedMethod: Bool { invokedMethodCount > 0 }
@@ -294,8 +278,6 @@ method
 
 public class DefaultMockProtocolWithPublicAccessLevelMock: MockProtocolWithPublicAccessLevel {
 
-method
-
     public init() { }
 
     public var invokedMethod: Bool { invokedMethodCount > 0 }
@@ -309,8 +291,6 @@ method
 }
 
 internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithReturnSelf {
-
-method
 
     internal init() { }
 
@@ -327,8 +307,6 @@ method
 }
 
 internal class DefaultURLSessionLogicMock: URLSessionLogic {
-
-data
 
     internal init() { }
 
