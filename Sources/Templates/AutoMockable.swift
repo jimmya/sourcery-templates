@@ -11,10 +11,13 @@ enum AutoMockable {
             .sorted(by: { $0.name < $1.name })
             .filter(\.isAutoMockable)
             .filter { type in
-                guard let module = annotations.module else {
+                guard
+                    let module = type.module,
+                    let modules = annotations.modules
+                else {
                     return true
                 }
-                return type.module == module
+                return modules.contains(module)
             }
         let protocolLines = sortedProtocols.map { protocolType in
             protocolType.generateMock(types: types)

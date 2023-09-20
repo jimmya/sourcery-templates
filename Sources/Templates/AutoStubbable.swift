@@ -11,10 +11,13 @@ enum AutoStubbable {
             .sorted(by: { $0.name < $1.name })
             .filter(\.isAutoStubbable)
             .filter { type in
-                guard let module = annotations.module else {
+                guard
+                    let module = type.module,
+                    let modules = annotations.modules
+                else {
                     return true
                 }
-                return type.module == module
+                return modules.contains(module)
             }
         let types = sortedTypes.map { type in
             type.generateStub(types: types)
