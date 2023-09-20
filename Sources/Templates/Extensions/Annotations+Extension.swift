@@ -9,7 +9,7 @@ extension Annotations {
         self["imports"] as? [String] ?? []
     }
 
-    var module: String? {
-        self["module"] as? String
+    var modules: [String]? {
+        self["modules"] as? [String]
     }
 }
