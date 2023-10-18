@@ -3,10 +3,9 @@ import SourceryRuntime
 extension Protocol {
     func generateMock() -> [String] {
         let variables = allVariables.filter { $0.definedInType?.isExtension == false }
-        let variableLines = variables.flatMap { variable in
+        let variableLines = variables.map { variable in
             [
                 variable.generateMock(),
-                .emptyLine,
             ]
         }
 
@@ -15,12 +14,14 @@ extension Protocol {
         let methodLines: [[String]] = allMethods.map { method in
             method.generateMock(takenNames: &takenMethodNames, allMethods: allMethods, in: self)
         }
-        
+
+        let hasVariablesAndMethods = !variableLines.isEmpty && !methodLines.isEmpty
         return [
             generateClassDeclaration(),
-            .emptyLine,
+            .emptyLine
         ]
-        + variableLines
+        + variableLines.joined(separator: [.emptyLine])
+        + (hasVariablesAndMethods ? [.emptyLine] : [])
         + methodLines.joined(separator: [.emptyLine])
         + ["}"]
     }
@@ -42,5 +43,18 @@ private extension Protocol {
             return "actor"
         }
         return isFinal ? "final class" : "class"
+    }
+}
+
+private extension Array where Element == Method {
+
+    func sorted() -> Self {
+        sorted { one, two in
+            if one.callName == two.callName {
+                return one.parameters.count < two.parameters.count
+            } else {
+                return one.callName < two.callName
+            }
+        }
     }
 }

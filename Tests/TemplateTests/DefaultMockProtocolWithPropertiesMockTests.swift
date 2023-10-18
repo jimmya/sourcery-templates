@@ -1,16 +1,16 @@
 import XCTest
 
-final class TemplateTests: XCTestCase {
+final class DefaultMockProtocolWithPropertiesMockTests: XCTestCase {
 
-    var sut: DefaultMockProtocolDeclarationMock!
+    var sut: DefaultMockProtocolWithPropertiesMock!
 
     override func setUp() {
         super.setUp()
         sut = makeSUT()
     }
 
-    func makeSUT() -> DefaultMockProtocolDeclarationMock {
-        DefaultMockProtocolDeclarationMock()
+    func makeSUT() -> DefaultMockProtocolWithPropertiesMock {
+        DefaultMockProtocolWithPropertiesMock()
     }
 
     func test_immutablePropertyGet() {
