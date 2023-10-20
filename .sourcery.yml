@@ -15,4 +15,3 @@ configurations:
     args:
       imports: [Foundation]
       testableImports: [MockDeclarations]
-appel appel

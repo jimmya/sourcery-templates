@@ -11,6 +11,9 @@ extension TypeName {
         if isDictionary {
             return "[:]"
         }
+        if isOpaqueType {
+            return "Default\(dropOpaqueKeywordIfNeeded())Mock()"
+        }
         if isTuple, let tuple {
             let combinedElements = tuple.elements.map {
                 $0.typeName.generateDefaultValue(type: $0.type, includeComplexType: includeComplexType)
@@ -84,4 +87,33 @@ private extension TypeName {
         }.joined(separator: ", ")
         return ".\(firstCase.name)(\(associatedValue))"
     }
+}
+
+// OpaqueType helpers
+extension TypeName {
+
+    var isOpaqueType: Bool {
+        name
+            .split(separator: " ")
+            .map { String($0) }
+            .contains { Constants.opaqueKeywords.contains($0) }
+    }
+
+    func wrapOptionalIfNeeded() -> String {
+        isOpaqueType && isOptional ? "(\(unwrappedTypeName))?" : name
+    }
+
+    func dropOpaqueKeywordIfNeeded() -> String {
+        guard isOpaqueType else { return name }
+
+        return name
+            .split(separator: " ")
+            .dropFirst()
+            .map { String($0) }
+            .joined()
+    }
+}
+
+private enum Constants {
+    static let opaqueKeywords = ["any", "some"]
 }

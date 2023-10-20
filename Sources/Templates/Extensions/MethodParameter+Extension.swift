@@ -6,6 +6,9 @@ extension MethodParameter {
         if isVariadic {
             type = "[\(type)]"
         }
+        if typeName.isOpaqueType && typeName.isOptional {
+            type = typeName.wrapOptionalIfNeeded()
+        }
         return type
     }
 }

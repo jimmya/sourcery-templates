@@ -68,7 +68,6 @@ private extension Method {
         fatalError("Something terrible happened")
     }
 
-
     /// Generates parameters that are captured or returned
     /// - Parameters:
     ///   - name: Unique name of the method to generate stub parameters for
@@ -107,7 +106,18 @@ private extension Method {
             }
         }
         if !returnTypeName.isVoid && !isInitializer {
-            let returnTypeNameString = returnTypeName.name == "Self" ? "Default\(type.name)Mock" : returnTypeName.name
+            var returnTypeNameString: String = returnTypeName.name
+
+            if returnTypeName.name == "Self" {
+                returnTypeNameString = "Default\(type.name)Mock"
+            } else if returnTypeName.isOpaqueType {
+                returnTypeNameString = "(\(returnTypeName))"
+                
+                if returnTypeName.isOptional {
+                    returnTypeNameString = returnTypeName.wrapOptionalIfNeeded()
+                }
+            }
+
             let defaultValue = returnTypeName.generateDefaultValue(type: returnType, includeComplexType: false)
             let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
             lines.append("var stubbed\(name)Result: \(returnTypeNameString)\(isOptionalReturnType ? "" : nonOptionalSignature)")
@@ -184,7 +194,7 @@ private extension Method {
         } else {
             parts = [
                 "func",
-                name,
+                functionName(),
                 isAsync ? "async" : nil,
                 self.throws ? "throws" : nil,
                 mockReturnType(type: type),
@@ -192,6 +202,28 @@ private extension Method {
             ]
         }
         return parts.compactMap { $0 }.joined(separator: " ")
+    }
+
+    func functionName() -> String {
+        // Generics should now be added manually
+        "\(callName)(\(functionParameters()))"
+    }
+
+    func functionParameters() -> String {
+        parameters.map { parameter in
+            let typeName = parameter.typeName.wrapOptionalIfNeeded()
+            let argumentLabel = [parameter.argumentLabel, parameter.name]
+                .compactMap { $0 }
+                .distinct
+                .joined(separator: " ")
+            
+            var escaping: String = ""
+            if parameter.isClosure && !parameter.isOptional {
+                escaping = " @escaping"
+            }
+
+            return "\(argumentLabel):\(escaping) \(typeName)"
+        }.joined(separator: ", ")
     }
 }
 
@@ -221,10 +253,16 @@ private extension Method {
 
     func mockReturnType(type: Type) -> String? {
         guard !returnTypeName.isVoid else { return nil }
+
+        var mutableReturnTypeName = "-> \(returnTypeName.name)"
+
         if returnTypeName.name == "Self" {
-            return "-> Default\(type.name)Mock"
+            mutableReturnTypeName = "-> Default\(type.name)Mock"
+        } else if returnTypeName.isOpaqueType && returnTypeName.isOptional {
+            mutableReturnTypeName = "-> \(returnTypeName.wrapOptionalIfNeeded())"
         }
-        return "-> \(returnTypeName.name)"
+
+        return mutableReturnTypeName
     }
 }
 

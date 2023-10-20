@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.0.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.1.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import MockDeclarations
@@ -83,6 +83,125 @@ class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMultipleMethod
         invokedAnotherMethodWithCount += 1
         invokedAnotherMethodWithParameters = (input: input, ())
         invokedAnotherMethodWithParametersList.append((input: input, ()))
+    }
+}
+
+class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTypes {
+
+    var invokedImmutableOpaqueObjectGetter = false
+    var invokedImmutableOpaqueObjectGetterCount = 0
+    var stubbedImmutableOpaqueObject: (any OpaqueType)!
+
+    var immutableOpaqueObject: any OpaqueType {
+        invokedImmutableOpaqueObjectGetter = true
+        invokedImmutableOpaqueObjectGetterCount += 1
+        return stubbedImmutableOpaqueObject
+    }
+
+    var invokedImmutableOptionalOpaqueObjectGetter = false
+    var invokedImmutableOptionalOpaqueObjectGetterCount = 0
+    var stubbedImmutableOptionalOpaqueObject: any OpaqueType
+
+    var immutableOptionalOpaqueObject: (any OpaqueType)? {
+        invokedImmutableOptionalOpaqueObjectGetter = true
+        invokedImmutableOptionalOpaqueObjectGetterCount += 1
+        return stubbedImmutableOptionalOpaqueObject
+    }
+
+    var invokedMutableOpaqueObjectSetter = false
+    var invokedMutableOpaqueObjectSetterCount = 0
+    var invokedMutableOpaqueObject: any OpaqueType
+    var invokedMutableOpaqueObjectList: [any OpaqueType] = []
+    var invokedMutableOpaqueObjectGetter = false
+    var invokedMutableOpaqueObjectGetterCount = 0
+    var stubbedMutableOpaqueObject: (any OpaqueType)!
+
+    var mutableOpaqueObject: any OpaqueType {
+        get {
+            invokedMutableOpaqueObjectGetter = true
+            invokedMutableOpaqueObjectGetterCount += 1
+            return stubbedMutableOpaqueObject
+        }
+        set {
+            invokedMutableOpaqueObjectSetter = true
+            invokedMutableOpaqueObjectSetterCount += 1
+            invokedMutableOpaqueObject = newValue
+            invokedMutableOpaqueObjectList.append(newValue)
+        }
+    }
+
+    var invokedMutableOptionalOpaqueObjectSetter = false
+    var invokedMutableOptionalOpaqueObjectSetterCount = 0
+    var invokedMutableOptionalOpaqueObject: (any OpaqueType)?
+    var invokedMutableOptionalOpaqueObjectList: [(any OpaqueType)?] = []
+    var invokedMutableOptionalOpaqueObjectGetter = false
+    var invokedMutableOptionalOpaqueObjectGetterCount = 0
+    var stubbedMutableOptionalOpaqueObject: any OpaqueType
+
+    var mutableOptionalOpaqueObject: (any OpaqueType)? {
+        get {
+            invokedMutableOptionalOpaqueObjectGetter = true
+            invokedMutableOptionalOpaqueObjectGetterCount += 1
+            return stubbedMutableOptionalOpaqueObject
+        }
+        set {
+            invokedMutableOptionalOpaqueObjectSetter = true
+            invokedMutableOptionalOpaqueObjectSetterCount += 1
+            invokedMutableOptionalOpaqueObject = newValue
+            invokedMutableOptionalOpaqueObjectList.append(newValue)
+        }
+    }
+
+    var invokedSomeOpaqueParameterFunction = false
+    var invokedSomeOpaqueParameterFunctionCount = 0
+    var invokedSomeOpaqueParameterFunctionParameters: (opaqueObject: any OpaqueType, Void)?
+    var invokedSomeOpaqueParameterFunctionParametersList: [(opaqueObject: any OpaqueType, Void)] = []
+    var invokedSomeOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    func someOpaqueParameterFunction(opaqueObject: any OpaqueType) {
+        defer { invokedSomeOpaqueParameterFunctionExpectation.fulfill() }
+        invokedSomeOpaqueParameterFunction = true
+        invokedSomeOpaqueParameterFunctionCount += 1
+        invokedSomeOpaqueParameterFunctionParameters = (opaqueObject: opaqueObject, ())
+        invokedSomeOpaqueParameterFunctionParametersList.append((opaqueObject: opaqueObject, ()))
+    }
+
+    var invokedSomeOpaqueReturningFunction = false
+    var invokedSomeOpaqueReturningFunctionCount = 0
+    var stubbedSomeOpaqueReturningFunctionResult: (any OpaqueType)!
+    var invokedSomeOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    func someOpaqueReturningFunction() -> any OpaqueType {
+        defer { invokedSomeOpaqueReturningFunctionExpectation.fulfill() }
+        invokedSomeOpaqueReturningFunction = true
+        invokedSomeOpaqueReturningFunctionCount += 1
+        return stubbedSomeOpaqueReturningFunctionResult
+    }
+
+    var invokedSomeOptionalOpaqueParameterFunction = false
+    var invokedSomeOptionalOpaqueParameterFunctionCount = 0
+    var invokedSomeOptionalOpaqueParameterFunctionParameters: (opaqueObject: (any OpaqueType)?, Void)?
+    var invokedSomeOptionalOpaqueParameterFunctionParametersList: [(opaqueObject: (any OpaqueType)?, Void)] = []
+    var invokedSomeOptionalOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    func someOptionalOpaqueParameterFunction(opaqueObject: (any OpaqueType)?) {
+        defer { invokedSomeOptionalOpaqueParameterFunctionExpectation.fulfill() }
+        invokedSomeOptionalOpaqueParameterFunction = true
+        invokedSomeOptionalOpaqueParameterFunctionCount += 1
+        invokedSomeOptionalOpaqueParameterFunctionParameters = (opaqueObject: opaqueObject, ())
+        invokedSomeOptionalOpaqueParameterFunctionParametersList.append((opaqueObject: opaqueObject, ()))
+    }
+
+    var invokedSomeOptionalOpaqueReturningFunction = false
+    var invokedSomeOptionalOpaqueReturningFunctionCount = 0
+    var stubbedSomeOptionalOpaqueReturningFunctionResult: (any OpaqueType)?
+    var invokedSomeOptionalOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    func someOptionalOpaqueReturningFunction() -> (any OpaqueType)? {
+        defer { invokedSomeOptionalOpaqueReturningFunctionExpectation.fulfill() }
+        invokedSomeOptionalOpaqueReturningFunction = true
+        invokedSomeOptionalOpaqueReturningFunctionCount += 1
+        return stubbedSomeOptionalOpaqueReturningFunctionResult
     }
 }
 
@@ -191,4 +310,8 @@ class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPropertyAndM
         invokedMethod = true
         invokedMethodCount += 1
     }
+}
+
+class DefaultOpaqueTypeMock: OpaqueType {
+
 }
