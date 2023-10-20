@@ -1,17 +1,31 @@
 configurations:
-  - sources:
-      - Sources/MockDeclarations/
+  - package:
+      path: .
+      target: MockDeclarations
     templates:
       - Sources/Templates/AutoMockable.swifttemplate
     output: Tests/TemplateTests
     args:
       imports: [Foundation, XCTest]
       testableImports: [MockDeclarations]
-  - sources:
-      - Sources/MockDeclarations/
+  - package:
+      path: .
+      target: 
+        - MockDeclarations
+        - NestedMockDeclarations
     templates:
       - Sources/Templates/AutoStubbable.swifttemplate
     output: Tests/TemplateTests
     args:
-      imports: [Foundation]
+      imports: [Foundation, NestedMockDeclarations]
       testableImports: [MockDeclarations]
+      modules: [MockDeclarations]
+  - package:
+      path: .
+      target: NestedMockDeclarations
+    templates:
+      - Sources/Templates/AutoStubbable.swifttemplate
+    output: Tests/TemplateTests/Nested.AutoStubbable.generated.swift
+    args:
+      testableImports: [NestedMockDeclarations]
+

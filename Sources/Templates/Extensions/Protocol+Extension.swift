@@ -1,19 +1,23 @@
 import SourceryRuntime
 
 extension Protocol {
-    func generateMock() -> [String] {
+    func generateMock(types: Types) -> [String] {
         let variables = allVariables.filter { $0.definedInType?.isExtension == false }
         let variableLines = variables.map { variable in
             [
-                variable.generateMock(),
+                variable.generateMock(types: types, accessLevel: accessLevel),
             ]
         }
 
         let allMethods = allMethods.filter { $0.definedInType?.isExtension == false }.sorted()
         var takenMethodNames: Set<String> = []
-        let methodLines: [[String]] = allMethods.map { method in
-            method.generateMock(takenNames: &takenMethodNames, allMethods: allMethods, in: self)
+        var methodLines: [[String]] = []
+        if genericRequirements.isEmpty {
+            methodLines.append(["\(accessLevel) init() { }".indent()])
         }
+        methodLines.append(contentsOf: allMethods.map { method in
+            method.generateMock(takenNames: &takenMethodNames, allMethods: allMethods, in: self, types: types, accessLevel: accessLevel)
+        })
 
         let hasVariablesAndMethods = !variableLines.isEmpty && !methodLines.isEmpty
         return [
@@ -30,7 +34,7 @@ extension Protocol {
 private extension Protocol {
     /// Returns `class DefaultProtocolNameMock: InheritedTypes {`
     func generateClassDeclaration() -> String {
-        "\(mockType) Default\(name)Mock: \(mockInheritedTypes) {"
+        "\(accessLevel) \(mockType) Default\(name)Mock: \(mockInheritedTypes) {"
     }
 
     var mockInheritedTypes: String {
@@ -42,7 +46,9 @@ private extension Protocol {
         if based.contains(where: { $0.key == "AnyActor"}) {
             return "actor"
         }
-        return isFinal ? "final class" : "class"
+        // If we have a method that returns `Self` we must declare the class final
+        let shouldBeFinal = methods.contains(where: { $0.returnTypeName.name == "Self"} )
+        return shouldBeFinal ? "final class" : "class"
     }
 }
 
@@ -51,6 +57,9 @@ private extension Array where Element == Method {
     func sorted() -> Self {
         sorted { one, two in
             if one.callName == two.callName {
+                if one.parameters.count == two.parameters.count {
+                    return one.generics.count < two.generics.count
+                }
                 return one.parameters.count < two.parameters.count
             } else {
                 return one.callName < two.callName

@@ -1,3 +1,11 @@
+import NestedMockDeclarations
+
+// sourcery: AutoStubbable
+struct MockModelWithNestedModel {
+    let id: Int
+    let nested: SomeNestedModel
+}
+
 // sourcery: AutoStubbable
 struct MockModelWithInitMethodDeclaration {
     let property: Int
@@ -23,7 +31,47 @@ struct MockModelWithInitMethodDeclaration {
 }
 
 // sourcery: AutoStubbable
+struct MockModelWithStubbablePropertyWithMultipleInitDeclaration {
+    let property: MockModelWithInitMethodDeclaration
+}
+
+// sourcery: AutoStubbable
+struct MockModelWithInitMethodAndImplicitlyUnwrappedOptionalDeclaration {
+    let property: Int
+    var implicitlyUnwrappedProperty: Int!
+
+    init(property: Int) {
+        self.property = property
+    }
+}
+
+// sourcery: AutoStubbable
 struct MockModelDeclaration {
     let property: Int
     let optionalProperty: String?
+}
+
+protocol SomeProtocol {
+    var property: Int { get }
+}
+
+// sourcery: AutoStubbable
+struct MockImplementingSomeProtocol: SomeProtocol {
+    let property: Int
+}
+
+// sourcery: AutoStubbable
+struct MockModelWithProtocolProperty {
+    let property: SomeProtocol
+}
+
+// sourcery: AutoStubbable
+struct MockModelWithClosure {
+    let doSomething: (() -> Void)
+}
+
+// sourcery: AutoStubbable
+struct MockModelWithImplicitlyUnwrappedOptional {
+    var property: Int
+    var implicitlyUnwrappedProperty: Int!
 }

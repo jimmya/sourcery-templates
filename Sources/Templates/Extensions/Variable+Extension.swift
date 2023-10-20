@@ -1,15 +1,23 @@
 import SourceryRuntime
 
 extension Variable {
-    func generateMock() -> String {
-        isMutable ? mockMutable : mockComputed
+    var hasDefaultValue: Bool {
+        defaultValue != nil
+    }
+
+    func generateMock(types: Types, accessLevel: String) -> String {
+        isMutable ? generateMutableMock(types: types, accessLevel: accessLevel) : generateComputedMock(types: types, accessLevel: accessLevel)
+    }
+
+    func generateInitAssignment(types: Types) -> String {
+        "\(name): \(typeName.generateStubbableName(type: type)) = \(typeName.generateDefaultValue(type: type, includeComplexType: true, types: types))"
     }
 }
 
 private extension Variable {
-    var mockMutable: String {
+    func generateMutableMock(types: Types, accessLevel: String) -> String {
         let capitalizedName = name.capitalizingFirstLetter()
-        let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false)
+        let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false, types: types)
         let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
 
         var mutableTypeName = typeName.name
@@ -32,15 +40,15 @@ private extension Variable {
         }
 
         return """
-            var invoked\(capitalizedName)Setter = false
-            var invoked\(capitalizedName)SetterCount = 0
-            var invoked\(capitalizedName): \(invokedObjectType)
-            var invoked\(capitalizedName)List: [\(listTypeName)] = []
-            var invoked\(capitalizedName)Getter = false
-            var invoked\(capitalizedName)GetterCount = 0
-            var stubbed\(capitalizedName): \(stubbedObjectType)
+            \(accessLevel) var invoked\(capitalizedName)Setter = false
+            \(accessLevel) var invoked\(capitalizedName)SetterCount = 0
+            \(accessLevel) var invoked\(capitalizedName): \(invokedObjectType)
+            \(accessLevel) var invoked\(capitalizedName)List: [\(listTypeName)] = []
+            \(accessLevel) var invoked\(capitalizedName)Getter = false
+            \(accessLevel) var invoked\(capitalizedName)GetterCount = 0
+            \(accessLevel) var stubbed\(capitalizedName): \(stubbedObjectType)
 
-            var \(name): \(returnTypeName) {
+            \(accessLevel) var \(name): \(typeName) {
                 get {
                     invoked\(capitalizedName)Getter = true
                     invoked\(capitalizedName)GetterCount += 1
@@ -56,9 +64,9 @@ private extension Variable {
         """
     }
 
-    var mockComputed: String {
+    func generateComputedMock(types: Types, accessLevel: String) -> String {
         let capitalizedName = name.capitalizingFirstLetter()
-        let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false)
+        let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false, types: types)
         let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
 
         var stubbedObjectType = "\(typeName.name)\(isOptional ? "" : nonOptionalSignature)"
@@ -69,11 +77,11 @@ private extension Variable {
         }
 
         return """
-            var invoked\(capitalizedName)Getter = false
-            var invoked\(capitalizedName)GetterCount = 0
-            var stubbed\(capitalizedName): \(stubbedObjectType)
+            \(accessLevel) var invoked\(capitalizedName)Getter = false
+            \(accessLevel) var invoked\(capitalizedName)GetterCount = 0
+            \(accessLevel) var stubbed\(capitalizedName): \(stubbedObjectType)
 
-            var \(name): \(returnTypeName) {
+            \(accessLevel) var \(name): \(typeName) {
                 invoked\(capitalizedName)Getter = true
                 invoked\(capitalizedName)GetterCount += 1
                 return stubbed\(capitalizedName)

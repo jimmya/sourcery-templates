@@ -8,4 +8,8 @@ extension Annotations {
     var imports: [String] {
         self["imports"] as? [String] ?? []
     }
+
+    var modules: [String]? {
+        self["modules"] as? [String]
+    }
 }
