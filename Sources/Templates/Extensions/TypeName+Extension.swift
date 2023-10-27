@@ -43,7 +43,8 @@ extension TypeName {
                 }
                 return "\(generateStubbableName(type: type)).stub()"
             } else if type?.isAutoMockable == true {
-                return "Default\(unwrappedTypeName)Mock()"
+                let mockName = MockNamingScheme.shared.createMockNaming(typeName: unwrappedTypeName)
+                return "\(mockName)()"
             }
 
             return ".init()"

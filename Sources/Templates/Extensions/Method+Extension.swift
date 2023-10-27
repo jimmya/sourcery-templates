@@ -152,8 +152,9 @@ private extension Method {
             }
         }
         if !returnTypeName.isVoid && !isInitializer {
+            let mockNaming = MockNamingScheme.shared.createMockNaming(typeName: type.name)
             // Stored property cannot have covariant `Self` type
-            let returnTypeNameString = returnTypeName.name == "Self" ? "Default\(type.name)Mock" : sanitizedReturnTypeName
+            let returnTypeNameString = returnTypeName.name == "Self" ? "\(mockNaming)" : sanitizedReturnTypeName
             if let generic = generics.first(where: { $0.name == returnTypeNameString }) {
                 let genericConstraint = generic.constraints ?? "Any"
                 lines.append("\(accessLevel) var stubbed\(name)Result: \(genericConstraint)\(isOptionalReturnType ? "" : "!")")
@@ -284,9 +285,11 @@ private extension Method {
 
     func mockReturnType(type: Type) -> String? {
         guard !returnTypeName.isVoid else { return nil }
+
+        let mockNaming = MockNamingScheme.shared.createMockNaming(typeName: type.name)
         // We have to return a concrete type instead of `Self`
         if returnTypeName.name == "Self" {
-            return "-> Default\(type.name)Mock"
+            return "-> \(mockNaming)"
         }
         return "-> \(returnTypeName.name)"
     }

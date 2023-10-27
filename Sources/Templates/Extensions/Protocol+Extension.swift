@@ -34,7 +34,8 @@ extension Protocol {
 private extension Protocol {
     /// Returns `class DefaultProtocolNameMock: InheritedTypes {`
     func generateClassDeclaration() -> String {
-        "\(accessLevel) \(mockType) Default\(name)Mock: \(mockInheritedTypes) {"
+        let mockNaming = MockNamingScheme.shared.createMockNaming(typeName: name)
+        return "\(accessLevel) \(mockType) \(mockNaming): \(mockInheritedTypes) {"
     }
 
     var mockInheritedTypes: String {

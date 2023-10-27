@@ -12,4 +12,12 @@ extension Annotations {
     var modules: [String]? {
         self["modules"] as? [String]
     }
+
+    var mockPrefix: String {
+        self["mockPrefix"] as? String ?? ""
+    }
+
+    var mockSuffix: String {
+        self["mockSuffix"] as? String ?? ""
+    }
 }
