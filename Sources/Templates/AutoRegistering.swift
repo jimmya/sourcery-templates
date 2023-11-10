@@ -45,8 +45,10 @@ enum AutoRegistering {
                 let joinedInitComponents = initComponents.joined(separator: ", ")
                 lines.append("\(registrationName).register { \(implementingClass.name)(\(joinedInitComponents)) }".indent(level: 2))
             } else {
+                let isShared = implementingClass.staticVariables.contains { $0.name == "shared" }
+                let instance = isShared ? ".shared" : "()"
                 // If there is no init method in the protocol we can use the regular `Factory`
-                lines.append("\(registrationName).register { \(implementingClass.name)() }".indent(level: 2))
+                lines.append("\(registrationName).register { \(implementingClass.name)\(instance) }".indent(level: 2))
             }
         }
         lines.append("}".indent())
