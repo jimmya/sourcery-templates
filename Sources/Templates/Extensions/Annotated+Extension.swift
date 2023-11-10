@@ -8,4 +8,8 @@ extension Annotated {
     var isAutoMockable: Bool {
         annotations["AutoMockable"] as? Int == 1
     }
+
+    var isAutoRegisterable: Bool {
+        annotations["AutoRegisterable"] as? Int == 1
+    }
 }

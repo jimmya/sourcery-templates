@@ -1,0 +1,6 @@
+<%- include("Imports.swifttemplate") -%>
+<%- includeFile("AutoRegistering.swift") -%>
+// swiftlint:disable all
+
+<%= AutoRegistering.generate(types: types, annotations: argument) -%>
+// swiftlint:enable all
