@@ -12,4 +12,8 @@ extension Annotated {
     var isAutoRegisterable: Bool {
         annotations["AutoRegisterable"] as? Int == 1
     }
+
+    var registrationValue: String? {
+        annotations["registrationValue"] as? String
+    }
 }
