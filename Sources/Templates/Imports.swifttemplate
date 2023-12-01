@@ -5,7 +5,6 @@
 <%- includeFile("Extensions/MethodParameter+Extension.swift") -%>
 <%- includeFile("Extensions/Protocol+Extension.swift") -%>
 <%- includeFile("Extensions/String+Extension.swift") -%>
-<%- includeFile("Extensions/Array+Extension.swift") -%>
 <%- includeFile("Extensions/Type+Extension.swift") -%>
 <%- includeFile("Extensions/TypeName+Extension.swift") -%>
 <%- includeFile("Extensions/Variable+Extension.swift") -%>

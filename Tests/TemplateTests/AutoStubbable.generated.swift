@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-// Generated using Sourcery 2.1.1 — https://github.com/krzysztofzablocki/Sourcery
-=======
-// Generated using Sourcery 2.0.3 — https://github.com/krzysztofzablocki/Sourcery
->>>>>>> main
+// Generated using Sourcery 2.1.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable all
 
@@ -20,31 +16,6 @@ internal extension MockImplementingSomeProtocol {
     }
 }
 
-internal extension MockDomainModelDeclaration {
-    static func stub(
-        property: Int = 0,
-        optionalProperty: String? = nil,
-        opagueType: OpaqueType = DefaultOpaqueTypeMock(),
-        optionalOpagueType: OpaqueType? = nil,
-        closure: (String) -> Void = { .init() } ,
-        optionalClosure: ((String) -> Void)? = nil,
-        closureWithOpagueType: (OpaqueType) -> Void = { .init() } ,
-        closureWithOptionalOpagueType: (OpaqueType?) -> Void = { .init() } ,
-        optionalClosureWithOpagueType: ((OpaqueType) -> Void)? = nil
-    ) -> MockDomainModelDeclaration {
-        MockDomainModelDeclaration(
-            property: property,
-            optionalProperty: optionalProperty,
-            opagueType: opagueType,
-            optionalOpagueType: optionalOpagueType,
-            closure: closure,
-            optionalClosure: optionalClosure,
-            closureWithOpagueType: closureWithOpagueType,
-            closureWithOptionalOpagueType: closureWithOptionalOpagueType,
-            optionalClosureWithOpagueType: optionalClosureWithOpagueType
-        )
-    }
-}
 internal extension MockModelDeclaration {
     static func stub(
         property: Int = 0,
@@ -59,7 +30,7 @@ internal extension MockModelDeclaration {
 
 internal extension MockModelWithClosure {
     static func stub(
-        doSomething: @escaping () -> Void = {  } 
+        doSomething: @escaping () -> Void = { }
     ) -> MockModelWithClosure {
         MockModelWithClosure(
             doSomething: doSomething
@@ -132,6 +103,28 @@ internal extension MockModelWithNestedModel {
         MockModelWithNestedModel(
             id: id,
             nested: nested
+        )
+    }
+}
+
+internal extension MockModelWithOpaqueTypes {
+    static func stub(
+        opagueType: any OpaqueType = DefaultOpaqueTypeMock(),
+        optionalOpagueType: (any OpaqueType)? = nil,
+        closureWithOpagueType: @escaping (any OpaqueType) -> Void = { _ in },
+        closureWithOptionalOpagueType: @escaping ((any OpaqueType)?) -> Void = { _ in },
+        optionalClosureWithOpagueType: ((any OpaqueType) -> Void)? = nil,
+        closureWithOpagueReturnType: @escaping () -> any OpaqueType = { DefaultOpaqueTypeMock() },
+        closureWithOptionalOpagueReturnType: @escaping () -> (any OpaqueType)? = { nil }
+    ) -> MockModelWithOpaqueTypes {
+        MockModelWithOpaqueTypes(
+            opagueType: opagueType,
+            optionalOpagueType: optionalOpagueType,
+            closureWithOpagueType: closureWithOpagueType,
+            closureWithOptionalOpagueType: closureWithOptionalOpagueType,
+            optionalClosureWithOpagueType: optionalClosureWithOpagueType,
+            closureWithOpagueReturnType: closureWithOpagueReturnType,
+            closureWithOptionalOpagueReturnType: closureWithOptionalOpagueReturnType
         )
     }
 }

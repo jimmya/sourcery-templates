@@ -10,7 +10,7 @@ extension MethodParameter {
             type = "[\(type)]"
         }
         if typeName.isOpaqueType && typeName.isOptional {
-            type = typeName.wrapOptionalIfNeeded()
+            type = typeName.withWrappedOptionalIfNeeded()
         }
         return type
     }

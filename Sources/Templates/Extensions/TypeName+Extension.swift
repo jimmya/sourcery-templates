@@ -15,7 +15,7 @@ extension TypeName {
             return "[:]"
         }
         if isOpaqueType {
-            return "Default\(dropOpaqueKeywordIfNeeded())Mock()"
+            return isOptional ? "nil" : "Default\(dropOpaqueKeywordIfNeeded())Mock()"
         }
         if isTuple, let tuple {
             let combinedElements = tuple.elements.map {
@@ -26,8 +26,24 @@ extension TypeName {
         if includeComplexType, let enumType = type as? Enum, let firstCase = enumType.cases.first {
             return generateEnumDefaultValue(firstCase: firstCase, includeComplexType: includeComplexType, types: types)
         }
-        if isClosure, let closure {
-            return "{ \(closure.returnTypeName.generateDefaultValue(type: closure.returnType, includeComplexType: includeComplexType, types: types)) } "
+        if let closure {
+            let defaultReturnValue = closure.returnTypeName.generateDefaultValue(type: closure.returnType, includeComplexType: includeComplexType, types: types)
+            
+            var parameters: String = ""
+
+            if !closure.parameters.isEmpty {
+                var parameterDashes = closure.parameters.map { _ in "_" }.joined(separator: ", ")
+                parameters = parameterDashes + " in"
+            }
+
+            return [
+                "{",
+                parameters,
+                defaultReturnValue,
+                "}"
+            ]
+                .filter { !$0.isEmpty }
+                .joined(separator: " ")
         }
 
         switch (unwrappedTypeName, includeComplexType) {
@@ -78,13 +94,35 @@ extension TypeName {
             let resultType = openBrackets + elementType + closingBrackets
             return resultType + addition
         }
-        if isClosure, !isOptional {
-            return "@escaping " + (type?.name ?? unwrappedTypeName) + addition
+        if let closure, !isOptional {
+            var returnType = closure.unwrappedReturnTypeName
+
+            if closure.returnTypeName.isOpaqueType {
+                returnType = closure.returnTypeName.withWrappedOptionalIfNeeded()
+            }
+
+            let joinedParameters = closure.parameters.map {
+                if $0.typeName.isOpaqueType && $0.typeName.isOptional {
+                    return $0.typeName.withWrappedOptionalIfNeeded()
+                }
+
+                return $0.typeName.unwrappedTypeName
+            }.joined(separator: ", ")
+
+            return [
+                "@escaping",
+                "(\(joinedParameters))",
+                "->",
+                returnType
+            ].joined(separator: " ") + addition
+        }
+
+        if isOpaqueType && isOptional  {
+            return self.withWrappedOptionalIfNeeded()
         }
 
         return (type?.name ?? unwrappedTypeName) + addition
     }
-
 }
 
 private extension TypeName {
@@ -104,13 +142,11 @@ private extension TypeName {
 extension TypeName {
 
     var isOpaqueType: Bool {
-        name
-            .split(separator: " ")
-            .map { String($0) }
-            .contains { Constants.opaqueKeywords.contains($0) }
+        let splitName = name.split(separator: " ")
+        return splitName.contains { Constants.opaqueKeywords.contains(String($0)) } && splitName.count == 2
     }
 
-    func wrapOptionalIfNeeded() -> String {
+    func withWrappedOptionalIfNeeded() -> String {
         isOpaqueType && isOptional ? "(\(unwrappedTypeName))?" : name
     }
 
@@ -125,6 +161,7 @@ extension TypeName {
     }
 }
 
-private enum Constants {
+enum Constants {
     static let opaqueKeywords = ["any", "some"]
 }
+

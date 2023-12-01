@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-// Generated using Sourcery 2.1.1 — https://github.com/krzysztofzablocki/Sourcery
-=======
-// Generated using Sourcery 2.0.3 — https://github.com/krzysztofzablocki/Sourcery
->>>>>>> main
+// Generated using Sourcery 2.1.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable all
 
@@ -169,38 +165,37 @@ internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMulti
     }
 }
 
-<<<<<<< HEAD
-class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTypes {
+internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTypes {
 
-    var invokedImmutableOpaqueObjectGetter = false
-    var invokedImmutableOpaqueObjectGetterCount = 0
-    var stubbedImmutableOpaqueObject: (any OpaqueType)!
+    internal var invokedImmutableOpaqueObjectGetter = false
+    internal var invokedImmutableOpaqueObjectGetterCount = 0
+    internal var stubbedImmutableOpaqueObject: (any OpaqueType)! = DefaultOpaqueTypeMock()
 
-    var immutableOpaqueObject: any OpaqueType {
+    internal var immutableOpaqueObject: any OpaqueType {
         invokedImmutableOpaqueObjectGetter = true
         invokedImmutableOpaqueObjectGetterCount += 1
         return stubbedImmutableOpaqueObject
     }
 
-    var invokedImmutableOptionalOpaqueObjectGetter = false
-    var invokedImmutableOptionalOpaqueObjectGetterCount = 0
-    var stubbedImmutableOptionalOpaqueObject: any OpaqueType
+    internal var invokedImmutableOptionalOpaqueObjectGetter = false
+    internal var invokedImmutableOptionalOpaqueObjectGetterCount = 0
+    internal var stubbedImmutableOptionalOpaqueObject: (any OpaqueType)
 
-    var immutableOptionalOpaqueObject: (any OpaqueType)? {
+    internal var immutableOptionalOpaqueObject: (any OpaqueType)? {
         invokedImmutableOptionalOpaqueObjectGetter = true
         invokedImmutableOptionalOpaqueObjectGetterCount += 1
         return stubbedImmutableOptionalOpaqueObject
     }
 
-    var invokedMutableOpaqueObjectSetter = false
-    var invokedMutableOpaqueObjectSetterCount = 0
-    var invokedMutableOpaqueObject: any OpaqueType
-    var invokedMutableOpaqueObjectList: [any OpaqueType] = []
-    var invokedMutableOpaqueObjectGetter = false
-    var invokedMutableOpaqueObjectGetterCount = 0
-    var stubbedMutableOpaqueObject: (any OpaqueType)!
+    internal var invokedMutableOpaqueObjectSetter = false
+    internal var invokedMutableOpaqueObjectSetterCount = 0
+    internal var invokedMutableOpaqueObject: any OpaqueType
+    internal var invokedMutableOpaqueObjectList: [any OpaqueType] = []
+    internal var invokedMutableOpaqueObjectGetter = false
+    internal var invokedMutableOpaqueObjectGetterCount = 0
+    internal var stubbedMutableOpaqueObject: (any OpaqueType)! = DefaultOpaqueTypeMock()
 
-    var mutableOpaqueObject: any OpaqueType {
+    internal var mutableOpaqueObject: any OpaqueType {
         get {
             invokedMutableOpaqueObjectGetter = true
             invokedMutableOpaqueObjectGetterCount += 1
@@ -214,15 +209,15 @@ class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTypes {
         }
     }
 
-    var invokedMutableOptionalOpaqueObjectSetter = false
-    var invokedMutableOptionalOpaqueObjectSetterCount = 0
-    var invokedMutableOptionalOpaqueObject: (any OpaqueType)?
-    var invokedMutableOptionalOpaqueObjectList: [(any OpaqueType)?] = []
-    var invokedMutableOptionalOpaqueObjectGetter = false
-    var invokedMutableOptionalOpaqueObjectGetterCount = 0
-    var stubbedMutableOptionalOpaqueObject: any OpaqueType
+    internal var invokedMutableOptionalOpaqueObjectSetter = false
+    internal var invokedMutableOptionalOpaqueObjectSetterCount = 0
+    internal var invokedMutableOptionalOpaqueObject: (any OpaqueType)?
+    internal var invokedMutableOptionalOpaqueObjectList: [(any OpaqueType)?] = []
+    internal var invokedMutableOptionalOpaqueObjectGetter = false
+    internal var invokedMutableOptionalOpaqueObjectGetterCount = 0
+    internal var stubbedMutableOptionalOpaqueObject: (any OpaqueType)
 
-    var mutableOptionalOpaqueObject: (any OpaqueType)? {
+    internal var mutableOptionalOpaqueObject: (any OpaqueType)? {
         get {
             invokedMutableOptionalOpaqueObjectGetter = true
             invokedMutableOptionalOpaqueObjectGetterCount += 1
@@ -236,63 +231,58 @@ class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTypes {
         }
     }
 
-    var invokedSomeOpaqueParameterFunction = false
-    var invokedSomeOpaqueParameterFunctionCount = 0
-    var invokedSomeOpaqueParameterFunctionParameters: (opaqueObject: any OpaqueType, Void)?
-    var invokedSomeOpaqueParameterFunctionParametersList: [(opaqueObject: any OpaqueType, Void)] = []
-    var invokedSomeOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal init() { }
 
-    func someOpaqueParameterFunction(opaqueObject: any OpaqueType) {
+    internal var invokedSomeOpaqueParameterFunction: Bool { invokedSomeOpaqueParameterFunctionCount > 0 }
+    internal var invokedSomeOpaqueParameterFunctionCount = 0
+    internal var invokedSomeOpaqueParameterFunctionParameters: (opaqueObject: any OpaqueType, Void)?
+    internal var invokedSomeOpaqueParameterFunctionParametersList: [(opaqueObject: any OpaqueType, Void)] = []
+    internal var invokedSomeOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func someOpaqueParameterFunction(opaqueObject: any OpaqueType) {
         defer { invokedSomeOpaqueParameterFunctionExpectation.fulfill() }
-        invokedSomeOpaqueParameterFunction = true
         invokedSomeOpaqueParameterFunctionCount += 1
         invokedSomeOpaqueParameterFunctionParameters = (opaqueObject: opaqueObject, ())
         invokedSomeOpaqueParameterFunctionParametersList.append((opaqueObject: opaqueObject, ()))
     }
 
-    var invokedSomeOpaqueReturningFunction = false
-    var invokedSomeOpaqueReturningFunctionCount = 0
-    var stubbedSomeOpaqueReturningFunctionResult: (any OpaqueType)!
-    var invokedSomeOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedSomeOpaqueReturningFunction: Bool { invokedSomeOpaqueReturningFunctionCount > 0 }
+    internal var invokedSomeOpaqueReturningFunctionCount = 0
+    internal var stubbedSomeOpaqueReturningFunctionResult: any OpaqueType
+    internal var invokedSomeOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func someOpaqueReturningFunction() -> any OpaqueType {
+    internal func someOpaqueReturningFunction() -> any OpaqueType {
         defer { invokedSomeOpaqueReturningFunctionExpectation.fulfill() }
-        invokedSomeOpaqueReturningFunction = true
         invokedSomeOpaqueReturningFunctionCount += 1
         return stubbedSomeOpaqueReturningFunctionResult
     }
 
-    var invokedSomeOptionalOpaqueParameterFunction = false
-    var invokedSomeOptionalOpaqueParameterFunctionCount = 0
-    var invokedSomeOptionalOpaqueParameterFunctionParameters: (opaqueObject: (any OpaqueType)?, Void)?
-    var invokedSomeOptionalOpaqueParameterFunctionParametersList: [(opaqueObject: (any OpaqueType)?, Void)] = []
-    var invokedSomeOptionalOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedSomeOptionalOpaqueParameterFunction: Bool { invokedSomeOptionalOpaqueParameterFunctionCount > 0 }
+    internal var invokedSomeOptionalOpaqueParameterFunctionCount = 0
+    internal var invokedSomeOptionalOpaqueParameterFunctionParameters: (opaqueObject: (any OpaqueType)?, Void)?
+    internal var invokedSomeOptionalOpaqueParameterFunctionParametersList: [(opaqueObject: (any OpaqueType)?, Void)] = []
+    internal var invokedSomeOptionalOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func someOptionalOpaqueParameterFunction(opaqueObject: (any OpaqueType)?) {
+    internal func someOptionalOpaqueParameterFunction(opaqueObject: (any OpaqueType)?) {
         defer { invokedSomeOptionalOpaqueParameterFunctionExpectation.fulfill() }
-        invokedSomeOptionalOpaqueParameterFunction = true
         invokedSomeOptionalOpaqueParameterFunctionCount += 1
         invokedSomeOptionalOpaqueParameterFunctionParameters = (opaqueObject: opaqueObject, ())
         invokedSomeOptionalOpaqueParameterFunctionParametersList.append((opaqueObject: opaqueObject, ()))
     }
 
-    var invokedSomeOptionalOpaqueReturningFunction = false
-    var invokedSomeOptionalOpaqueReturningFunctionCount = 0
-    var stubbedSomeOptionalOpaqueReturningFunctionResult: (any OpaqueType)?
-    var invokedSomeOptionalOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedSomeOptionalOpaqueReturningFunction: Bool { invokedSomeOptionalOpaqueReturningFunctionCount > 0 }
+    internal var invokedSomeOptionalOpaqueReturningFunctionCount = 0
+    internal var stubbedSomeOptionalOpaqueReturningFunctionResult: (any OpaqueType)?
+    internal var invokedSomeOptionalOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    func someOptionalOpaqueReturningFunction() -> (any OpaqueType)? {
+    internal func someOptionalOpaqueReturningFunction() -> (any OpaqueType)? {
         defer { invokedSomeOptionalOpaqueReturningFunctionExpectation.fulfill() }
-        invokedSomeOptionalOpaqueReturningFunction = true
         invokedSomeOptionalOpaqueReturningFunctionCount += 1
         return stubbedSomeOptionalOpaqueReturningFunctionResult
     }
 }
 
-class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWithOptionalClosureMethod {
-=======
 internal class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWithOptionalClosureMethod {
->>>>>>> main
 
     internal init() { }
 
@@ -403,11 +393,6 @@ internal class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPro
     }
 }
 
-<<<<<<< HEAD
-class DefaultOpaqueTypeMock: OpaqueType {
-
-}
-=======
 public class DefaultMockProtocolWithPublicAccessLevelMock: MockProtocolWithPublicAccessLevel {
 
     public init() { }
@@ -438,6 +423,11 @@ internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithRetu
     }
 }
 
+internal class DefaultOpaqueTypeMock: OpaqueType {
+
+    internal init() { }
+}
+
 internal class DefaultURLSessionLogicMock: URLSessionLogic {
 
     internal init() { }
@@ -462,4 +452,3 @@ internal class DefaultURLSessionLogicMock: URLSessionLogic {
     }
 }
 // swiftlint:enable all
->>>>>>> main

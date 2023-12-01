@@ -1,6 +1,46 @@
 import SourceryRuntime
 
 extension Method {
+    
+    /// Dissected method signature
+    var methodName: String {
+        "\(callName)\(methodGenerics ?? "")(\(methodParameters))"
+    }
+    
+    /// Returns the generics part of the method signature. E.g. `<T: Encodable>`
+    var methodGenerics: String? {
+        name.matches(for: "<.*>").first
+    }
+
+    /// Concatenates all function parameters in a string
+    var methodParameters: String {
+        parameters.map { parameter in
+            guard parameter.typeName.isOpaqueType && parameter.typeName.isOptional else {
+                return parameter.asSource
+            }
+
+            /// This will dissect the parameter containing an optional opaque type and put brackets around it
+            ///
+            /// Example of parameter.asSource result:
+            /// `parameter: any OpaqueType?`
+            ///
+            /// Result of function will be:
+            /// `parameter: (any OpaqueType)?`
+
+            var parameterParts = parameter.asSource
+                .split(separator: " ")
+                .map { String($0) }
+
+            let opaqueKeywordIndex = parameterParts.firstIndex {
+                Constants.opaqueKeywords.contains(String($0))
+            } ?? 0
+
+            parameterParts.removeSubrange(opaqueKeywordIndex..<parameterParts.count)
+            parameterParts.append(parameter.typeName.withWrappedOptionalIfNeeded())
+            return parameterParts.joined(separator: " ")
+        }.joined(separator: ", ")
+    }
+
     /// Generate mock for a method
     /// - Parameters:
     ///   - takenNames: Names that already have mocks, used to avoid collisions when methods have similar signatures
@@ -152,31 +192,21 @@ private extension Method {
             }
         }
         if !returnTypeName.isVoid && !isInitializer {
-            // var returnTypeNameString: String = sanitizedReturnTypeName
-
-            // // Stored property cannot have covariant `Self` type
-            // if returnTypeName.name == "Self" {
-            //     returnTypeNameString = "Default\(type.name)Mock"
-            // } else if returnTypeName.isOpaqueType {
-            //     returnTypeNameString = "(\(returnTypeName))"
-                
-            //     if returnTypeName.isOptional {
-            //         returnTypeNameString = returnTypeName.wrapOptionalIfNeeded()
-            //     }
-            // }
-
-            // let defaultValue = returnTypeName.generateDefaultValue(type: returnType, includeComplexType: false)
-            // let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
-            // lines.append("var stubbed\(name)Result: \(returnTypeNameString)\(isOptionalReturnType ? "" : nonOptionalSignature)")
-
             // Stored property cannot have covariant `Self` type
             let returnTypeNameString = returnTypeName.name == "Self" ? "Default\(type.name)Mock" : sanitizedReturnTypeName
+
+            var resultType: String
+
             if let generic = generics.first(where: { $0.name == returnTypeNameString }) {
                 let genericConstraint = generic.constraints ?? "Any"
-                lines.append("\(accessLevel) var stubbed\(name)Result: \(genericConstraint)\(isOptionalReturnType ? "" : "!")")
+                resultType = "\(genericConstraint)\(isOptionalReturnType ? "" : "!")"
+            } else if returnTypeName.isOpaqueType {
+                resultType = "\(returnTypeName.withWrappedOptionalIfNeeded())"
             } else {
-                lines.append("\(accessLevel) var stubbed\(name)Result: \(returnTypeNameString)\(isOptionalReturnType ? "" : "!")")
+                resultType = "\(returnTypeNameString)\(isOptionalReturnType ? "" : "!")"
             }
+
+            lines.append("\(accessLevel) var stubbed\(name)Result: \(resultType)")
         }
         if !isInitializer { // Expectations aren't possible in the initializer
             lines.append("\(accessLevel) var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
@@ -254,7 +284,7 @@ private extension Method {
             parts = [
                 type.accessLevel,
                 "func",
-                functionName(),
+                methodName,
                 isAsync ? "async" : nil,
                 self.throws ? "throws" : nil,
                 mockReturnType(type: type),
@@ -262,28 +292,6 @@ private extension Method {
             ]
         }
         return parts.compactMap { $0 }.joined(separator: " ")
-    }
-
-    func functionName() -> String {
-        // Generics should now be added manually
-        "\(callName)(\(functionParameters()))"
-    }
-
-    func functionParameters() -> String {
-        parameters.map { parameter in
-            let typeName = parameter.typeName.wrapOptionalIfNeeded()
-            let argumentLabel = [parameter.argumentLabel, parameter.name]
-                .compactMap { $0 }
-                .distinct
-                .joined(separator: " ")
-            
-            var escaping: String = ""
-            if parameter.isClosure && !parameter.isOptional {
-                escaping = " @escaping"
-            }
-
-            return "\(argumentLabel):\(escaping) \(typeName)"
-        }.joined(separator: ", ")
     }
 }
 
@@ -324,16 +332,14 @@ private extension Method {
     func mockReturnType(type: Type) -> String? {
         guard !returnTypeName.isVoid else { return nil }
 
-        var mutableReturnTypeName = "-> \(returnTypeName.name)"
-
         // We have to return a concrete type instead of `Self`
         if returnTypeName.name == "Self" {
-            mutableReturnTypeName = "-> Default\(type.name)Mock"
+            return "-> Default\(type.name)Mock"
         } else if returnTypeName.isOpaqueType && returnTypeName.isOptional {
-            mutableReturnTypeName = "-> \(returnTypeName.wrapOptionalIfNeeded())"
+            return "-> \(returnTypeName.withWrappedOptionalIfNeeded())"
         }
 
-        return mutableReturnTypeName
+        return "-> \(returnTypeName.name)"
     }
 }
 

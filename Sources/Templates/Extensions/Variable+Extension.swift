@@ -32,11 +32,11 @@ private extension Variable {
         var returnTypeName = mutableTypeName
 
         if typeName.isOpaqueType {
-            let optionalOpaqueTypeName = typeName.wrapOptionalIfNeeded()
+            let optionalOpaqueTypeName = typeName.withWrappedOptionalIfNeeded()
             invokedObjectType = optionalOpaqueTypeName
             listTypeName = optionalOpaqueTypeName
             stubbedObjectType = "(\(typeName.unwrappedTypeName))\(isOptional ? "" : nonOptionalSignature)"
-            returnTypeName = optionalOpaqueTypeName
+            returnTypeName = "\(optionalOpaqueTypeName)"
         }
 
         return """
@@ -48,7 +48,7 @@ private extension Variable {
             \(accessLevel) var invoked\(capitalizedName)GetterCount = 0
             \(accessLevel) var stubbed\(capitalizedName): \(stubbedObjectType)
 
-            \(accessLevel) var \(name): \(typeName) {
+            \(accessLevel) var \(name): \(returnTypeName) {
                 get {
                     invoked\(capitalizedName)Getter = true
                     invoked\(capitalizedName)GetterCount += 1
@@ -70,7 +70,7 @@ private extension Variable {
         let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
 
         var stubbedObjectType = "\(typeName.name)\(isOptional ? "" : nonOptionalSignature)"
-        let returnTypeName = typeName.wrapOptionalIfNeeded()
+        let returnTypeName = typeName.withWrappedOptionalIfNeeded()
 
         if typeName.isOpaqueType {
             stubbedObjectType = "(\(typeName.unwrappedTypeName))\(isOptional ? "" : nonOptionalSignature)"
@@ -81,7 +81,7 @@ private extension Variable {
             \(accessLevel) var invoked\(capitalizedName)GetterCount = 0
             \(accessLevel) var stubbed\(capitalizedName): \(stubbedObjectType)
 
-            \(accessLevel) var \(name): \(typeName) {
+            \(accessLevel) var \(name): \(returnTypeName) {
                 invoked\(capitalizedName)Getter = true
                 invoked\(capitalizedName)GetterCount += 1
                 return stubbed\(capitalizedName)
