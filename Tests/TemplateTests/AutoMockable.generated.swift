@@ -179,7 +179,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
 
     internal var invokedImmutableOptionalOpaqueObjectGetter = false
     internal var invokedImmutableOptionalOpaqueObjectGetterCount = 0
-    internal var stubbedImmutableOptionalOpaqueObject: (any OpaqueType)
+    internal var stubbedImmutableOptionalOpaqueObject: (any OpaqueType)?
 
     internal var immutableOptionalOpaqueObject: (any OpaqueType)? {
         invokedImmutableOptionalOpaqueObjectGetter = true
@@ -189,7 +189,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
 
     internal var invokedMutableOpaqueObjectSetter = false
     internal var invokedMutableOpaqueObjectSetterCount = 0
-    internal var invokedMutableOpaqueObject: any OpaqueType
+    internal var invokedMutableOpaqueObject: (any OpaqueType)?
     internal var invokedMutableOpaqueObjectList: [any OpaqueType] = []
     internal var invokedMutableOpaqueObjectGetter = false
     internal var invokedMutableOpaqueObjectGetterCount = 0
@@ -215,7 +215,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedMutableOptionalOpaqueObjectList: [(any OpaqueType)?] = []
     internal var invokedMutableOptionalOpaqueObjectGetter = false
     internal var invokedMutableOptionalOpaqueObjectGetterCount = 0
-    internal var stubbedMutableOptionalOpaqueObject: (any OpaqueType)
+    internal var stubbedMutableOptionalOpaqueObject: (any OpaqueType)?
 
     internal var mutableOptionalOpaqueObject: (any OpaqueType)? {
         get {
@@ -248,7 +248,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
 
     internal var invokedSomeOpaqueReturningFunction: Bool { invokedSomeOpaqueReturningFunctionCount > 0 }
     internal var invokedSomeOpaqueReturningFunctionCount = 0
-    internal var stubbedSomeOpaqueReturningFunctionResult: any OpaqueType
+    internal var stubbedSomeOpaqueReturningFunctionResult: (any OpaqueType)!
     internal var invokedSomeOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
 
     internal func someOpaqueReturningFunction() -> any OpaqueType {

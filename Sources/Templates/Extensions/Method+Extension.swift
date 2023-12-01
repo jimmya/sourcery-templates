@@ -199,12 +199,14 @@ private extension Method {
 
             if let generic = generics.first(where: { $0.name == returnTypeNameString }) {
                 let genericConstraint = generic.constraints ?? "Any"
-                resultType = "\(genericConstraint)\(isOptionalReturnType ? "" : "!")"
+                resultType = genericConstraint
             } else if returnTypeName.isOpaqueType {
-                resultType = "\(returnTypeName.withWrappedOptionalIfNeeded())"
+                resultType = returnTypeName.isOptional ? returnTypeName.withWrappedOptionalIfNeeded() : "(\(returnTypeName))"
             } else {
-                resultType = "\(returnTypeNameString)\(isOptionalReturnType ? "" : "!")"
+                resultType = returnTypeNameString
             }
+
+            resultType += isOptionalReturnType ? "" : "!"
 
             lines.append("\(accessLevel) var stubbed\(name)Result: \(resultType)")
         }

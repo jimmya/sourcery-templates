@@ -33,9 +33,9 @@ private extension Variable {
 
         if typeName.isOpaqueType {
             let optionalOpaqueTypeName = typeName.withWrappedOptionalIfNeeded()
-            invokedObjectType = optionalOpaqueTypeName
+            invokedObjectType = "(\(typeName.unwrappedTypeName))?"
             listTypeName = optionalOpaqueTypeName
-            stubbedObjectType = "(\(typeName.unwrappedTypeName))\(isOptional ? "" : nonOptionalSignature)"
+            stubbedObjectType = "(\(typeName.unwrappedTypeName))\(isOptional ? "?" : nonOptionalSignature)"
             returnTypeName = "\(optionalOpaqueTypeName)"
         }
 
@@ -73,7 +73,7 @@ private extension Variable {
         let returnTypeName = typeName.withWrappedOptionalIfNeeded()
 
         if typeName.isOpaqueType {
-            stubbedObjectType = "(\(typeName.unwrappedTypeName))\(isOptional ? "" : nonOptionalSignature)"
+            stubbedObjectType = "(\(typeName.unwrappedTypeName))\(isOptional ? "?" : nonOptionalSignature)"
         }
 
         return """
