@@ -20,16 +20,10 @@ private extension Variable {
         let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false, types: types)
         let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
 
-        var mutableTypeName = typeName.name
-
-        if typeName.isClosure {
-            mutableTypeName = "(\(typeName.unwrappedTypeName))"
-        }
-
-        var listTypeName = mutableTypeName
-        var invokedObjectType = "\(mutableTypeName)\(isOptional ? "" : "?")"
-        var stubbedObjectType = "\(mutableTypeName)\(isOptional ? "" : nonOptionalSignature)"
-        var returnTypeName = mutableTypeName
+        var invokedObjectType = "\(typeName.name)\(isOptional ? "" : "?")"
+        var listTypeName = typeName.name
+        var stubbedObjectType = "\(typeName.name)\(isOptional ? "" : nonOptionalSignature)"
+        var returnTypeName = typeName.name
 
         if typeName.isOpaqueType {
             let optionalOpaqueTypeName = typeName.withWrappedOptionalIfNeeded()
