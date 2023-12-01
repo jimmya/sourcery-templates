@@ -22,4 +22,24 @@ extension String {
             return []
         }
     }
+
+    func withLowercaseFirst() -> String {
+        guard let index = self.firstIndex(where: { $0.isLowercase }) else {
+            return self
+        }
+        var uppercasePart = String(self[..<index])
+        let lowercasePart = String(self[index...])
+        if uppercasePart.count == 1 {
+            return uppercasePart.lowercased() + lowercasePart
+        }
+        let firstUpperCase = uppercasePart.removeLast()
+        return uppercasePart.lowercased() + firstUpperCase.uppercased() + lowercasePart
+    }
+
+    func withoutLastCamelCasedPart() -> String {
+        guard let index = self.lastIndex(where: { $0.isUppercase }) else {
+            return self
+        }
+        return String(self[..<index])
+    }
 }

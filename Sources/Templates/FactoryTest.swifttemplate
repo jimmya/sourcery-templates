@@ -1,0 +1,7 @@
+<%- include("Imports.swifttemplate") -%>
+<%- includeFile("FactoryTest.swift") -%>
+// swiftlint:disable all
+
+<%= FactoryTest.generate(types: types, annotations: argument) -%>
+
+// swiftlint:disable all
