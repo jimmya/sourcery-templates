@@ -8,3 +8,4 @@
 <%- includeFile("Extensions/Type+Extension.swift") -%>
 <%- includeFile("Extensions/TypeName+Extension.swift") -%>
 <%- includeFile("Extensions/Variable+Extension.swift") -%>
+<%- includeFile("Extensions/MockNamingScheme.swift") -%>

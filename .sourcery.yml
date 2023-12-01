@@ -8,11 +8,11 @@ configurations:
     args:
       imports: [Foundation, XCTest]
       testableImports: [MockDeclarations]
-      mockPrefix: "Prefix"
-      mockSuffix: "Suffix"
+      mockPrefix: ""
+      mockSuffix: ""
   - package:
       path: .
-      target: 
+      target:
         - MockDeclarations
         - NestedMockDeclarations
     templates:
@@ -22,8 +22,6 @@ configurations:
       imports: [Foundation, NestedMockDeclarations]
       testableImports: [MockDeclarations]
       modules: [MockDeclarations]
-      mockPrefix: "Prefix"
-      mockSuffix: "Suffix"
   - package:
       path: .
       target: NestedMockDeclarations
@@ -32,5 +30,3 @@ configurations:
     output: Tests/TemplateTests/Nested.AutoStubbable.generated.swift
     args:
       testableImports: [NestedMockDeclarations]
-      mockPrefix: "Prefix"
-      mockSuffix: "Suffix"
