@@ -2,10 +2,13 @@ import SourceryRuntime
 
 extension Method {
     
-    /// Dissected method signature
+    /// The preferred property when you need the method name including generics and parameters
+    ///
+    /// No Sourcery Method property supports optional opaque types, this property does
+    ///
+    /// - Returns: `"foo<T>(object: (any Protocol)?)"`
     var methodName: String {
-        let generics = name.matches(for: "<.*>").first
-        return "\(callName)\(generics ?? "")(\(methodParameters))"
+        "\(shortName)(\(methodParameters))"
     }
 
     /// Concatenates all function parameters in a string
