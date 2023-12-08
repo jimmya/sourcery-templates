@@ -7,14 +7,14 @@ extension Method {
     ///   - allMethods: List containing all methods in the type, used to avoid collisions
     ///   - type: The type this mock is generated for
     /// - Returns: List of lines containing the mock
-    func generateMock(takenNames: inout Set<String>, allMethods: [Method], in type: Type, types: Types, accessLevel: String) -> [String] {
+    func generateMock(takenNames: inout Set<String>, allMethods: [Method], in type: Type, types: Types, accessLevel: String, annotations: Annotations) -> [String] {
         let methodName = generateMockName(allMethods: allMethods, takenNames: &takenNames).replacingOccurrences(of: "?", with: "")
         // Parameters captured or returned when method is called
-        var lines = mockStubParameters(name: methodName, type: type, types: types, accessLevel: accessLevel)
+        var lines = mockStubParameters(name: methodName, type: type, types: types, accessLevel: accessLevel, annotations: annotations)
         // Attributes `@objc` etc.
         lines.append(mockAttributes())
         // Function declaration `func something() {`
-        lines.append(mockFunctionDeclaration(type: type).indent())
+        lines.append(mockFunctionDeclaration(type: type, annotations: annotations).indent())
         // Filling or captured variables or returning stubbed values when method is called
         lines.append(contentsOf: mockReceivedParameters(methodName: methodName))
         // Close method
@@ -119,7 +119,7 @@ private extension Method {
     ///   - name: Unique name of the method to generate stub parameters for
     ///   - type: Used to construct a return type in case return type is `Self`
     /// - Returns: List of lines containing the generated parameters
-    func mockStubParameters(name: String, type: Type, types: Types, accessLevel: String) -> [String] {
+    func mockStubParameters(name: String, type: Type, types: Types, accessLevel: String, annotations: Annotations) -> [String] {
         var lines: [String] = []
         if self.throws {
             lines.append("\(accessLevel) var stubbed\(name)ThrowableError: Error?")
@@ -152,9 +152,9 @@ private extension Method {
             }
         }
         if !returnTypeName.isVoid && !isInitializer {
-            let mockNaming = MockNamingScheme.shared.createMockNaming(typeName: type.name)
             // Stored property cannot have covariant `Self` type
-            let returnTypeNameString = returnTypeName.name == "Self" ? "\(mockNaming)" : sanitizedReturnTypeName
+            let mockName = annotations.mockName(typeName: type.name)
+            let returnTypeNameString = returnTypeName.name == "Self" ? "\(mockName)" : sanitizedReturnTypeName
             if let generic = generics.first(where: { $0.name == returnTypeNameString }) {
                 let genericConstraint = generic.constraints ?? "Any"
                 lines.append("\(accessLevel) var stubbed\(name)Result: \(genericConstraint)\(isOptionalReturnType ? "" : "!")")
@@ -225,7 +225,7 @@ private extension Method {
     /// Generate function declaration: `func doSomething() async throws -> String`
     /// - Parameter type: Used to construct a return type in case return type is `Self`
     /// - Returns: Generated function declaration
-    func mockFunctionDeclaration(type: Type) -> String {
+    func mockFunctionDeclaration(type: Type, annotations: Annotations) -> String {
         let parts: [String?]
         if isInitializer {
             parts = [
@@ -241,7 +241,7 @@ private extension Method {
                 name,
                 isAsync ? "async" : nil,
                 self.throws ? "throws" : nil,
-                mockReturnType(type: type),
+                mockReturnType(type: type, annotations: annotations),
                 "{",
             ]
         }
@@ -283,13 +283,13 @@ private extension Method {
         return "\(closure.isAsync ? "await " : "")\(closure.returnTypeName.isVoid ? "" : "_ = ")\(parameter.name)\(parameter.typeName.isOptional ? "?" : "")(\(invocations))"
     }
 
-    func mockReturnType(type: Type) -> String? {
+    func mockReturnType(type: Type, annotations: Annotations) -> String? {
         guard !returnTypeName.isVoid else { return nil }
 
-        let mockNaming = MockNamingScheme.shared.createMockNaming(typeName: type.name)
         // We have to return a concrete type instead of `Self`
         if returnTypeName.name == "Self" {
-            return "-> \(mockNaming)"
+            let mockName = annotations.mockName(typeName: type.name)
+            return "-> \(mockName)"
         }
         return "-> \(returnTypeName.name)"
     }

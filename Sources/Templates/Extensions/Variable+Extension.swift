@@ -5,19 +5,19 @@ extension Variable {
         defaultValue != nil
     }
 
-    func generateMock(types: Types, accessLevel: String) -> String {
-        isMutable ? generateMutableMock(types: types, accessLevel: accessLevel) : generateComputedMock(types: types, accessLevel: accessLevel)
+    func generateMock(types: Types, accessLevel: String, annotations: Annotations) -> String {
+        isMutable ? generateMutableMock(types: types, accessLevel: accessLevel, annotations: annotations) : generateComputedMock(types: types, accessLevel: accessLevel, annotations: annotations)
     }
 
-    func generateInitAssignment(types: Types) -> String {
-        "\(name): \(typeName.generateStubbableName(type: type)) = \(typeName.generateDefaultValue(type: type, includeComplexType: true, types: types))"
+    func generateInitAssignment(types: Types, annotations: Annotations) -> String {
+        "\(name): \(typeName.generateStubbableName(type: type)) = \(typeName.generateDefaultValue(type: type, includeComplexType: true, types: types, annotations: annotations))"
     }
 }
 
 private extension Variable {
-    func generateMutableMock(types: Types, accessLevel: String) -> String {
+    func generateMutableMock(types: Types, accessLevel: String, annotations: Annotations) -> String {
         let capitalizedName = name.capitalizingFirstLetter()
-        let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false, types: types)
+        let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false, types: types, annotations: annotations)
         let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
         let typeName = typeName.isClosure ? "(\(typeName))" : typeName.name
         let listTypeName = self.typeName.isClosure ? "(\(typeName))" : self.typeName.name
@@ -46,9 +46,9 @@ private extension Variable {
         """
     }
 
-    func generateComputedMock(types: Types, accessLevel: String) -> String {
+    func generateComputedMock(types: Types, accessLevel: String, annotations: Annotations) -> String {
         let capitalizedName = name.capitalizingFirstLetter()
-        let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false, types: types)
+        let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false, types: types, annotations: annotations)
         let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
         return """
             \(accessLevel) var invoked\(capitalizedName)Getter = false

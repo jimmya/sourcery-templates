@@ -8,8 +8,6 @@ configurations:
     args:
       imports: [Foundation, XCTest]
       testableImports: [MockDeclarations]
-      mockPrefix: ""
-      mockSuffix: ""
   - package:
       path: .
       target:

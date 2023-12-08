@@ -2,11 +2,6 @@ import SourceryRuntime
 
 enum AutoMockable {
     static func generate(types: Types, annotations: Annotations) -> String {
-        MockNamingScheme.shared.configure(
-            prefix: annotations.mockPrefix,
-            suffix: annotations.mockSuffix
-        )
-
         var lines: [String] = []
         lines.append(contentsOf: annotations.testableImports.map { "@testable import \($0)" })
         lines.append(contentsOf: annotations.imports.map { "import \($0)" })
@@ -20,8 +15,9 @@ enum AutoMockable {
                 .sorted(by: { $0.name < $1.name })
                 .filter { $0.isAutoRegisterable && $0.isAutoMockable && $0.module == module }
             sortedProtocols.forEach { type in
+                let mockName = annotations.mockName(typeName: type.name)
                 let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
-                lines.append("public lazy var \(registrationName) = Default\(type.name)Mock()".indent())
+                lines.append("public lazy var \(registrationName) = \(mockName)()".indent())
             }
 
             lines.append(.emptyLine)
@@ -51,7 +47,7 @@ enum AutoMockable {
                 return modules.contains(module)
             }
         let protocolLines = sortedProtocols.map { protocolType in
-            protocolType.generateMock(types: types)
+            protocolType.generateMock(types: types, annotations: annotations)
         }
         lines.append(contentsOf: protocolLines.joined(separator: [.emptyLine]))
         

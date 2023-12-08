@@ -1,9 +1,9 @@
 import SourceryRuntime
 
 extension TypeName {
-    func generateDefaultValue(type: Type?, includeComplexType: Bool, types: Types) -> String {
+    func generateDefaultValue(type: Type?, includeComplexType: Bool, types: Types, annotations: Annotations) -> String {
         if type is Protocol, let firstImplementingType = try? types.implementing.types(forKey: name).first {
-            return generateDefaultValue(type: firstImplementingType, includeComplexType: includeComplexType, types: types)
+            return generateDefaultValue(type: firstImplementingType, includeComplexType: includeComplexType, types: types, annotations: annotations)
         }
         if isOptional && !isImplicitlyUnwrappedOptional {
             return "nil"
@@ -16,15 +16,15 @@ extension TypeName {
         }
         if isTuple, let tuple {
             let combinedElements = tuple.elements.map {
-                $0.typeName.generateDefaultValue(type: $0.type, includeComplexType: includeComplexType, types: types)
+                $0.typeName.generateDefaultValue(type: $0.type, includeComplexType: includeComplexType, types: types, annotations: annotations)
             }.joined(separator: ", ")
             return "(\(combinedElements))"
         }
         if includeComplexType, let enumType = type as? Enum, let firstCase = enumType.cases.first {
-            return generateEnumDefaultValue(firstCase: firstCase, includeComplexType: includeComplexType, types: types)
+            return generateEnumDefaultValue(firstCase: firstCase, includeComplexType: includeComplexType, types: types, annotations: annotations)
         }
         if isClosure, let closure {
-            return "{ \(closure.returnTypeName.generateDefaultValue(type: closure.returnType, includeComplexType: includeComplexType, types: types)) } "
+            return "{ \(closure.returnTypeName.generateDefaultValue(type: closure.returnType, includeComplexType: includeComplexType, types: types, annotations: annotations)) } "
         }
 
         switch (unwrappedTypeName, includeComplexType) {
@@ -42,8 +42,11 @@ extension TypeName {
                     return "\(generateStubbableName(type: type)).stub0()"
                 }
                 return "\(generateStubbableName(type: type)).stub()"
-            } else if type?.isAutoMockable == true {
-                let mockName = MockNamingScheme.shared.createMockNaming(typeName: unwrappedTypeName)
+            } else if
+                let type,
+                type.isAutoMockable == true
+            {
+                let mockName = annotations.mockName(typeName: type.name)
                 return "\(mockName)()"
             }
 
@@ -86,12 +89,12 @@ extension TypeName {
 }
 
 private extension TypeName {
-    func generateEnumDefaultValue(firstCase: EnumCase, includeComplexType: Bool, types: Types) -> String {
+    func generateEnumDefaultValue(firstCase: EnumCase, includeComplexType: Bool, types: Types, annotations: Annotations) -> String {
         guard firstCase.hasAssociatedValue else {
             return ".\(firstCase.name)"
         }
         let associatedValue = firstCase.associatedValues.map { value in
-            let defaultValue = value.defaultValue ?? value.typeName.generateDefaultValue(type: value.type, includeComplexType: includeComplexType, types: types)
+            let defaultValue = value.defaultValue ?? value.typeName.generateDefaultValue(type: value.type, includeComplexType: includeComplexType, types: types, annotations: annotations)
             return [value.localName, defaultValue].compactMap { $0 }.joined(separator: ": ")
         }.joined(separator: ", ")
         return ".\(firstCase.name)(\(associatedValue))"

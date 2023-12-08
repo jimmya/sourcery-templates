@@ -20,7 +20,7 @@ enum AutoStubbable {
                 return modules.contains(module)
             }
         let types = sortedTypes.map { type in
-            type.generateStub(types: types)
+            type.generateStub(types: types, annotations: annotations)
         }.joined(separator: [.emptyLine])
         lines.append(contentsOf: types)
         
