@@ -25,19 +25,11 @@ extension Annotations {
     ///
     /// The default prefix and suffix are `Default` and `Mock` respectively.
     ///
-    /// - If only the `mockPrefix` has a value, an empty suffix will be applied
-    /// - If only the `mockSuffix` has a value, an empty prefix will be applied
-    ///
     /// - Parameter typeName: Name of the class to generate the name for
     /// - Returns: The class name with appropriate prefix and suffix
     func mockName(typeName: String) -> String {
-        var prefix = (mockPrefix ?? "").capitalizingFirstLetter()
-        var suffix = (mockSuffix ?? "").capitalizingFirstLetter()
-
-        if prefix.isEmpty && suffix.isEmpty {
-            prefix = "Default"
-            suffix = "Mock"
-        }
+        let prefix = (mockPrefix ?? "Default").capitalizingFirstLetter()
+        let suffix = (mockSuffix ?? "Mock").capitalizingFirstLetter()
 
         return prefix + typeName + suffix
     }
