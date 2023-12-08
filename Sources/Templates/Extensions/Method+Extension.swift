@@ -4,12 +4,8 @@ extension Method {
     
     /// Dissected method signature
     var methodName: String {
-        "\(callName)\(methodGenerics ?? "")(\(methodParameters))"
-    }
-    
-    /// Returns the generics part of the method signature. E.g. `<T: Encodable>`
-    var methodGenerics: String? {
-        name.matches(for: "<.*>").first
+        let generics = name.matches(for: "<.*>").first
+        return "\(callName)\(generics ?? "")(\(methodParameters))"
     }
 
     /// Concatenates all function parameters in a string
@@ -62,7 +58,7 @@ extension Method {
         return lines
     }
 
-    /// Extract generics from a method e.g. `func foo<T: String>` -> `[("T", "String"]`
+    /// Extract generics from a method e.g. `func foo<T: String>` -> `[("T", "String")]`
     var generics: [(name: String, constraints: String?)] {
         guard let combinedGenerics = shortName.matches(for: "<([^<>]*)>")
             .first?
