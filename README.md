@@ -75,13 +75,35 @@ class DefaultMockProtocolDeclarationMock: MockProtocolDeclaration {
     }
 }
 ```
+
+## Arguments
 Add the following arguments to your `.sourcery.yml` file to provide any required imports for the generated file.
 ```yaml
 args:
-    imports: [Foundation, XCTest]
-    testableImports: [ModuleContainingYourProtocol]
+  imports: [Foundation, XCTest]
+  testableImports: [ModuleContainingYourProtocol]
 ```
+To customize the naming of the class mock generation you can add a `prefix` and/or `suffix` argument.
+If _BOTH_ are not provided, `Default` will be used as `prefix` and `Mock` will be used as suffix.`
+
+Exmple:
+
+```yaml
+args:
+  mockPrefix: "Apple"
+  mockSuffix: "Pear"
+```
+
+```swift
+// sourcery: AutoMockable
+protocol ExampleProtocol { }
+
+// Generated
+class AppleExampleProtocolPear {
+```
+
 After generating you can use the mock definitions to easily setup your tests, provide input and assert.
+
 ## AutoStubbable.swifttemplate
 This template generates stub methods for all your models. It'll attempt to default any property to make initialisation easy. This way you can focus on initialising what matters in your test.
 
