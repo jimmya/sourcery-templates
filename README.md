@@ -86,7 +86,7 @@ args:
 To customize the naming of the class mock generation you can add a `prefix` and/or `suffix` argument.
 If _BOTH_ are not provided, `Default` will be used as `prefix` and `Mock` will be used as suffix.`
 
-Exmple:
+Example:
 
 ```yaml
 args:
@@ -99,7 +99,9 @@ args:
 protocol ExampleProtocol { }
 
 // Generated
-class AppleExampleProtocolPear {
+class AppleExampleProtocolPear: ExampleProtocol {
+
+}
 ```
 
 After generating you can use the mock definitions to easily setup your tests, provide input and assert.
