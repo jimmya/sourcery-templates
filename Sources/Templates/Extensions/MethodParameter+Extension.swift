@@ -12,7 +12,7 @@ extension MethodParameter {
         return type
     }
 
-    func generateInitAssignment(types: Types) -> String {
-        "\(argumentLabel ?? name): \(typeName.generateStubbableName(type: type)) = \(typeName.generateDefaultValue(type: type, includeComplexType: true, types: types))"
+    func generateInitAssignment(types: Types, annotations: Annotations) -> String {
+        "\(argumentLabel ?? name): \(typeName.generateStubbableName(type: type)) = \(typeName.generateDefaultValue(type: type, includeComplexType: true, types: types, annotations: annotations))"
     }
 }

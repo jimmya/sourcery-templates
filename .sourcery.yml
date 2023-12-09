@@ -10,7 +10,7 @@ configurations:
       testableImports: [MockDeclarations]
   - package:
       path: .
-      target: 
+      target:
         - MockDeclarations
         - NestedMockDeclarations
     templates:
@@ -28,4 +28,3 @@ configurations:
     output: Tests/TemplateTests/Nested.AutoStubbable.generated.swift
     args:
       testableImports: [NestedMockDeclarations]
-

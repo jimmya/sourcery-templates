@@ -1,11 +1,11 @@
 import SourceryRuntime
 
 extension Protocol {
-    func generateMock(types: Types) -> [String] {
+    func generateMock(types: Types, annotations: Annotations) -> [String] {
         let variables = allVariables.filter { $0.definedInType?.isExtension == false }
         let variableLines = variables.map { variable in
             [
-                variable.generateMock(types: types, accessLevel: accessLevel),
+                variable.generateMock(types: types, accessLevel: accessLevel, annotations: annotations),
             ]
         }
 
@@ -16,12 +16,12 @@ extension Protocol {
             methodLines.append(["\(accessLevel) init() { }".indent()])
         }
         methodLines.append(contentsOf: allMethods.map { method in
-            method.generateMock(takenNames: &takenMethodNames, allMethods: allMethods, in: self, types: types, accessLevel: accessLevel)
+            method.generateMock(takenNames: &takenMethodNames, allMethods: allMethods, in: self, types: types, accessLevel: accessLevel, annotations: annotations)
         })
 
         let hasVariablesAndMethods = !variableLines.isEmpty && !methodLines.isEmpty
         return [
-            generateClassDeclaration(),
+            generateClassDeclaration(annotations: annotations),
             .emptyLine
         ]
         + variableLines.joined(separator: [.emptyLine])
@@ -33,8 +33,9 @@ extension Protocol {
 
 private extension Protocol {
     /// Returns `class DefaultProtocolNameMock: InheritedTypes {`
-    func generateClassDeclaration() -> String {
-        "\(accessLevel) \(mockType) Default\(name)Mock: \(mockInheritedTypes) {"
+    func generateClassDeclaration(annotations: Annotations) -> String {
+        let mockNaming = annotations.mockName(typeName: name)
+        return "\(accessLevel) \(mockType) \(mockNaming): \(mockInheritedTypes) {"
     }
 
     var mockInheritedTypes: String {
