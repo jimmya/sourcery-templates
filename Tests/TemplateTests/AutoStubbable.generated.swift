@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.0.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.1.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable all
 
@@ -30,7 +30,7 @@ internal extension MockModelDeclaration {
 
 internal extension MockModelWithClosure {
     static func stub(
-        doSomething: @escaping () -> Void = {  } 
+        doSomething: @escaping () -> Void = { }
     ) -> MockModelWithClosure {
         MockModelWithClosure(
             doSomething: doSomething
@@ -103,6 +103,28 @@ internal extension MockModelWithNestedModel {
         MockModelWithNestedModel(
             id: id,
             nested: nested
+        )
+    }
+}
+
+internal extension MockModelWithOpaqueTypes {
+    static func stub(
+        opagueType: any OpaqueType = DefaultOpaqueTypeMock(),
+        optionalOpagueType: (any OpaqueType)? = nil,
+        closureWithOpagueType: @escaping (any OpaqueType) -> Void = { _ in },
+        closureWithOptionalOpagueType: @escaping ((any OpaqueType)?) -> Void = { _ in },
+        optionalClosureWithOpagueType: ((any OpaqueType) -> Void)? = nil,
+        closureWithOpagueReturnType: @escaping () -> any OpaqueType = { DefaultOpaqueTypeMock() },
+        closureWithOptionalOpagueReturnType: @escaping () -> (any OpaqueType)? = { nil }
+    ) -> MockModelWithOpaqueTypes {
+        MockModelWithOpaqueTypes(
+            opagueType: opagueType,
+            optionalOpagueType: optionalOpagueType,
+            closureWithOpagueType: closureWithOpagueType,
+            closureWithOptionalOpagueType: closureWithOptionalOpagueType,
+            optionalClosureWithOpagueType: optionalClosureWithOpagueType,
+            closureWithOpagueReturnType: closureWithOpagueReturnType,
+            closureWithOptionalOpagueReturnType: closureWithOptionalOpagueReturnType
         )
     }
 }

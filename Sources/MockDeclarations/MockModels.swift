@@ -75,3 +75,15 @@ struct MockModelWithImplicitlyUnwrappedOptional {
     var property: Int
     var implicitlyUnwrappedProperty: Int!
 }
+
+// sourcery: AutoStubbable
+struct MockModelWithOpaqueTypes {
+    
+    let opagueType: any OpaqueType
+    let optionalOpagueType: (any OpaqueType)?
+    let closureWithOpagueType: (any OpaqueType) -> Void
+    let closureWithOptionalOpagueType: ((any OpaqueType)?) -> Void
+    let optionalClosureWithOpagueType: ((any OpaqueType) -> Void)?
+    let closureWithOpagueReturnType: () -> any OpaqueType
+    let closureWithOptionalOpagueReturnType: () -> (any OpaqueType)?
+}

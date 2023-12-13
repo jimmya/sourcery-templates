@@ -19,18 +19,30 @@ private extension Variable {
         let capitalizedName = name.capitalizingFirstLetter()
         let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false, types: types, annotations: annotations)
         let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
-        let typeName = typeName.isClosure ? "(\(typeName))" : typeName.name
-        let listTypeName = self.typeName.isClosure ? "(\(typeName))" : self.typeName.name
+
+        var invokedObjectType = "\(typeName.name)\(isOptional ? "" : "?")"
+        var listTypeName = typeName.name
+        var stubbedObjectType = "\(typeName.name)\(isOptional ? "" : nonOptionalSignature)"
+        var returnTypeName = typeName.name
+
+        if typeName.isOpaqueType {
+            let optionalOpaqueTypeName = typeName.withWrappedOptionalIfNeeded()
+            invokedObjectType = "(\(typeName.unwrappedTypeName))?"
+            listTypeName = optionalOpaqueTypeName
+            stubbedObjectType = "(\(typeName.unwrappedTypeName))\(isOptional ? "?" : nonOptionalSignature)"
+            returnTypeName = "\(optionalOpaqueTypeName)"
+        }
+
         return """
             \(accessLevel) var invoked\(capitalizedName)Setter = false
             \(accessLevel) var invoked\(capitalizedName)SetterCount = 0
-            \(accessLevel) var invoked\(capitalizedName): \(typeName)\(isOptional ? "" : "?")
+            \(accessLevel) var invoked\(capitalizedName): \(invokedObjectType)
             \(accessLevel) var invoked\(capitalizedName)List: [\(listTypeName)] = []
             \(accessLevel) var invoked\(capitalizedName)Getter = false
             \(accessLevel) var invoked\(capitalizedName)GetterCount = 0
-            \(accessLevel) var stubbed\(capitalizedName): \(typeName)\(isOptional ? "" : nonOptionalSignature)
+            \(accessLevel) var stubbed\(capitalizedName): \(stubbedObjectType)
 
-            \(accessLevel) var \(name): \(typeName) {
+            \(accessLevel) var \(name): \(returnTypeName) {
                 get {
                     invoked\(capitalizedName)Getter = true
                     invoked\(capitalizedName)GetterCount += 1
@@ -50,12 +62,20 @@ private extension Variable {
         let capitalizedName = name.capitalizingFirstLetter()
         let defaultValue = typeName.generateDefaultValue(type: type, includeComplexType: false, types: types, annotations: annotations)
         let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
+
+        var stubbedObjectType = "\(typeName.name)\(isOptional ? "" : nonOptionalSignature)"
+        let returnTypeName = typeName.withWrappedOptionalIfNeeded()
+
+        if typeName.isOpaqueType {
+            stubbedObjectType = "(\(typeName.unwrappedTypeName))\(isOptional ? "?" : nonOptionalSignature)"
+        }
+
         return """
             \(accessLevel) var invoked\(capitalizedName)Getter = false
             \(accessLevel) var invoked\(capitalizedName)GetterCount = 0
-            \(accessLevel) var stubbed\(capitalizedName): \(typeName)\(isOptional ? "" : nonOptionalSignature)
+            \(accessLevel) var stubbed\(capitalizedName): \(stubbedObjectType)
 
-            \(accessLevel) var \(name): \(typeName) {
+            \(accessLevel) var \(name): \(returnTypeName) {
                 invoked\(capitalizedName)Getter = true
                 invoked\(capitalizedName)GetterCount += 1
                 return stubbed\(capitalizedName)

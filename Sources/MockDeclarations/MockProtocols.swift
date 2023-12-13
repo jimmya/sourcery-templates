@@ -5,7 +5,7 @@ protocol MockProtocolWithProperties {
     var immutableProperty: Int { get }
     var mutableProperty: Int { get set }
     var immutableOptionalProperty: Int? { get }
-    var mutableOptionalProperty: Int? {get set }
+    var mutableOptionalProperty: Int? { get set }
 }
 
 // sourcery: AutoMockable
@@ -49,6 +49,20 @@ protocol MockProtocolWithGenericInheritanceDeclaration where Self: SomeType {
     init?(someFailableParameter: Int)
     
     func method()
+}
+
+// sourcery: AutoMockable
+protocol MockProtocolWithOpaqueTypes {
+    
+    var immutableOpaqueObject: any OpaqueType { get }
+    var immutableOptionalOpaqueObject: (any OpaqueType)? { get }
+    var mutableOpaqueObject: any OpaqueType { get set }
+    var mutableOptionalOpaqueObject: (any OpaqueType)? { get set }
+    
+    func someOpaqueReturningFunction() -> any OpaqueType
+    func someOptionalOpaqueReturningFunction() -> (any OpaqueType)?
+    func someOpaqueParameterFunction(opaqueObject: any OpaqueType)
+    func someOptionalOpaqueParameterFunction(opaqueObject: (any OpaqueType)?)
 }
 
 // sourcery: AutoMockable

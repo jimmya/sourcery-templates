@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.0.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.1.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable all
 
@@ -165,6 +165,123 @@ internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMulti
     }
 }
 
+internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTypes {
+
+    internal var invokedImmutableOpaqueObjectGetter = false
+    internal var invokedImmutableOpaqueObjectGetterCount = 0
+    internal var stubbedImmutableOpaqueObject: (any OpaqueType)! = DefaultOpaqueTypeMock()
+
+    internal var immutableOpaqueObject: any OpaqueType {
+        invokedImmutableOpaqueObjectGetter = true
+        invokedImmutableOpaqueObjectGetterCount += 1
+        return stubbedImmutableOpaqueObject
+    }
+
+    internal var invokedImmutableOptionalOpaqueObjectGetter = false
+    internal var invokedImmutableOptionalOpaqueObjectGetterCount = 0
+    internal var stubbedImmutableOptionalOpaqueObject: (any OpaqueType)?
+
+    internal var immutableOptionalOpaqueObject: (any OpaqueType)? {
+        invokedImmutableOptionalOpaqueObjectGetter = true
+        invokedImmutableOptionalOpaqueObjectGetterCount += 1
+        return stubbedImmutableOptionalOpaqueObject
+    }
+
+    internal var invokedMutableOpaqueObjectSetter = false
+    internal var invokedMutableOpaqueObjectSetterCount = 0
+    internal var invokedMutableOpaqueObject: (any OpaqueType)?
+    internal var invokedMutableOpaqueObjectList: [any OpaqueType] = []
+    internal var invokedMutableOpaqueObjectGetter = false
+    internal var invokedMutableOpaqueObjectGetterCount = 0
+    internal var stubbedMutableOpaqueObject: (any OpaqueType)! = DefaultOpaqueTypeMock()
+
+    internal var mutableOpaqueObject: any OpaqueType {
+        get {
+            invokedMutableOpaqueObjectGetter = true
+            invokedMutableOpaqueObjectGetterCount += 1
+            return stubbedMutableOpaqueObject
+        }
+        set {
+            invokedMutableOpaqueObjectSetter = true
+            invokedMutableOpaqueObjectSetterCount += 1
+            invokedMutableOpaqueObject = newValue
+            invokedMutableOpaqueObjectList.append(newValue)
+        }
+    }
+
+    internal var invokedMutableOptionalOpaqueObjectSetter = false
+    internal var invokedMutableOptionalOpaqueObjectSetterCount = 0
+    internal var invokedMutableOptionalOpaqueObject: (any OpaqueType)?
+    internal var invokedMutableOptionalOpaqueObjectList: [(any OpaqueType)?] = []
+    internal var invokedMutableOptionalOpaqueObjectGetter = false
+    internal var invokedMutableOptionalOpaqueObjectGetterCount = 0
+    internal var stubbedMutableOptionalOpaqueObject: (any OpaqueType)?
+
+    internal var mutableOptionalOpaqueObject: (any OpaqueType)? {
+        get {
+            invokedMutableOptionalOpaqueObjectGetter = true
+            invokedMutableOptionalOpaqueObjectGetterCount += 1
+            return stubbedMutableOptionalOpaqueObject
+        }
+        set {
+            invokedMutableOptionalOpaqueObjectSetter = true
+            invokedMutableOptionalOpaqueObjectSetterCount += 1
+            invokedMutableOptionalOpaqueObject = newValue
+            invokedMutableOptionalOpaqueObjectList.append(newValue)
+        }
+    }
+
+    internal init() { }
+
+    internal var invokedSomeOpaqueParameterFunction: Bool { invokedSomeOpaqueParameterFunctionCount > 0 }
+    internal var invokedSomeOpaqueParameterFunctionCount = 0
+    internal var invokedSomeOpaqueParameterFunctionParameters: (opaqueObject: any OpaqueType, Void)?
+    internal var invokedSomeOpaqueParameterFunctionParametersList: [(opaqueObject: any OpaqueType, Void)] = []
+    internal var invokedSomeOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func someOpaqueParameterFunction(opaqueObject: any OpaqueType) {
+        defer { invokedSomeOpaqueParameterFunctionExpectation.fulfill() }
+        invokedSomeOpaqueParameterFunctionCount += 1
+        invokedSomeOpaqueParameterFunctionParameters = (opaqueObject: opaqueObject, ())
+        invokedSomeOpaqueParameterFunctionParametersList.append((opaqueObject: opaqueObject, ()))
+    }
+
+    internal var invokedSomeOpaqueReturningFunction: Bool { invokedSomeOpaqueReturningFunctionCount > 0 }
+    internal var invokedSomeOpaqueReturningFunctionCount = 0
+    internal var stubbedSomeOpaqueReturningFunctionResult: (any OpaqueType)!
+    internal var invokedSomeOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func someOpaqueReturningFunction() -> any OpaqueType {
+        defer { invokedSomeOpaqueReturningFunctionExpectation.fulfill() }
+        invokedSomeOpaqueReturningFunctionCount += 1
+        return stubbedSomeOpaqueReturningFunctionResult
+    }
+
+    internal var invokedSomeOptionalOpaqueParameterFunction: Bool { invokedSomeOptionalOpaqueParameterFunctionCount > 0 }
+    internal var invokedSomeOptionalOpaqueParameterFunctionCount = 0
+    internal var invokedSomeOptionalOpaqueParameterFunctionParameters: (opaqueObject: (any OpaqueType)?, Void)?
+    internal var invokedSomeOptionalOpaqueParameterFunctionParametersList: [(opaqueObject: (any OpaqueType)?, Void)] = []
+    internal var invokedSomeOptionalOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func someOptionalOpaqueParameterFunction(opaqueObject: (any OpaqueType)?) {
+        defer { invokedSomeOptionalOpaqueParameterFunctionExpectation.fulfill() }
+        invokedSomeOptionalOpaqueParameterFunctionCount += 1
+        invokedSomeOptionalOpaqueParameterFunctionParameters = (opaqueObject: opaqueObject, ())
+        invokedSomeOptionalOpaqueParameterFunctionParametersList.append((opaqueObject: opaqueObject, ()))
+    }
+
+    internal var invokedSomeOptionalOpaqueReturningFunction: Bool { invokedSomeOptionalOpaqueReturningFunctionCount > 0 }
+    internal var invokedSomeOptionalOpaqueReturningFunctionCount = 0
+    internal var stubbedSomeOptionalOpaqueReturningFunctionResult: (any OpaqueType)?
+    internal var invokedSomeOptionalOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func someOptionalOpaqueReturningFunction() -> (any OpaqueType)? {
+        defer { invokedSomeOptionalOpaqueReturningFunctionExpectation.fulfill() }
+        invokedSomeOptionalOpaqueReturningFunctionCount += 1
+        return stubbedSomeOptionalOpaqueReturningFunctionResult
+    }
+}
+
 internal class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWithOptionalClosureMethod {
 
     internal init() { }
@@ -304,6 +421,11 @@ internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithRetu
         invokedMethodCount += 1
         return stubbedMethodResult
     }
+}
+
+internal class DefaultOpaqueTypeMock: OpaqueType {
+
+    internal init() { }
 }
 
 internal class DefaultURLSessionLogicMock: URLSessionLogic {

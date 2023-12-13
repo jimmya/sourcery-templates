@@ -1,0 +1,2 @@
+// sourcery: AutoMockable
+protocol OpaqueType { }

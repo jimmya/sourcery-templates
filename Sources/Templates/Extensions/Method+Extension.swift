@@ -1,6 +1,45 @@
 import SourceryRuntime
 
 extension Method {
+    
+    /// The preferred property when you need the method name including generics and parameters
+    ///
+    /// No Sourcery Method property supports optional opaque types, this property does
+    ///
+    /// - Returns: `"foo<T>(object: (any Protocol)?)"`
+    var methodName: String {
+        "\(shortName)(\(methodParameters))"
+    }
+
+    /// Concatenates all function parameters in a string
+    var methodParameters: String {
+        parameters.map { parameter in
+            guard parameter.typeName.isOpaqueType && parameter.typeName.isOptional else {
+                return parameter.asSource
+            }
+
+            /// This will dissect the parameter containing an optional opaque type and put brackets around it
+            ///
+            /// Example of parameter.asSource result:
+            /// `parameter: any OpaqueType?`
+            ///
+            /// Result of function will be:
+            /// `parameter: (any OpaqueType)?`
+
+            var parameterParts = parameter.asSource
+                .split(separator: " ")
+                .map { String($0) }
+
+            let opaqueKeywordIndex = parameterParts.firstIndex {
+                Constants.opaqueKeywords.contains(String($0))
+            } ?? 0
+
+            parameterParts.removeSubrange(opaqueKeywordIndex..<parameterParts.count)
+            parameterParts.append(parameter.typeName.withWrappedOptionalIfNeeded())
+            return parameterParts.joined(separator: " ")
+        }.joined(separator: ", ")
+    }
+
     /// Generate mock for a method
     /// - Parameters:
     ///   - takenNames: Names that already have mocks, used to avoid collisions when methods have similar signatures
@@ -22,7 +61,7 @@ extension Method {
         return lines
     }
 
-    /// Extract generics from a method e.g. `func foo<T: String>` -> `[("T", "String"]`
+    /// Extract generics from a method e.g. `func foo<T: String>` -> `[("T", "String")]`
     var generics: [(name: String, constraints: String?)] {
         guard let combinedGenerics = shortName.matches(for: "<([^<>]*)>")
             .first?
@@ -155,12 +194,21 @@ private extension Method {
             // Stored property cannot have covariant `Self` type
             let mockName = annotations.mockName(typeName: type.name)
             let returnTypeNameString = returnTypeName.name == "Self" ? "\(mockName)" : sanitizedReturnTypeName
+
+            var resultType: String
+
             if let generic = generics.first(where: { $0.name == returnTypeNameString }) {
                 let genericConstraint = generic.constraints ?? "Any"
-                lines.append("\(accessLevel) var stubbed\(name)Result: \(genericConstraint)\(isOptionalReturnType ? "" : "!")")
+                resultType = genericConstraint
+            } else if returnTypeName.isOpaqueType {
+                resultType = returnTypeName.isOptional ? returnTypeName.withWrappedOptionalIfNeeded() : "(\(returnTypeName))"
             } else {
-                lines.append("\(accessLevel) var stubbed\(name)Result: \(returnTypeNameString)\(isOptionalReturnType ? "" : "!")")
+                resultType = returnTypeNameString
             }
+
+            resultType += isOptionalReturnType ? "" : "!"
+
+            lines.append("\(accessLevel) var stubbed\(name)Result: \(resultType)")
         }
         if !isInitializer { // Expectations aren't possible in the initializer
             lines.append("\(accessLevel) var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
@@ -238,7 +286,7 @@ private extension Method {
             parts = [
                 type.accessLevel,
                 "func",
-                name,
+                methodName,
                 isAsync ? "async" : nil,
                 self.throws ? "throws" : nil,
                 mockReturnType(type: type, annotations: annotations),
@@ -290,7 +338,10 @@ private extension Method {
         if returnTypeName.name == "Self" {
             let mockName = annotations.mockName(typeName: type.name)
             return "-> \(mockName)"
+        } else if returnTypeName.isOpaqueType && returnTypeName.isOptional {
+            return "-> \(returnTypeName.withWrappedOptionalIfNeeded())"
         }
+
         return "-> \(returnTypeName.name)"
     }
 }
