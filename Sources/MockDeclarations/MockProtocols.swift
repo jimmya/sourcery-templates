@@ -56,13 +56,20 @@ protocol MockProtocolWithOpaqueTypes {
     
     var immutableOpaqueObject: any OpaqueType { get }
     var immutableOptionalOpaqueObject: (any OpaqueType)? { get }
+    var immutableClosureParameter: ((any OpaqueType)?) -> Void { get }
+    var immutableOptionalClosureParameter: (((any OpaqueType)?) -> Void)? { get }
+
     var mutableOpaqueObject: any OpaqueType { get set }
     var mutableOptionalOpaqueObject: (any OpaqueType)? { get set }
-    
+    var mutableClosureParameter: ((any OpaqueType)?) -> Void { get set }
+    var mutableOptionalClosureParameter: (((any OpaqueType)?) -> Void)? { get set }
+
     func someOpaqueReturningFunction() -> any OpaqueType
     func someOptionalOpaqueReturningFunction() -> (any OpaqueType)?
     func someOpaqueParameterFunction(opaqueObject: any OpaqueType)
     func someOptionalOpaqueParameterFunction(opaqueObject: (any OpaqueType)?)
+    func someOptionalOpaqueClosureParameter(completion: ((any OpaqueType)?) -> Void)
+    func someOptionalOpaqueOptionalClosureParameter(completion: (((any OpaqueType)?) -> Void)?)
 }
 
 // sourcery: AutoMockable

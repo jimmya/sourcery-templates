@@ -9,7 +9,7 @@ extension MethodParameter {
         if isVariadic {
             type = "[\(type)]"
         }
-        if typeName.isOpaqueType && typeName.isOptional {
+        if typeName.isOpaqueType {
             type = typeName.withWrappedOptionalIfNeeded()
         }
         return type
