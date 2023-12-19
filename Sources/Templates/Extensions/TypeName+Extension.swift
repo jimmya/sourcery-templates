@@ -15,7 +15,8 @@ extension TypeName {
             return "[:]"
         }
         if isOpaqueType {
-            return isOptional ? "nil" : "Default\(dropOpaqueKeywordIfNeeded())Mock()"
+            let mockName = annotations.mockName(typeName: dropOpaqueKeywordIfNeeded())
+            return isOptional ? "nil" : "\(mockName)()"
         }
         if isTuple, let tuple {
             let combinedElements = tuple.elements.map {

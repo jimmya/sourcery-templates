@@ -56,13 +56,38 @@ protocol MockProtocolWithOpaqueTypes {
     
     var immutableOpaqueObject: any OpaqueType { get }
     var immutableOptionalOpaqueObject: (any OpaqueType)? { get }
+    var immutableOpaqueClosureParameter: (any OpaqueType) -> Void { get }
+    var immutableOptionalOpaqueClosureParameter: ((any OpaqueType)?) -> Void { get }
+
+    var immutableClosureOpaqueReturnType: () -> any OpaqueType { get }
+    var immutableClosureOptionalOpaqueReturnType: () -> (any OpaqueType)? { get }
+    var immutableOptionalClosureOpaqueParameter: ((any OpaqueType) -> Void)? { get }
+    var immutableOptionalClosureOptionalOpaqueParameter: (((any OpaqueType)?) -> Void)? { get }
+    var immutableOptionalClosureOpaqueReturnType: (() -> any OpaqueType)? { get }
+    var immutableOptionalClosureOpationalOpaqueReturnType: (() -> (any OpaqueType)?)? { get }
+
     var mutableOpaqueObject: any OpaqueType { get set }
     var mutableOptionalOpaqueObject: (any OpaqueType)? { get set }
-    
+    var mutableClosureOpaqueParameter: (any OpaqueType) -> Void { get set }
+    var mutableClosureOptionalOpaqueParameter: ((any OpaqueType)?) -> Void { get set }
+    var mutableOptionalClosureOpaqueParameter: ((any OpaqueType) -> Void)? { get set }
+    var mutableOptionalClosureOptionalOpaqueParameter: (((any OpaqueType)?) -> Void)? { get set }
+    var mutableOptionalClosureOpaqueReturnType: (() -> any OpaqueType)? { get set }
+    var mutableOptionalClosureOptionalOpaqueReturnType: (() -> (any OpaqueType)?)? { get set }
+
     func someOpaqueReturningFunction() -> any OpaqueType
     func someOptionalOpaqueReturningFunction() -> (any OpaqueType)?
     func someOpaqueParameterFunction(opaqueObject: any OpaqueType)
     func someOptionalOpaqueParameterFunction(opaqueObject: (any OpaqueType)?)
+    func someClosureOpaqueParameter(completion: (any OpaqueType) -> Void)
+    func someClosureOptionalOpaqueParameter(completion: ((any OpaqueType)?) -> Void)
+    func someOptionalClosureOpaqueParameter(completion: ((any OpaqueType) -> Void)?)
+    func someOptionalClosureOptionalOpaqueParameter(completion: (((any OpaqueType)?) -> Void)?)
+
+    func someClosureOpaqueReturnType(completion: () -> any OpaqueType)
+    func someClosureOptionalOpaqueReturnType(completion: () -> (any OpaqueType)?)
+    func someOptionalClosureOpaqueReturnType(completion: (() -> any OpaqueType)?)
+    func someOptionalClosureOptionalOpaqueReturnType(completion: (() -> (any OpaqueType)?)?)
 }
 
 // sourcery: AutoMockable
