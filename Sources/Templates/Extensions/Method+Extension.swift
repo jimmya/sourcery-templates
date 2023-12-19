@@ -173,7 +173,12 @@ private extension Method {
                 let closureParameter = closure.parameters.first,
                 !closureParameter.typeName.isOptional
             {
-                let type = closureParameter.typeName.withWrappedOptionalIfNeeded()
+                var type = closureParameter.typeName.withWrappedOptionalIfNeeded()
+
+                if closureParameter.typeName.isOpaqueType {
+                    type = "(\(type))"
+                }
+
                 lines.append("\(accessLevel) var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: \(type)?")
             } else {
                 var parameters = closure.parameters.map { $0.typeName.withWrappedOptionalIfNeeded() }.joined(separator: ", ")
