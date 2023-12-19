@@ -2,7 +2,8 @@ import SourceryRuntime
 
 extension ClosureType {
     
-    /// The signature of the closure, manually dissected
+    /// The signature of the closure
+    /// Returns `(<parameters>) <async> <throws> -> <returnType>`
     var typeSignature: String {
         let parameters = self.parameters.map { $0.typeName.withWrappedOptionalIfNeeded() }.joined(separator: ", ")
 
@@ -16,7 +17,13 @@ extension ClosureType {
             .compactMap { $0 }
             .joined(separator: " ")
     }
-
+    
+    /// Create closure signature as parameter
+    ///
+    /// If the parameter is optional, the closure will be wrapped
+    ///
+    /// - Parameter parameter: parameter to create the signature for
+    /// - Returns: `<parameterName>: <@escaping> (<parameters>) <async> <throws> -> <returnType>`
     func signature(fromMethodParameter parameter: MethodParameter) -> String {
         let parameters = parameters.map { $0.typeName.withWrappedOptionalIfNeeded() }.joined(separator: ", ")
 
