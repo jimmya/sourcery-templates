@@ -14,10 +14,8 @@ extension Method {
     /// Concatenates all function parameters in a string
     var methodParameters: String {
         parameters.map { parameter in
-            let parameterName = parameter.name
-
             if parameter.typeName.isOpaqueType {
-                return "\(parameterName): \(parameter.typeName.withWrappedOptionalIfNeeded())"
+                return "\(parameter.externalInternalName): \(parameter.typeName.withWrappedOptionalIfNeeded())"
             } else if let closure = parameter.typeName.closure {
                 return closure.signature(fromMethodParameter: parameter)
             }

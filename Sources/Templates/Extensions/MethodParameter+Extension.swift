@@ -1,6 +1,17 @@
 import SourceryRuntime
 
 extension MethodParameter {
+
+    var externalInternalName: String {
+        [
+            argumentLabel,
+            name
+        ]
+            .compactMap { $0 }
+            .unique()
+            .joined(separator: " ")
+    }
+
     func settableType(method: Method) -> String {
         var type = typeAttributes.isEscaping ? unwrappedTypeName : typeName.asSource
         if let generic = method.generics.first(where: { $0.name == type }) {
