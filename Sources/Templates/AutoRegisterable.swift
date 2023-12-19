@@ -6,7 +6,7 @@ enum AutoRegisterable {
         lines.append(contentsOf: annotations.imports.map { "import \($0)" })
         lines.append("")
 
-        var customContainerName = annotations.containerName
+        let customContainerName = annotations.containerName
         if let customContainerName {
             lines.append("public final class \(customContainerName): SharedContainer {")
             lines.append("public static var shared = \(customContainerName)()".indent())
@@ -32,7 +32,6 @@ enum AutoRegisterable {
             }
 
             if let initMethod = initMethods.first {
-                let typeNames = initMethod.parameters.map(\.typeName.name)
                 let parameterType: String
                 // Factory works with tuples for more than 1 parameter.
                 if initMethod.parameters.count == 1 {

@@ -34,7 +34,7 @@ enum FactoryTest {
             }
             let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
             if let initMethod = initMethods.first {
-                let typeNames = initMethod.parameters.map { $0.typeName.generateDefaultValue(type: $0.type, includeComplexType: true, types: types) }
+                let typeNames = initMethod.parameters.map { $0.typeName.generateDefaultValue(type: $0.type, includeComplexType: true, types: types, annotations: annotations) }
                 let joinedTypes = typeNames.joined(separator: ", ")
                 let types = typeNames.count == 1 ? joinedTypes : "(\(joinedTypes))"
                 lines.append("_ = \(containerName).shared.\(registrationName).resolve(\(types))".indent(level: 2))

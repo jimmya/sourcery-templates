@@ -33,7 +33,7 @@ extension TypeName {
             var parameters: String = ""
 
             if !closure.parameters.isEmpty {
-                var parameterDashes = closure.parameters.map { _ in "_" }.joined(separator: ", ")
+                let parameterDashes = closure.parameters.map { _ in "_" }.joined(separator: ", ")
                 parameters = parameterDashes + " in"
             }
 
