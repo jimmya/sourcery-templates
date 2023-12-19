@@ -14,29 +14,16 @@ extension Method {
     /// Concatenates all function parameters in a string
     var methodParameters: String {
         parameters.map { parameter in
-            guard parameter.typeName.isOpaqueType && parameter.typeName.isOptional else {
-                return parameter.asSource
+            let parameterName = parameter.name
+
+            if parameter.typeName.isOpaqueType {
+                return "\(parameterName): \(parameter.typeName.withWrappedOptionalIfNeeded())"
+            } else if let closure = parameter.typeName.closure {
+                return closure.signature(fromMethodParameter: parameter)
             }
 
-            /// This will dissect the parameter containing an optional opaque type and put brackets around it
-            ///
-            /// Example of parameter.asSource result:
-            /// `parameter: any OpaqueType?`
-            ///
-            /// Result of function will be:
-            /// `parameter: (any OpaqueType)?`
+            return parameter.asSource
 
-            var parameterParts = parameter.asSource
-                .split(separator: " ")
-                .map { String($0) }
-
-            let opaqueKeywordIndex = parameterParts.firstIndex {
-                Constants.opaqueKeywords.contains(String($0))
-            } ?? 0
-
-            parameterParts.removeSubrange(opaqueKeywordIndex..<parameterParts.count)
-            parameterParts.append(parameter.typeName.withWrappedOptionalIfNeeded())
-            return parameterParts.joined(separator: " ")
         }.joined(separator: ", ")
     }
 
@@ -178,12 +165,23 @@ private extension Method {
         }
         parameters.filter { $0.typeName.isClosure }.forEach { parameter in
             guard let closure = parameter.typeName.closure else { return }
+
             if closure.parameters.count == 0 {
                 lines.append("\(accessLevel) var shouldInvoke\(name)\(parameter.name.capitalizingFirstLetter()) = false")
-            } else if closure.parameters.count == 1, let closureParameter = closure.parameters.first, !closureParameter.typeName.isOptional {
-                lines.append("\(accessLevel) var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: \(closureParameter.typeName.name)?")
+            } else if 
+                closure.parameters.count == 1,
+                let closureParameter = closure.parameters.first,
+                !closureParameter.typeName.isOptional
+            {
+                var type = closureParameter.typeName.withWrappedOptionalIfNeeded()
+
+                if closureParameter.typeName.isOpaqueType {
+                    type = "(\(type))"
+                }
+
+                lines.append("\(accessLevel) var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: \(type)?")
             } else {
-                var parameters = closure.parameters.map { $0.typeName.name }.joined(separator: ", ")
+                var parameters = closure.parameters.map { $0.typeName.withWrappedOptionalIfNeeded() }.joined(separator: ", ")
                 if closure.parameters.count == 1 {
                     parameters.append(", Void")
                 }

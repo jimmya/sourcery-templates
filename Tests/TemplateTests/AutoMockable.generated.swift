@@ -187,6 +187,86 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
         return stubbedImmutableOptionalOpaqueObject
     }
 
+    internal var invokedImmutableOpaqueClosureParameterGetter = false
+    internal var invokedImmutableOpaqueClosureParameterGetterCount = 0
+    internal var stubbedImmutableOpaqueClosureParameter: ((any OpaqueType) -> Void)!
+
+    internal var immutableOpaqueClosureParameter: (any OpaqueType) -> Void {
+        invokedImmutableOpaqueClosureParameterGetter = true
+        invokedImmutableOpaqueClosureParameterGetterCount += 1
+        return stubbedImmutableOpaqueClosureParameter
+    }
+
+    internal var invokedImmutableOptionalOpaqueClosureParameterGetter = false
+    internal var invokedImmutableOptionalOpaqueClosureParameterGetterCount = 0
+    internal var stubbedImmutableOptionalOpaqueClosureParameter: (((any OpaqueType)?) -> Void)!
+
+    internal var immutableOptionalOpaqueClosureParameter: ((any OpaqueType)?) -> Void {
+        invokedImmutableOptionalOpaqueClosureParameterGetter = true
+        invokedImmutableOptionalOpaqueClosureParameterGetterCount += 1
+        return stubbedImmutableOptionalOpaqueClosureParameter
+    }
+
+    internal var invokedImmutableClosureOpaqueReturnTypeGetter = false
+    internal var invokedImmutableClosureOpaqueReturnTypeGetterCount = 0
+    internal var stubbedImmutableClosureOpaqueReturnType: (() -> any OpaqueType)!
+
+    internal var immutableClosureOpaqueReturnType: () -> any OpaqueType {
+        invokedImmutableClosureOpaqueReturnTypeGetter = true
+        invokedImmutableClosureOpaqueReturnTypeGetterCount += 1
+        return stubbedImmutableClosureOpaqueReturnType
+    }
+
+    internal var invokedImmutableClosureOptionalOpaqueReturnTypeGetter = false
+    internal var invokedImmutableClosureOptionalOpaqueReturnTypeGetterCount = 0
+    internal var stubbedImmutableClosureOptionalOpaqueReturnType: (() -> (any OpaqueType)?)!
+
+    internal var immutableClosureOptionalOpaqueReturnType: () -> (any OpaqueType)? {
+        invokedImmutableClosureOptionalOpaqueReturnTypeGetter = true
+        invokedImmutableClosureOptionalOpaqueReturnTypeGetterCount += 1
+        return stubbedImmutableClosureOptionalOpaqueReturnType
+    }
+
+    internal var invokedImmutableOptionalClosureOpaqueParameterGetter = false
+    internal var invokedImmutableOptionalClosureOpaqueParameterGetterCount = 0
+    internal var stubbedImmutableOptionalClosureOpaqueParameter: ((any OpaqueType) -> Void)?
+
+    internal var immutableOptionalClosureOpaqueParameter: ((any OpaqueType) -> Void)? {
+        invokedImmutableOptionalClosureOpaqueParameterGetter = true
+        invokedImmutableOptionalClosureOpaqueParameterGetterCount += 1
+        return stubbedImmutableOptionalClosureOpaqueParameter
+    }
+
+    internal var invokedImmutableOptionalClosureOptionalOpaqueParameterGetter = false
+    internal var invokedImmutableOptionalClosureOptionalOpaqueParameterGetterCount = 0
+    internal var stubbedImmutableOptionalClosureOptionalOpaqueParameter: (((any OpaqueType)?) -> Void)?
+
+    internal var immutableOptionalClosureOptionalOpaqueParameter: (((any OpaqueType)?) -> Void)? {
+        invokedImmutableOptionalClosureOptionalOpaqueParameterGetter = true
+        invokedImmutableOptionalClosureOptionalOpaqueParameterGetterCount += 1
+        return stubbedImmutableOptionalClosureOptionalOpaqueParameter
+    }
+
+    internal var invokedImmutableOptionalClosureOpaqueReturnTypeGetter = false
+    internal var invokedImmutableOptionalClosureOpaqueReturnTypeGetterCount = 0
+    internal var stubbedImmutableOptionalClosureOpaqueReturnType: (() -> any OpaqueType)?
+
+    internal var immutableOptionalClosureOpaqueReturnType: (() -> any OpaqueType)? {
+        invokedImmutableOptionalClosureOpaqueReturnTypeGetter = true
+        invokedImmutableOptionalClosureOpaqueReturnTypeGetterCount += 1
+        return stubbedImmutableOptionalClosureOpaqueReturnType
+    }
+
+    internal var invokedImmutableOptionalClosureOpationalOpaqueReturnTypeGetter = false
+    internal var invokedImmutableOptionalClosureOpationalOpaqueReturnTypeGetterCount = 0
+    internal var stubbedImmutableOptionalClosureOpationalOpaqueReturnType: (() -> (any OpaqueType)?)?
+
+    internal var immutableOptionalClosureOpationalOpaqueReturnType: (() -> (any OpaqueType)?)? {
+        invokedImmutableOptionalClosureOpationalOpaqueReturnTypeGetter = true
+        invokedImmutableOptionalClosureOpationalOpaqueReturnTypeGetterCount += 1
+        return stubbedImmutableOptionalClosureOpationalOpaqueReturnType
+    }
+
     internal var invokedMutableOpaqueObjectSetter = false
     internal var invokedMutableOpaqueObjectSetterCount = 0
     internal var invokedMutableOpaqueObject: (any OpaqueType)?
@@ -231,7 +311,191 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
         }
     }
 
+    internal var invokedMutableClosureOpaqueParameterSetter = false
+    internal var invokedMutableClosureOpaqueParameterSetterCount = 0
+    internal var invokedMutableClosureOpaqueParameter: ((any OpaqueType) -> Void)?
+    internal var invokedMutableClosureOpaqueParameterList: [(any OpaqueType) -> Void] = []
+    internal var invokedMutableClosureOpaqueParameterGetter = false
+    internal var invokedMutableClosureOpaqueParameterGetterCount = 0
+    internal var stubbedMutableClosureOpaqueParameter: ((any OpaqueType) -> Void)!
+
+    internal var mutableClosureOpaqueParameter: (any OpaqueType) -> Void {
+        get {
+            invokedMutableClosureOpaqueParameterGetter = true
+            invokedMutableClosureOpaqueParameterGetterCount += 1
+            return stubbedMutableClosureOpaqueParameter
+        }
+        set {
+            invokedMutableClosureOpaqueParameterSetter = true
+            invokedMutableClosureOpaqueParameterSetterCount += 1
+            invokedMutableClosureOpaqueParameter = newValue
+            invokedMutableClosureOpaqueParameterList.append(newValue)
+        }
+    }
+
+    internal var invokedMutableClosureOptionalOpaqueParameterSetter = false
+    internal var invokedMutableClosureOptionalOpaqueParameterSetterCount = 0
+    internal var invokedMutableClosureOptionalOpaqueParameter: (((any OpaqueType)?) -> Void)?
+    internal var invokedMutableClosureOptionalOpaqueParameterList: [((any OpaqueType)?) -> Void] = []
+    internal var invokedMutableClosureOptionalOpaqueParameterGetter = false
+    internal var invokedMutableClosureOptionalOpaqueParameterGetterCount = 0
+    internal var stubbedMutableClosureOptionalOpaqueParameter: (((any OpaqueType)?) -> Void)!
+
+    internal var mutableClosureOptionalOpaqueParameter: ((any OpaqueType)?) -> Void {
+        get {
+            invokedMutableClosureOptionalOpaqueParameterGetter = true
+            invokedMutableClosureOptionalOpaqueParameterGetterCount += 1
+            return stubbedMutableClosureOptionalOpaqueParameter
+        }
+        set {
+            invokedMutableClosureOptionalOpaqueParameterSetter = true
+            invokedMutableClosureOptionalOpaqueParameterSetterCount += 1
+            invokedMutableClosureOptionalOpaqueParameter = newValue
+            invokedMutableClosureOptionalOpaqueParameterList.append(newValue)
+        }
+    }
+
+    internal var invokedMutableOptionalClosureOpaqueParameterSetter = false
+    internal var invokedMutableOptionalClosureOpaqueParameterSetterCount = 0
+    internal var invokedMutableOptionalClosureOpaqueParameter: ((any OpaqueType) -> Void)?
+    internal var invokedMutableOptionalClosureOpaqueParameterList: [((any OpaqueType) -> Void)?] = []
+    internal var invokedMutableOptionalClosureOpaqueParameterGetter = false
+    internal var invokedMutableOptionalClosureOpaqueParameterGetterCount = 0
+    internal var stubbedMutableOptionalClosureOpaqueParameter: ((any OpaqueType) -> Void)?
+
+    internal var mutableOptionalClosureOpaqueParameter: ((any OpaqueType) -> Void)? {
+        get {
+            invokedMutableOptionalClosureOpaqueParameterGetter = true
+            invokedMutableOptionalClosureOpaqueParameterGetterCount += 1
+            return stubbedMutableOptionalClosureOpaqueParameter
+        }
+        set {
+            invokedMutableOptionalClosureOpaqueParameterSetter = true
+            invokedMutableOptionalClosureOpaqueParameterSetterCount += 1
+            invokedMutableOptionalClosureOpaqueParameter = newValue
+            invokedMutableOptionalClosureOpaqueParameterList.append(newValue)
+        }
+    }
+
+    internal var invokedMutableOptionalClosureOptionalOpaqueParameterSetter = false
+    internal var invokedMutableOptionalClosureOptionalOpaqueParameterSetterCount = 0
+    internal var invokedMutableOptionalClosureOptionalOpaqueParameter: (((any OpaqueType)?) -> Void)?
+    internal var invokedMutableOptionalClosureOptionalOpaqueParameterList: [(((any OpaqueType)?) -> Void)?] = []
+    internal var invokedMutableOptionalClosureOptionalOpaqueParameterGetter = false
+    internal var invokedMutableOptionalClosureOptionalOpaqueParameterGetterCount = 0
+    internal var stubbedMutableOptionalClosureOptionalOpaqueParameter: (((any OpaqueType)?) -> Void)?
+
+    internal var mutableOptionalClosureOptionalOpaqueParameter: (((any OpaqueType)?) -> Void)? {
+        get {
+            invokedMutableOptionalClosureOptionalOpaqueParameterGetter = true
+            invokedMutableOptionalClosureOptionalOpaqueParameterGetterCount += 1
+            return stubbedMutableOptionalClosureOptionalOpaqueParameter
+        }
+        set {
+            invokedMutableOptionalClosureOptionalOpaqueParameterSetter = true
+            invokedMutableOptionalClosureOptionalOpaqueParameterSetterCount += 1
+            invokedMutableOptionalClosureOptionalOpaqueParameter = newValue
+            invokedMutableOptionalClosureOptionalOpaqueParameterList.append(newValue)
+        }
+    }
+
+    internal var invokedMutableOptionalClosureOpaqueReturnTypeSetter = false
+    internal var invokedMutableOptionalClosureOpaqueReturnTypeSetterCount = 0
+    internal var invokedMutableOptionalClosureOpaqueReturnType: (() -> any OpaqueType)?
+    internal var invokedMutableOptionalClosureOpaqueReturnTypeList: [(() -> any OpaqueType)?] = []
+    internal var invokedMutableOptionalClosureOpaqueReturnTypeGetter = false
+    internal var invokedMutableOptionalClosureOpaqueReturnTypeGetterCount = 0
+    internal var stubbedMutableOptionalClosureOpaqueReturnType: (() -> any OpaqueType)?
+
+    internal var mutableOptionalClosureOpaqueReturnType: (() -> any OpaqueType)? {
+        get {
+            invokedMutableOptionalClosureOpaqueReturnTypeGetter = true
+            invokedMutableOptionalClosureOpaqueReturnTypeGetterCount += 1
+            return stubbedMutableOptionalClosureOpaqueReturnType
+        }
+        set {
+            invokedMutableOptionalClosureOpaqueReturnTypeSetter = true
+            invokedMutableOptionalClosureOpaqueReturnTypeSetterCount += 1
+            invokedMutableOptionalClosureOpaqueReturnType = newValue
+            invokedMutableOptionalClosureOpaqueReturnTypeList.append(newValue)
+        }
+    }
+
+    internal var invokedMutableOptionalClosureOptionalOpaqueReturnTypeSetter = false
+    internal var invokedMutableOptionalClosureOptionalOpaqueReturnTypeSetterCount = 0
+    internal var invokedMutableOptionalClosureOptionalOpaqueReturnType: (() -> (any OpaqueType)?)?
+    internal var invokedMutableOptionalClosureOptionalOpaqueReturnTypeList: [(() -> (any OpaqueType)?)?] = []
+    internal var invokedMutableOptionalClosureOptionalOpaqueReturnTypeGetter = false
+    internal var invokedMutableOptionalClosureOptionalOpaqueReturnTypeGetterCount = 0
+    internal var stubbedMutableOptionalClosureOptionalOpaqueReturnType: (() -> (any OpaqueType)?)?
+
+    internal var mutableOptionalClosureOptionalOpaqueReturnType: (() -> (any OpaqueType)?)? {
+        get {
+            invokedMutableOptionalClosureOptionalOpaqueReturnTypeGetter = true
+            invokedMutableOptionalClosureOptionalOpaqueReturnTypeGetterCount += 1
+            return stubbedMutableOptionalClosureOptionalOpaqueReturnType
+        }
+        set {
+            invokedMutableOptionalClosureOptionalOpaqueReturnTypeSetter = true
+            invokedMutableOptionalClosureOptionalOpaqueReturnTypeSetterCount += 1
+            invokedMutableOptionalClosureOptionalOpaqueReturnType = newValue
+            invokedMutableOptionalClosureOptionalOpaqueReturnTypeList.append(newValue)
+        }
+    }
+
     internal init() { }
+
+    internal var invokedSomeClosureOpaqueParameter: Bool { invokedSomeClosureOpaqueParameterCount > 0 }
+    internal var invokedSomeClosureOpaqueParameterCount = 0
+    internal var stubbedSomeClosureOpaqueParameterCompletionResult: (any OpaqueType)?
+    internal var invokedSomeClosureOpaqueParameterExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func someClosureOpaqueParameter(completion: (any OpaqueType) -> Void) {
+        defer { invokedSomeClosureOpaqueParameterExpectation.fulfill() }
+        invokedSomeClosureOpaqueParameterCount += 1
+        if let result = stubbedSomeClosureOpaqueParameterCompletionResult {
+            completion(result)
+        }
+    }
+
+    internal var invokedSomeClosureOpaqueReturnType: Bool { invokedSomeClosureOpaqueReturnTypeCount > 0 }
+    internal var invokedSomeClosureOpaqueReturnTypeCount = 0
+    internal var shouldInvokeSomeClosureOpaqueReturnTypeCompletion = false
+    internal var invokedSomeClosureOpaqueReturnTypeExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func someClosureOpaqueReturnType(completion: () -> any OpaqueType) {
+        defer { invokedSomeClosureOpaqueReturnTypeExpectation.fulfill() }
+        invokedSomeClosureOpaqueReturnTypeCount += 1
+        if shouldInvokeSomeClosureOpaqueReturnTypeCompletion {
+            _ = completion()
+        }
+    }
+
+    internal var invokedSomeClosureOptionalOpaqueParameter: Bool { invokedSomeClosureOptionalOpaqueParameterCount > 0 }
+    internal var invokedSomeClosureOptionalOpaqueParameterCount = 0
+    internal var stubbedSomeClosureOptionalOpaqueParameterCompletionResult: ((any OpaqueType)?, Void)?
+    internal var invokedSomeClosureOptionalOpaqueParameterExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func someClosureOptionalOpaqueParameter(completion: ((any OpaqueType)?) -> Void) {
+        defer { invokedSomeClosureOptionalOpaqueParameterExpectation.fulfill() }
+        invokedSomeClosureOptionalOpaqueParameterCount += 1
+        if let result = stubbedSomeClosureOptionalOpaqueParameterCompletionResult {
+            completion(result.0)
+        }
+    }
+
+    internal var invokedSomeClosureOptionalOpaqueReturnType: Bool { invokedSomeClosureOptionalOpaqueReturnTypeCount > 0 }
+    internal var invokedSomeClosureOptionalOpaqueReturnTypeCount = 0
+    internal var shouldInvokeSomeClosureOptionalOpaqueReturnTypeCompletion = false
+    internal var invokedSomeClosureOptionalOpaqueReturnTypeExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func someClosureOptionalOpaqueReturnType(completion: () -> (any OpaqueType)?) {
+        defer { invokedSomeClosureOptionalOpaqueReturnTypeExpectation.fulfill() }
+        invokedSomeClosureOptionalOpaqueReturnTypeCount += 1
+        if shouldInvokeSomeClosureOptionalOpaqueReturnTypeCompletion {
+            _ = completion()
+        }
+    }
 
     internal var invokedSomeOpaqueParameterFunction: Bool { invokedSomeOpaqueParameterFunctionCount > 0 }
     internal var invokedSomeOpaqueParameterFunctionCount = 0
@@ -255,6 +519,58 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
         defer { invokedSomeOpaqueReturningFunctionExpectation.fulfill() }
         invokedSomeOpaqueReturningFunctionCount += 1
         return stubbedSomeOpaqueReturningFunctionResult
+    }
+
+    internal var invokedSomeOptionalClosureOpaqueParameter: Bool { invokedSomeOptionalClosureOpaqueParameterCount > 0 }
+    internal var invokedSomeOptionalClosureOpaqueParameterCount = 0
+    internal var stubbedSomeOptionalClosureOpaqueParameterCompletionResult: (any OpaqueType)?
+    internal var invokedSomeOptionalClosureOpaqueParameterExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func someOptionalClosureOpaqueParameter(completion: ((any OpaqueType) -> Void)?) {
+        defer { invokedSomeOptionalClosureOpaqueParameterExpectation.fulfill() }
+        invokedSomeOptionalClosureOpaqueParameterCount += 1
+        if let result = stubbedSomeOptionalClosureOpaqueParameterCompletionResult {
+            completion?(result)
+        }
+    }
+
+    internal var invokedSomeOptionalClosureOpaqueReturnType: Bool { invokedSomeOptionalClosureOpaqueReturnTypeCount > 0 }
+    internal var invokedSomeOptionalClosureOpaqueReturnTypeCount = 0
+    internal var shouldInvokeSomeOptionalClosureOpaqueReturnTypeCompletion = false
+    internal var invokedSomeOptionalClosureOpaqueReturnTypeExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func someOptionalClosureOpaqueReturnType(completion: (() -> any OpaqueType)?) {
+        defer { invokedSomeOptionalClosureOpaqueReturnTypeExpectation.fulfill() }
+        invokedSomeOptionalClosureOpaqueReturnTypeCount += 1
+        if shouldInvokeSomeOptionalClosureOpaqueReturnTypeCompletion {
+            _ = completion?()
+        }
+    }
+
+    internal var invokedSomeOptionalClosureOptionalOpaqueParameter: Bool { invokedSomeOptionalClosureOptionalOpaqueParameterCount > 0 }
+    internal var invokedSomeOptionalClosureOptionalOpaqueParameterCount = 0
+    internal var stubbedSomeOptionalClosureOptionalOpaqueParameterCompletionResult: ((any OpaqueType)?, Void)?
+    internal var invokedSomeOptionalClosureOptionalOpaqueParameterExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func someOptionalClosureOptionalOpaqueParameter(completion: (((any OpaqueType)?) -> Void)?) {
+        defer { invokedSomeOptionalClosureOptionalOpaqueParameterExpectation.fulfill() }
+        invokedSomeOptionalClosureOptionalOpaqueParameterCount += 1
+        if let result = stubbedSomeOptionalClosureOptionalOpaqueParameterCompletionResult {
+            completion?(result.0)
+        }
+    }
+
+    internal var invokedSomeOptionalClosureOptionalOpaqueReturnType: Bool { invokedSomeOptionalClosureOptionalOpaqueReturnTypeCount > 0 }
+    internal var invokedSomeOptionalClosureOptionalOpaqueReturnTypeCount = 0
+    internal var shouldInvokeSomeOptionalClosureOptionalOpaqueReturnTypeCompletion = false
+    internal var invokedSomeOptionalClosureOptionalOpaqueReturnTypeExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func someOptionalClosureOptionalOpaqueReturnType(completion: (() -> (any OpaqueType)?)?) {
+        defer { invokedSomeOptionalClosureOptionalOpaqueReturnTypeExpectation.fulfill() }
+        invokedSomeOptionalClosureOptionalOpaqueReturnTypeCount += 1
+        if shouldInvokeSomeOptionalClosureOptionalOpaqueReturnTypeCompletion {
+            _ = completion?()
+        }
     }
 
     internal var invokedSomeOptionalOpaqueParameterFunction: Bool { invokedSomeOptionalOpaqueParameterFunctionCount > 0 }

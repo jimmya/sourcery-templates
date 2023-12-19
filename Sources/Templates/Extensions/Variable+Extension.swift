@@ -33,6 +33,15 @@ private extension Variable {
             returnTypeName = "\(optionalOpaqueTypeName)"
         }
 
+        if let closure = typeName.closure {
+            let closureSignature = closure.typeSignature
+
+            invokedObjectType = "(\(closureSignature))?"
+            listTypeName = typeName.isOptional ? "(\(closureSignature))?" : closureSignature
+            stubbedObjectType = typeName.isOptional ? "(\(closureSignature))?" : "(\(closureSignature))!"
+            returnTypeName = typeName.isOptional ? "(\(closureSignature))?" : closureSignature
+        }
+
         return """
             \(accessLevel) var invoked\(capitalizedName)Setter = false
             \(accessLevel) var invoked\(capitalizedName)SetterCount = 0
@@ -64,10 +73,17 @@ private extension Variable {
         let nonOptionalSignature = defaultValue.isEmpty ? "!" : "! = \(defaultValue)"
 
         var stubbedObjectType = "\(typeName.name)\(isOptional ? "" : nonOptionalSignature)"
-        let returnTypeName = typeName.withWrappedOptionalIfNeeded()
+        var returnTypeName = typeName.withWrappedOptionalIfNeeded()
 
         if typeName.isOpaqueType {
             stubbedObjectType = "(\(typeName.unwrappedTypeName))\(isOptional ? "?" : nonOptionalSignature)"
+        }
+
+        if let closure = typeName.closure {
+            let closureSignature = closure.typeSignature
+
+            stubbedObjectType = typeName.isOptional ? "(\(closureSignature))?" : "(\(closureSignature))!"
+            returnTypeName = typeName.isOptional ? "(\(closureSignature))?" : closureSignature
         }
 
         return """
