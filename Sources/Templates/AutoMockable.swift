@@ -7,7 +7,11 @@ enum AutoMockable {
         lines.append(contentsOf: annotations.imports.map { "import \($0)" })
         lines.append(.emptyLine)
 
-        annotations.containerMapping?.forEach { module, containerName in
+        let sortedContainerMappings = annotations
+            .containerMapping?
+            .sorted(by: { $0.value < $1.value })
+
+        sortedContainerMappings?.forEach { module, containerName in
             lines.append("public final class \(containerName)Mocks {")
             lines.append(.emptyLine)
 
