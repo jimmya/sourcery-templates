@@ -14,10 +14,21 @@ enum AutoMockable {
             let sortedProtocols = types.protocols
                 .sorted(by: { $0.name < $1.name })
                 .filter { $0.isAutoRegisterable && $0.isAutoMockable && $0.module == module }
+
             sortedProtocols.forEach { type in
                 let mockName = annotations.mockName(typeName: type.name)
-                let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
-                lines.append("public lazy var \(registrationName) = \(mockName)()".indent())
+                if let registrationValues = type.registrationValues {
+                    let nameAndValuePairs = registrationValues.components(separatedBy: ",")
+                    nameAndValuePairs.forEach { pair in
+                        let nameAndValue = pair.components(separatedBy: "=")
+                        guard nameAndValue.count == 2 else { return }
+                        let registrationName = nameAndValue[0]
+                        lines.append("public lazy var \(registrationName) = \(mockName)()".indent())
+                    }
+                } else {
+                    let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
+                    lines.append("public lazy var \(registrationName) = \(mockName)()".indent())
+                }
             }
 
             lines.append(.emptyLine)
@@ -26,8 +37,18 @@ enum AutoMockable {
 
             lines.append("public init() {".indent())
             sortedProtocols.forEach { type in
-                let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
-                lines.append("container.\(registrationName).context(.test, factory: { self.\(registrationName) })".indent(level: 2))
+                if let registrationValues = type.registrationValues {
+                    let nameAndValuePairs = registrationValues.components(separatedBy: ",")
+                    nameAndValuePairs.forEach { pair in
+                        let nameAndValue = pair.components(separatedBy: "=")
+                        guard nameAndValue.count == 2 else { return }
+                        let registrationName = nameAndValue[0]
+                        lines.append("container.\(registrationName).context(.test, factory: { self.\(registrationName) })".indent(level: 2))
+                    }
+                } else {
+                    let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
+                    lines.append("container.\(registrationName).context(.test, factory: { self.\(registrationName) })".indent(level: 2))
+                }
             }
             lines.append("}".indent())
             lines.append("}")
