@@ -1,8 +1,10 @@
 import SourceryRuntime
 
 extension MethodParameter {
-
-    var externalInternalName: String {
+    
+    /// The combined external and internal name of the parameter
+    var combinedName: String {
+        // Sourcery has an issue/feature where the `argumentLabel` and `name` can be the same, so filter if they are the same
         [
             argumentLabel,
             name

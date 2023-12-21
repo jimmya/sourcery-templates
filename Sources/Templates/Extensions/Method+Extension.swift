@@ -15,7 +15,7 @@ extension Method {
     var methodParameters: String {
         parameters.map { parameter in
             if parameter.typeName.isOpaqueType {
-                return "\(parameter.externalInternalName): \(parameter.typeName.withWrappedOptionalIfNeeded())"
+                return "\(parameter.combinedName): \(parameter.typeName.withWrappedOptionalIfNeeded())"
             } else if let closure = parameter.typeName.closure {
                 return closure.signature(fromMethodParameter: parameter)
             }

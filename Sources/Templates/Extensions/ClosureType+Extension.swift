@@ -33,7 +33,7 @@ extension ClosureType {
         let isOptional = parameter.typeName.isOptional
 
         return [
-            "\(parameter.externalInternalName):",
+            "\(parameter.combinedName):",
             escapingString,
             "\(isOptional ? "(" : "")(\(parameters))",
             isAsync ? "async" : nil,
