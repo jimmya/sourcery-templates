@@ -16,4 +16,8 @@ extension Annotated {
     var registrationValue: String? {
         annotations["registrationValue"] as? String
     }
+
+    var registrationValues: String? {
+        annotations["registrationValues"] as? String
+    }
 }

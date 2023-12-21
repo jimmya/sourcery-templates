@@ -15,12 +15,25 @@ enum AutoRegistering {
             .filter(\.isAutoRegisterable)
 
         sortedProtocols.forEach { type in
-            if let implementingClass = types.classes.first(where: { $0.implements.contains(where: { $0.value == type }) }) {
-                lines.append(contentsOf: generateClassRegistration(for: type, registeringClass: implementingClass))
-            } else if let registrationValue = type.registrationValue {
+            if let registrationValue = type.registrationValue {
+                // If the registration value is specified we can register it directly
                 let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
                 lines.append("\(registrationName).register { \(registrationValue) }".indent(level: 2))
+            } else if let registrationValues = type.registrationValues {
+                // If multiple registration name-value pairs are specified we register them all
+            	let nameAndValuePairs = registrationValues.components(separatedBy: ",")
+                nameAndValuePairs.forEach { pair in
+                    let nameAndValue = pair.components(separatedBy: "=")
+                    guard nameAndValue.count == 2 else { return }
+                    let registrationName = nameAndValue[0]
+                    let registrationValue = nameAndValue[1]
+                    lines.append("\(registrationName).register { \(registrationValue) }".indent(level: 2))
+                }
+            } else if let implementingClass = types.classes.first(where: { $0.implements.contains(where: { $0.value == type }) }) {
+                // No registration values are specified, auto-generate registration
+                lines.append(contentsOf: generateClassRegistration(for: type, registeringClass: implementingClass))
             }
+
         }
         lines.append("}".indent())
         lines.append("}")
