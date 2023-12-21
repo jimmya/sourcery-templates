@@ -30,7 +30,7 @@ enum AutoRegisterable {
                     let nameAndValue = pair.components(separatedBy: "=")
                     guard nameAndValue.count == 2 else { return }
                     let registrationName = nameAndValue[0]
-                    addFactoryRegistration(to: lines, registrationName: registrationName, typeName: type.name)
+                    addFactoryRegistration(to: &lines, registrationName: registrationName, typeName: type.name)
                 }
             } else {
                 let initMethods = type.methods.filter(\.isInitializer)
@@ -55,14 +55,14 @@ enum AutoRegisterable {
                     }
                     // If there is an init we use `ParameterFactory` so we can specify the parameters we have to supply to the init.
                     addParameterFactoryRegistration(
-                        to: lines,
+                        to: &lines,
                         registrationName: registrationName,
                         parameterType: parameterType,
                         typeName: type.name
                     )
                 } else {
                     // If there is no init method in the protocol we can use the regular `Factory`
-                    addFactoryRegistration(to: lines, registrationName: registrationName, typeName: type.name)
+                    addFactoryRegistration(to: &lines, registrationName: registrationName, typeName: type.name)
                 }
             }
         }
@@ -106,23 +106,23 @@ enum AutoRegisterable {
     }
 
     private static func addFactoryRegistration(
-        to lines: [String],
+        to lines: inout [String],
         registrationName: String,
         typeName: String
     ) {
         lines.append("public var \(registrationName): Factory<\(typeName)> {".indent(level: 1))
-        lines.append("self { fatalError(\"\(registrationName) not registered\") }".indent(level: 2))
+        lines.append("self { fatalError(\"\(typeName) not registered\") }".indent(level: 2))
         lines.append("}".indent(level: 1))
     }
 
     private static func addParameterFactoryRegistration(
-        to lines: [String],
+        to lines: inout [String],
         registrationName: String,
         parameterType: String,
         typeName: String
     ) {
         lines.append("public var \(registrationName): ParameterFactory<\(parameterType), \(typeName)> {".indent(level: 1))
-        lines.append("self { _ in fatalError(\"\(registrationName) not registered\") }".indent(level: 2))
+        lines.append("self { _ in fatalError(\"\(typeName) not registered\") }".indent(level: 2))
         lines.append("}".indent(level: 1))
     }
 }
