@@ -91,6 +91,18 @@ protocol MockProtocolWithOpaqueTypes {
 }
 
 // sourcery: AutoMockable
+protocol ParameterNamings {
+
+    func internalName(internalName: String)
+    func externalName(externalName internalName: String)
+    func anonymousName(_ internalName: String)
+    func internalClosurename(internalName: (String) -> String)
+    func externalClosurename(externalName internalName: (String) -> String)
+    func anonymousClosurename(_ internalName: (String) -> String)
+    func anonymousClosureParameterName(closure: (_: String) -> String)
+}
+
+// sourcery: AutoMockable
 protocol MockProtocolWithGenericFunction {
     func doSomething<T>(parameter: T, anotherParameter: Int)
 }

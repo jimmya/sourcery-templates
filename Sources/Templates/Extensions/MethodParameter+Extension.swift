@@ -6,7 +6,7 @@ extension MethodParameter {
     var combinedName: String {
         // Sourcery has an issue/feature where the `argumentLabel` and `name` can be the same, so filter if they are the same
         [
-            argumentLabel,
+            argumentLabel ?? "_",
             name
         ]
             .compactMap { $0 }
