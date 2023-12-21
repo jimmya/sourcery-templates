@@ -25,6 +25,10 @@ extension MethodParameter {
         if typeName.isOpaqueType {
             type = typeName.withWrappedOptionalIfNeeded()
         }
+        if let closure = typeName.closure {
+            type = closure.typeSignature
+        }
+
         return type
     }
 
