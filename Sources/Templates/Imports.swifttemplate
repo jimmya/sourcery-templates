@@ -9,3 +9,4 @@
 <%- includeFile("Extensions/TypeName+Extension.swift") -%>
 <%- includeFile("Extensions/Variable+Extension.swift") -%>
 <%- includeFile("Extensions/ClosureType+Extension.swift") -%>
+<%- includeFile("Extensions/Sequence+Extension.swift") -%>

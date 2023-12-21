@@ -1,6 +1,19 @@
 import SourceryRuntime
 
 extension MethodParameter {
+    
+    /// The combined external and internal name of the parameter
+    var combinedName: String {
+        // Sourcery has an issue/feature where the `argumentLabel` and `name` can be the same, so filter if they are the same
+        [
+            argumentLabel,
+            name
+        ]
+            .compactMap { $0 }
+            .unique()
+            .joined(separator: " ")
+    }
+
     func settableType(method: Method) -> String {
         var type = typeAttributes.isEscaping ? unwrappedTypeName : typeName.asSource
         if let generic = method.generics.first(where: { $0.name == type }) {
