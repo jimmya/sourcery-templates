@@ -6,7 +6,7 @@ extension MethodParameter {
     var combinedName: String {
         // Sourcery has an issue/feature where the `argumentLabel` and `name` can be the same, so filter if they are the same
         [
-            argumentLabel,
+            argumentLabel ?? "_",
             name
         ]
             .compactMap { $0 }
@@ -25,6 +25,10 @@ extension MethodParameter {
         if typeName.isOpaqueType {
             type = typeName.withWrappedOptionalIfNeeded()
         }
+        if let closure = typeName.closure {
+            type = closure.typeSignature
+        }
+
         return type
     }
 

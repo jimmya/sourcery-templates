@@ -744,6 +744,102 @@ internal class DefaultOpaqueTypeMock: OpaqueType {
     internal init() { }
 }
 
+internal class DefaultParameterNamingsMock: ParameterNamings {
+
+    internal init() { }
+
+    internal var invokedAnonymousClosureParameterName: Bool { invokedAnonymousClosureParameterNameCount > 0 }
+    internal var invokedAnonymousClosureParameterNameCount = 0
+    internal var stubbedAnonymousClosureParameterNameClosureResult: String?
+    internal var invokedAnonymousClosureParameterNameExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func anonymousClosureParameterName(closure: (String) -> String) {
+        defer { invokedAnonymousClosureParameterNameExpectation.fulfill() }
+        invokedAnonymousClosureParameterNameCount += 1
+        if let result = stubbedAnonymousClosureParameterNameClosureResult {
+            _ = closure(result)
+        }
+    }
+
+    internal var invokedAnonymousClosurename: Bool { invokedAnonymousClosurenameCount > 0 }
+    internal var invokedAnonymousClosurenameCount = 0
+    internal var stubbedAnonymousClosurenameInternalNameResult: String?
+    internal var invokedAnonymousClosurenameExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func anonymousClosurename(_ internalName: (String) -> String) {
+        defer { invokedAnonymousClosurenameExpectation.fulfill() }
+        invokedAnonymousClosurenameCount += 1
+        if let result = stubbedAnonymousClosurenameInternalNameResult {
+            _ = internalName(result)
+        }
+    }
+
+    internal var invokedAnonymousName: Bool { invokedAnonymousNameCount > 0 }
+    internal var invokedAnonymousNameCount = 0
+    internal var invokedAnonymousNameParameters: (internalName: String, Void)?
+    internal var invokedAnonymousNameParametersList: [(internalName: String, Void)] = []
+    internal var invokedAnonymousNameExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func anonymousName(_ internalName: String) {
+        defer { invokedAnonymousNameExpectation.fulfill() }
+        invokedAnonymousNameCount += 1
+        invokedAnonymousNameParameters = (internalName: internalName, ())
+        invokedAnonymousNameParametersList.append((internalName: internalName, ()))
+    }
+
+    internal var invokedExternalClosurename: Bool { invokedExternalClosurenameCount > 0 }
+    internal var invokedExternalClosurenameCount = 0
+    internal var stubbedExternalClosurenameInternalNameResult: String?
+    internal var invokedExternalClosurenameExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func externalClosurename(externalName internalName: (String) -> String) {
+        defer { invokedExternalClosurenameExpectation.fulfill() }
+        invokedExternalClosurenameCount += 1
+        if let result = stubbedExternalClosurenameInternalNameResult {
+            _ = internalName(result)
+        }
+    }
+
+    internal var invokedExternalName: Bool { invokedExternalNameCount > 0 }
+    internal var invokedExternalNameCount = 0
+    internal var invokedExternalNameParameters: (internalName: String, Void)?
+    internal var invokedExternalNameParametersList: [(internalName: String, Void)] = []
+    internal var invokedExternalNameExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func externalName(externalName internalName: String) {
+        defer { invokedExternalNameExpectation.fulfill() }
+        invokedExternalNameCount += 1
+        invokedExternalNameParameters = (internalName: internalName, ())
+        invokedExternalNameParametersList.append((internalName: internalName, ()))
+    }
+
+    internal var invokedInternalClosurename: Bool { invokedInternalClosurenameCount > 0 }
+    internal var invokedInternalClosurenameCount = 0
+    internal var stubbedInternalClosurenameInternalNameResult: String?
+    internal var invokedInternalClosurenameExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func internalClosurename(internalName: (String) -> String) {
+        defer { invokedInternalClosurenameExpectation.fulfill() }
+        invokedInternalClosurenameCount += 1
+        if let result = stubbedInternalClosurenameInternalNameResult {
+            _ = internalName(result)
+        }
+    }
+
+    internal var invokedInternalName: Bool { invokedInternalNameCount > 0 }
+    internal var invokedInternalNameCount = 0
+    internal var invokedInternalNameParameters: (internalName: String, Void)?
+    internal var invokedInternalNameParametersList: [(internalName: String, Void)] = []
+    internal var invokedInternalNameExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func internalName(internalName: String) {
+        defer { invokedInternalNameExpectation.fulfill() }
+        invokedInternalNameCount += 1
+        invokedInternalNameParameters = (internalName: internalName, ())
+        invokedInternalNameParametersList.append((internalName: internalName, ()))
+    }
+}
+
 internal class DefaultURLSessionLogicMock: URLSessionLogic {
 
     internal init() { }
