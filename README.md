@@ -83,8 +83,13 @@ args:
   imports: [Foundation, XCTest]
   testableImports: [ModuleContainingYourProtocol]
 ```
-To customize the naming of the class mock generation you can add a `prefix` and/or `suffix` argument.
-If _BOTH_ are not provided, `Default` will be used as `prefix` and `Mock` will be used as suffix.`
+To customize the naming of the class mock generation you can add a `mockPrefix` and/or `mockSuffix` argument.
+By default the mockPrefix is `Default` and mockSuffix is `Mock`, resulting in `DefaultProtocolMock`.
+
+If you would only like a prefix, you should add the `mockSuffix` argument with an empty string value:
+`mockSuffix: ""`
+
+The same applies when you only want a suffix, add the `mockPrefix` argument with an empty string value.
 
 Example:
 
