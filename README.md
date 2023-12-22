@@ -1,5 +1,5 @@
 # Sourcery Templates
-This repository contains 2 [Sourcery](https://github.com/krzysztofzablocki/Sourcery) templates which you can use in your projects: `AutoMockable` and `AutoStubbable`
+This repository contains 4 [Sourcery](https://github.com/krzysztofzablocki/Sourcery) templates which you can use in your projects: `AutoMockable` and `AutoStubbable`
 
 ## Installation
 For now the easiest way is to add this repository as a [submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
