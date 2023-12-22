@@ -19,40 +19,38 @@ enum AutoMockable {
                 .sorted(by: { $0.name < $1.name })
                 .filter { $0.isAutoRegisterable && $0.isAutoMockable && $0.module == module }
 
-            sortedProtocols.forEach { type in
-                let mockName = annotations.mockName(typeName: type.name)
-                if let registrationValues = type.registrationValues {
-                    let nameAndValuePairs = registrationValues.components(separatedBy: ",")
-                    nameAndValuePairs.forEach { pair in
-                        let nameAndValue = pair.components(separatedBy: "=")
-                        guard nameAndValue.count == 2 else { return }
-                        let registrationName = nameAndValue[0]
-                        lines.append("public lazy var \(registrationName) = \(mockName)()".indent())
-                    }
-                } else {
-                    let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
-                    lines.append("public lazy var \(registrationName) = \(mockName)()".indent())
-                }
+            let registrations = generateRegistrations(types: sortedProtocols, annotations: annotations)
+
+            registrations.forEach { registration in
+                let registrationName = registration.registrationName
+                let mockName = registration.mockName
+                lines.append("public lazy var \(registrationName) = \(mockName)()".indent())
             }
 
             lines.append(.emptyLine)
             lines.append("private let container: \(containerName) = .shared".indent())
             lines.append(.emptyLine)
 
-            lines.append("public init() {".indent())
-            sortedProtocols.forEach { type in
-                if let registrationValues = type.registrationValues {
-                    let nameAndValuePairs = registrationValues.components(separatedBy: ",")
-                    nameAndValuePairs.forEach { pair in
-                        let nameAndValue = pair.components(separatedBy: "=")
-                        guard nameAndValue.count == 2 else { return }
-                        let registrationName = nameAndValue[0]
-                        lines.append("container.\(registrationName).context(.test, factory: { self.\(registrationName) })".indent(level: 2))
-                    }
-                } else {
-                    let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
-                    lines.append("container.\(registrationName).context(.test, factory: { self.\(registrationName) })".indent(level: 2))
-                }
+            lines.append("public init(".indent())
+            registrations.enumerated().forEach { index, registration in
+                let suffix = index < registrations.count - 1 ? "," : ""
+                let registrationName = registration.registrationName
+                let mockName = registration.mockName
+                lines.append("\(registrationName): \(mockName)? = nil\(suffix)".indent(level: 2))
+            }
+            lines.append(") {".indent())
+
+            registrations.forEach { registration in
+                let registrationName = registration.registrationName
+                let mockName = registration.mockName
+                lines.append("if let \(registrationName) { self.\(registrationName) = \(registrationName) }".indent(level: 2))
+            }
+
+            lines.append(.emptyLine)
+
+            registrations.forEach { registration in
+                let registrationName = registration.registrationName
+                lines.append("container.\(registrationName).context(.test, factory: { self.\(registrationName) })".indent(level: 2))
             }
             lines.append("}".indent())
             lines.append("}")
@@ -77,5 +75,28 @@ enum AutoMockable {
         lines.append(contentsOf: protocolLines.joined(separator: [.emptyLine]))
         
         return lines.joined(separator: .newLine) + .newLine
+    }
+
+    private static func generateRegistrations(
+        types: [Type],
+        annotations: Annotations
+    ) -> [(registrationName: String, mockName: String)] {
+        var result = [(String, String)]()
+        types.forEach { type in
+            let mockName = annotations.mockName(typeName: type.name)
+            if let registrationValues = type.registrationValues {
+                let nameAndValuePairs = registrationValues.components(separatedBy: ",")
+                nameAndValuePairs.forEach { pair in
+                    let nameAndValue = pair.components(separatedBy: "=")
+                    guard nameAndValue.count == 2 else { return }
+                    let registrationName = nameAndValue[0]
+                    result.append((registrationName, mockName))
+                }
+            } else {
+                let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
+                result.append((registrationName, mockName))
+            }
+        }
+        return result
     }
 }
