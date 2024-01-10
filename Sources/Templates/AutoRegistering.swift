@@ -78,7 +78,7 @@ private extension AutoRegistering {
                     return nil
                 }
                 let label = parameter.argumentLabel ?? parameter.name
-                return "\(label): self.\(type.name.withLowercaseFirst().withoutLastCamelCasedPart())()"
+                return "\(label): self.\(registrationName)()"
             }
             guard canGenerateInit else {
                 return lines
