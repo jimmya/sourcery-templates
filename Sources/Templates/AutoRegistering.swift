@@ -29,7 +29,7 @@ enum AutoRegistering {
                     let registrationValue = nameAndValue[1]
                     lines.append("\(registrationName).register { \(registrationValue) }".indent(level: 2))
                 }
-            } else if let implementingClass = types.classes.first(where: { $0.implements.contains(where: { $0.value == type }) }) {
+            } else let implementingClass = getImplementingClass(for: type) {
                 // No registration values are specified, auto-generate registration
                 lines.append(contentsOf: generateClassRegistration(for: type, registeringClass: implementingClass))
             }
@@ -44,9 +44,22 @@ enum AutoRegistering {
 }
 
 private extension AutoRegistering {
+
+    static func registrationName(for type: Protocol) -> String {
+        type.name.withLowercaseFirst().withoutLastCamelCasedPart()
+    }
+
+    static func getImplementingClass(for type: Protocol) -> Class? {
+        let registrationName = registrationName(for: type)
+        return types.classes.first(where: {
+            $0.implements.contains(where: { $0.value == type })
+                && $0.withLowercaseFirst() == registrationName
+        })
+    }
+
     static func generateClassRegistration(for type: Protocol, registeringClass: Class) -> [String] {
         let initMethods = registeringClass.methods.filter(\.isInitializer)
-        let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
+        let registrationName = registrationName(for: type)
         var lines: [String] = []
 
         // We only support up to 1 init method, otherwise we can't determine for what to generate the registration parameters.
