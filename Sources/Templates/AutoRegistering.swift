@@ -29,7 +29,7 @@ enum AutoRegistering {
                     let registrationValue = nameAndValue[1]
                     lines.append("\(registrationName).register { \(registrationValue) }".indent(level: 2))
                 }
-            } else let implementingClass = getImplementingClass(for: type) {
+            } else if let implementingClass = getImplementingClass(for: type) {
                 // No registration values are specified, auto-generate registration
                 lines.append(contentsOf: generateClassRegistration(for: type, registeringClass: implementingClass))
             }
@@ -53,7 +53,7 @@ private extension AutoRegistering {
         let registrationName = registrationName(for: type)
         return types.classes.first(where: {
             $0.implements.contains(where: { $0.value == type })
-                && $0.withLowercaseFirst() == registrationName
+            && $0.name.withLowercaseFirst() == registrationName
         })
     }
 
