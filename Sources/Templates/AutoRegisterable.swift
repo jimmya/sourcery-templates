@@ -69,6 +69,32 @@ enum AutoRegisterable {
         lines.append("}")
         lines.append(.emptyLine)
 
+        let sortedSkeletons: [(Type, Type)] = (types.classes + types.structs)
+            .filter { $0.name.hasPrefix("Skeleton") }
+            .compactMap { classType in
+                guard let protocolType = sortedProtocols.first(where: { type in
+                    classType.implements.keys.contains(where: { $0.hasSuffix(type.name) })
+                }) else {
+                    return nil
+                }
+                return (classType, protocolType)
+            }
+            .sorted(by: { $0.0.name < $1.0.name })
+
+        if !sortedSkeletons.isEmpty {
+            lines.append("extension \(containerName) {")
+            lines.append("public static let skeleton: \(containerName) = {".indent())
+            lines.append("let container = \(containerName)()".indent(level: 2))
+            sortedSkeletons.forEach { (classType, protocolType) in
+                let registrationName = protocolType.name.withLowercaseFirst().withoutLastCamelCasedPart()
+                lines.append("container.\(registrationName).register { \(classType.name)() }".indent(level: 2))
+            }
+            lines.append("return container".indent(level: 2))
+            lines.append("}()".indent())
+            lines.append("}")
+            lines.append(.emptyLine)
+        }
+
         if let customContainerName, let propertyWrapperName = annotations.propertyWrapperName {
             lines.append("@propertyWrapper public struct \(propertyWrapperName)<T> {")
             lines.append("private var injected: Injected<T>".indent())
