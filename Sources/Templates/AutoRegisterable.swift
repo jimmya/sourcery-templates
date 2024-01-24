@@ -69,7 +69,7 @@ enum AutoRegisterable {
         lines.append("}")
         lines.append(.emptyLine)
 
-        let sortedSkeletons: [(Type, Type)] = types.classes
+        let sortedSkeletons: [(Type, Type)] = (types.classes + types.structs)
             .filter { $0.name.hasPrefix("Skeleton") }
             .compactMap { classType in
                 guard let protocolType = sortedProtocols.first(where: { type in
@@ -82,9 +82,9 @@ enum AutoRegisterable {
             .sorted(by: { $0.0.name < $1.0.name })
 
         if !sortedSkeletons.isEmpty {
-            lines.append("extension \(customContainerName) {")
-            lines.append("public static let skeleton: \(customContainerName) = {".indent())
-            lines.append("let container = \(customContainerName)()".indent(level: 2))
+            lines.append("extension \(containerName) {")
+            lines.append("public static let skeleton: \(containerName) = {".indent())
+            lines.append("let container = \(containerName)()".indent(level: 2))
             sortedSkeletons.forEach { (classType, protocolType) in
                 let registrationName = protocolType.name.withLowercaseFirst().withoutLastCamelCasedPart()
                 lines.append("container.\(registrationName).register { \(classType.name)() }".indent(level: 2))
