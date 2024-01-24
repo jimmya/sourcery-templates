@@ -82,9 +82,9 @@ enum AutoRegisterable {
             .sorted(by: { $0.0.name < $1.0.name })
 
         if !sortedSkeletons.isEmpty {
-            lines.append("extension UseCasesContainer {")
-            lines.append("public static let skeleton: UseCasesContainer = {".indent())
-            lines.append("let container = UseCasesContainer()".indent(level: 2))
+            lines.append("extension \(customContainerName) {")
+            lines.append("public static let skeleton: \(customContainerName) = {".indent())
+            lines.append("let container = \(customContainerName)()".indent(level: 2))
             sortedSkeletons.forEach { (classType, protocolType) in
                 let registrationName = protocolType.name.withLowercaseFirst().withoutLastCamelCasedPart()
                 lines.append("container.\(registrationName).register { \(classType.name)() }".indent(level: 2))
