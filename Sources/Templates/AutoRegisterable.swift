@@ -73,7 +73,11 @@ enum AutoRegisterable {
             .filter { $0.name.hasPrefix("Skeleton") }
             .compactMap { classType in
                 guard let protocolType = sortedProtocols.first(where: { type in
-                    classType.implements.keys.contains(where: { $0.hasSuffix(type.name) })
+                    // `type.implements.keys` contains the module name as well, use only the last part
+                    let implementing = classType.implements.keys.map {
+                        $0.split(separator: ".").last.map(String.init) ?? $0
+                    }
+                    return implementing.contains(where: { $0 == type.name })
                 }) else {
                     return nil
                 }
