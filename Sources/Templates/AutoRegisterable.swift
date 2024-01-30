@@ -7,8 +7,8 @@ enum AutoRegisterable {
         lines.append("")
 
         let sortedProtocols = types.protocols
-            .sorted(by: { $0.name < $1.name })
             .filter(\.isAutoRegisterable)
+            .sorted(by: { $0.name < $1.name })
 
         let customContainerName = annotations.containerName
         if let customContainerName {
