@@ -11,8 +11,8 @@ enum AutoRegistering {
         lines.append("public func autoRegister() {".indent())
 
         let sortedProtocols = types.protocols
-            .sorted(by: { $0.name < $1.name })
             .filter(\.isAutoRegisterable)
+            .sorted(by: { $0.name < $1.name })
 
         sortedProtocols.forEach { type in
             if let registrationValue = type.registrationValue {
@@ -32,30 +32,6 @@ enum AutoRegistering {
             } else if let implementingClass = getImplementingClass(for: type) {
                 // No registration values are specified, auto-generate registration
                 lines.append(contentsOf: generateClassRegistration(for: type, registeringClass: implementingClass))
-            }
-        }
-
-        let sortedPreviews: [(Type, Type)] = (types.classes + types.structs)
-            .filter { $0.name.hasPrefix("Preview") }
-            .compactMap { classType in
-                guard let protocolType = sortedProtocols.first(where: { type in
-                    // `type.implements.keys` contains the module name as well, use only the last part
-                    let implementing = classType.implements.keys.map {
-                        $0.split(separator: ".").last.map(String.init) ?? $0
-                    }
-                    return implementing.contains(where: { $0 == type.name })
-                }) else {
-                    return nil
-                }
-                return (classType, protocolType)
-            }
-            .sorted(by: { $0.0.name < $1.0.name })
-
-        if !sortedPreviews.isEmpty {
-            lines.append(.emptyLine)
-            sortedPreviews.forEach { (classType, protocolType) in
-                let registrationName = protocolType.name.withLowercaseFirst().withoutLastCamelCasedPart()
-                lines.append("\(registrationName).context(.preview) { \(classType.name)() }".indent(level: 2))
             }
         }
 
