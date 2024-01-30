@@ -11,8 +11,8 @@ enum AutoRegistering {
         lines.append("public func autoRegister() {".indent())
 
         let sortedProtocols = types.protocols
-            .sorted(by: { $0.name < $1.name })
             .filter(\.isAutoRegisterable)
+            .sorted(by: { $0.name < $1.name })
 
         sortedProtocols.forEach { type in
             if let registrationValue = type.registrationValue {
