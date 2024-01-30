@@ -6,21 +6,48 @@ enum AutoRegisterable {
         lines.append(contentsOf: annotations.imports.map { "import \($0)" })
         lines.append("")
 
+        let sortedProtocols = types.protocols
+            .sorted(by: { $0.name < $1.name })
+            .filter(\.isAutoRegisterable)
+
         let customContainerName = annotations.containerName
         if let customContainerName {
             lines.append("public final class \(customContainerName): SharedContainer {")
             lines.append("public static var shared = \(customContainerName)()".indent())
             lines.append("public var manager = ContainerManager()".indent())
+
+            let sortedPreviews: [(Type, Type)] = (types.classes + types.structs)
+                .filter { $0.name.hasPrefix("Preview") }
+                .compactMap { classType in
+                    guard let protocolType = sortedProtocols.first(where: { type in
+                        // `type.implements.keys` contains the module name as well, use only the last part
+                        let implementing = classType.implements.keys.map {
+                            $0.split(separator: ".").last.map(String.init) ?? $0
+                        }
+                        return implementing.contains(where: { $0 == type.name })
+                    }) else {
+                        return nil
+                    }
+                    return (classType, protocolType)
+                }
+                .sorted(by: { $0.0.name < $1.0.name })
+
+            if !sortedPreviews.isEmpty {
+                lines.append(.emptyLine)
+                lines.append("private init() {".indent())
+                sortedPreviews.forEach { (classType, protocolType) in
+                    let registrationName = protocolType.name.withLowercaseFirst().withoutLastCamelCasedPart()
+                    lines.append("\(registrationName).context(.preview) { \(classType.name)() }".indent(level: 2))
+                }
+                lines.append("}".indent())
+            }
+
             lines.append("}")
             lines.append(.emptyLine)
         }
         let containerName = customContainerName ?? "Container"
 
         lines.append("extension \(containerName) {")
-
-        let sortedProtocols = types.protocols
-            .sorted(by: { $0.name < $1.name })
-            .filter(\.isAutoRegisterable)
 
         sortedProtocols.forEach { type in
             if let registrationValues = type.registrationValues {
