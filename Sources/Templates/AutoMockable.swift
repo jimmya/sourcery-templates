@@ -15,11 +15,23 @@ enum AutoMockable {
             lines.append("public final class \(containerName)Mocks {")
             lines.append(.emptyLine)
 
+            let sortedExtensionVariables = types.extensions
+                .filter { $0.name == containerName }
+                .flatMap { $0.computedVariables }
+                .sorted(by: { $0.name < $1.name })
+
+            let extensionRegistrations = generateRegistrations(
+                variables: sortedExtensionVariables,
+                annotations: annotations
+            )
+
             let sortedProtocols = types.protocols
                 .sorted(by: { $0.name < $1.name })
                 .filter { $0.isAutoRegisterable && $0.isAutoMockable && $0.module == module }
 
-            let registrations = generateRegistrations(types: sortedProtocols, annotations: annotations)
+            let protocolRegistrations = generateRegistrations(types: sortedProtocols, annotations: annotations)
+
+            let registrations = extensionRegistrations + protocolRegistrations
 
             registrations.forEach { registration in
                 let registrationName = registration.registrationName
@@ -96,6 +108,32 @@ enum AutoMockable {
                 let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
                 result.append((registrationName, mockName))
             }
+        }
+        return result
+    }
+
+    private static func generateRegistrations(
+        variables: [Variable],
+        annotations: Annotations
+    ) -> [(registrationName: String, mockName: String)] {
+        var result = [(String, String)]()
+        variables.forEach { variable in
+            guard let genericType = variable.typeName.generic?.typeParameters.first else{
+                return
+            }
+            guard !genericType.typeName.isClosure else {
+                return
+            }
+            let type = genericType.typeName.array?.elementType ?? genericType.type
+            let typeName = type?.name ?? genericType.typeName.name
+            let mockName: String
+            if type?.isAutoMockable == true {
+                mockName = annotations.mockName(typeName: typeName)
+            } else {
+                mockName = typeName
+            }
+            let finalMockName = genericType.typeName.isArray ? "[\(mockName)]" : mockName
+            result.append((variable.name, finalMockName))
         }
         return result
     }
