@@ -9,7 +9,7 @@ templates:
     - SourceryTemplatesCheckoutDirectory/Sources/Templates/AutoMockable.swifttemplate
 ```
 ## AutoMockable.swifttemplate
-This template generates mock definions for any protocol that has the `// sourcery: AutoMockable` annotation. It will create definitions for all properties and methods in the main definition of the protocol (extensions are excluded).
+This template generates mock definitions for any protocol that has the `// sourcery: AutoMockable` annotation. It will create definitions for all properties and methods in the main definition of the protocol (extensions are excluded).
 
 **Definition:**
 ```swift
