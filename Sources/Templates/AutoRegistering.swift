@@ -29,9 +29,9 @@ enum AutoRegistering {
                     let registrationValue = nameAndValue[1]
                     lines.append("\(registrationName).register { \(registrationValue) }".indent(level: 2))
                 }
-            } else if let implementingClass = getImplementingClass(for: type) {
+            } else if let implementingType = getImplementingType(for: type) {
                 // No registration values are specified, auto-generate registration
-                lines.append(contentsOf: generateClassRegistration(for: type, registeringClass: implementingClass))
+                lines.append(contentsOf: generateClassRegistration(for: type, registeringType: implementingType))
             }
         }
 
@@ -49,16 +49,16 @@ private extension AutoRegistering {
         type.name.withLowercaseFirst().withoutLastCamelCasedPart()
     }
 
-    static func getImplementingClass(for type: Protocol) -> Class? {
+    static func getImplementingType(for type: Protocol) -> Type? {
         let registrationName = registrationName(for: type)
-        return types.classes.first(where: {
+        return (types.classes + types.structs).first(where: {
             $0.implements.contains(where: { $0.value == type })
             && $0.name.withLowercaseFirst() == registrationName
         })
     }
 
-    static func generateClassRegistration(for type: Protocol, registeringClass: Class) -> [String] {
-        let initMethods = registeringClass.methods.filter(\.isInitializer)
+    static func generateClassRegistration(for type: Protocol, registeringType: Type) -> [String] {
+        let initMethods = registeringType.methods.filter(\.isInitializer)
         let registrationName = registrationName(for: type)
         var lines: [String] = []
 
@@ -84,12 +84,12 @@ private extension AutoRegistering {
                 return lines
             }
             let joinedInitComponents = initComponents.joined(separator: ", ")
-            lines.append("\(registrationName).register { \(registeringClass.name)(\(joinedInitComponents)) }".indent(level: 2))
+            lines.append("\(registrationName).register { \(registeringType.name)(\(joinedInitComponents)) }".indent(level: 2))
         } else {
-            let isShared = registeringClass.staticVariables.contains { $0.name == "shared" }
+            let isShared = registeringType.staticVariables.contains { $0.name == "shared" }
             let instance = isShared ? ".shared" : "()"
             // If there is no init method in the protocol we can use the regular `Factory`
-            lines.append("\(registrationName).register { \(registeringClass.name)\(instance) }".indent(level: 2))
+            lines.append("\(registrationName).register { \(registeringType.name)\(instance) }".indent(level: 2))
         }
         return lines
     }
