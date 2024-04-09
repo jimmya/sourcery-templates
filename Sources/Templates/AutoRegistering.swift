@@ -86,8 +86,7 @@ private extension AutoRegistering {
             let joinedInitComponents = initComponents.joined(separator: ", ")
             lines.append("\(registrationName).register { \(registeringType.name)(\(joinedInitComponents)) }".indent(level: 2))
         } else {
-            let isShared = registeringType.staticVariables.contains { $0.name == "shared" }
-            let instance = isShared ? ".shared" : "()"
+            let instance = "()"
             // If there is no init method in the protocol we can use the regular `Factory`
             lines.append("\(registrationName).register { \(registeringType.name)\(instance) }".indent(level: 2))
         }
