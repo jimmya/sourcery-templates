@@ -86,9 +86,8 @@ private extension AutoRegistering {
             let joinedInitComponents = initComponents.joined(separator: ", ")
             lines.append("\(registrationName).register { \(registeringType.name)(\(joinedInitComponents)) }".indent(level: 2))
         } else {
-            let instance = "()"
             // If there is no init method in the protocol we can use the regular `Factory`
-            lines.append("\(registrationName).register { \(registeringType.name)\(instance) }".indent(level: 2))
+            lines.append("\(registrationName).register { \(registeringType.name)() }".indent(level: 2))
         }
         return lines
     }
