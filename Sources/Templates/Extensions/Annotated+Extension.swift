@@ -20,4 +20,14 @@ extension Annotated {
     var registrationValues: String? {
         annotations["registrationValues"] as? String
     }
+
+    var factoryScope: String? {
+        // https://hmlongco.github.io/Factory/documentation/factory/scopes/
+        guard let scope = annotations["factoryScope"] as? String,
+              ["shared", "cached", "singleton"].contains(scope) else {
+            return nil
+        }
+
+        return scope
+    }
 }

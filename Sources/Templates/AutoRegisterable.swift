@@ -57,7 +57,7 @@ enum AutoRegisterable {
                     let nameAndValue = pair.components(separatedBy: "=")
                     guard nameAndValue.count == 2 else { return }
                     let registrationName = nameAndValue[0]
-                    addFactoryRegistration(to: &lines, registrationName: registrationName, typeName: type.name)
+                    addFactoryRegistration(to: &lines, registrationName: registrationName, typeName: type.name, scope: type.factoryScope)
                 }
             } else {
                 let initMethods = type.methods.filter(\.isInitializer)
@@ -85,11 +85,12 @@ enum AutoRegisterable {
                         to: &lines,
                         registrationName: registrationName,
                         parameterType: parameterType,
-                        typeName: type.name
+                        typeName: type.name,
+                        scope: type.factoryScope
                     )
                 } else {
                     // If there is no init method in the protocol we can use the regular `Factory`
-                    addFactoryRegistration(to: &lines, registrationName: registrationName, typeName: type.name)
+                    addFactoryRegistration(to: &lines, registrationName: registrationName, typeName: type.name, scope: type.factoryScope)
                 }
             }
         }
@@ -165,10 +166,11 @@ enum AutoRegisterable {
     private static func addFactoryRegistration(
         to lines: inout [String],
         registrationName: String,
-        typeName: String
+        typeName: String,
+        scope: String?
     ) {
         lines.append("public var \(registrationName): Factory<\(typeName)> {".indent(level: 1))
-        lines.append("self { fatalError(\"\(typeName) not registered\") }".indent(level: 2))
+        lines.append("self { fatalError(\"\(typeName) not registered\") }\(scope.flatMap { ".\($0)" } ?? "")".indent(level: 2))
         lines.append("}".indent(level: 1))
     }
 
@@ -176,10 +178,11 @@ enum AutoRegisterable {
         to lines: inout [String],
         registrationName: String,
         parameterType: String,
-        typeName: String
+        typeName: String,
+        scope: String?
     ) {
         lines.append("public var \(registrationName): ParameterFactory<\(parameterType), \(typeName)> {".indent(level: 1))
-        lines.append("self { _ in fatalError(\"\(typeName) not registered\") }".indent(level: 2))
+        lines.append("self { _ in fatalError(\"\(typeName) not registered\") }\(scope.flatMap { ".\($0)" } ?? "")".indent(level: 2))
         lines.append("}".indent(level: 1))
     }
 }
