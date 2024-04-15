@@ -324,7 +324,10 @@ private extension Method {
         } else {
             invocations = (0..<closure.parameters.count).map { "result.\($0)" }.joined(separator: ", ")
         }
-        return "\(closure.isAsync ? "await " : "")\(closure.returnTypeName.isVoid ? "" : "_ = ")\(parameter.name)\(parameter.typeName.isOptional ? "?" : "")(\(invocations))"
+        let tryKeywordSuffix = self.throws ? "" : "?"
+        let tryKeyword = closure.throws ? "try\(tryKeywordSuffix) " : ""
+        let awaitKeyword = closure.isAsync ? "await " : ""
+        return "\(tryKeyword)\(awaitKeyword)\(closure.returnTypeName.isVoid ? "" : "_ = ")\(parameter.name)\(parameter.typeName.isOptional ? "?" : "")(\(invocations))"
     }
 
     func mockReturnType(type: Type, annotations: Annotations) -> String? {
