@@ -129,6 +129,10 @@ enum AutoRegisterable {
 
         if let customContainerName, let propertyWrapperName = annotations.propertyWrapperName {
             lines.append("@propertyWrapper public struct \(propertyWrapperName)<T> {")
+            lines.append("public static func make(_ keyPath: KeyPath<\(customContainerName), Factory<T>>) -> T {".indent())
+            lines.append("\(customContainerName).shared[keyPath: keyPath].resolve()".indent(level: 2))
+            lines.append("}".indent())
+            lines.append(.emptyLine)
             lines.append("private var injected: Injected<T>".indent())
             lines.append(.emptyLine)
             lines.append("public init(_ keyPath: KeyPath<\(customContainerName), Factory<T>>) {".indent())
