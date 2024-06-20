@@ -2,6 +2,8 @@ import SourceryRuntime
 
 enum AutoRegisterable {
     static func generate(types: Types, annotations: Annotations) -> String {
+        let isSingleton = annotations.isSingleton
+
         var lines: [String] = []
         lines.append(contentsOf: annotations.imports.map { "import \($0)" })
         lines.append("")
@@ -57,7 +59,7 @@ enum AutoRegisterable {
                     let nameAndValue = pair.components(separatedBy: "=")
                     guard nameAndValue.count == 2 else { return }
                     let registrationName = nameAndValue[0]
-                    addFactoryRegistration(to: &lines, registrationName: registrationName, typeName: type.name, scope: type.factoryScope)
+                    addFactoryRegistration(to: &lines, registrationName: registrationName, typeName: type.name, scope: type.factoryScope, isSingleton: isSingleton)
                 }
             } else {
                 let initMethods = type.methods.filter(\.isInitializer)
@@ -86,11 +88,12 @@ enum AutoRegisterable {
                         registrationName: registrationName,
                         parameterType: parameterType,
                         typeName: type.name,
-                        scope: type.factoryScope
+                        scope: type.factoryScope,
+                        isSingleton: isSingleton
                     )
                 } else {
                     // If there is no init method in the protocol we can use the regular `Factory`
-                    addFactoryRegistration(to: &lines, registrationName: registrationName, typeName: type.name, scope: type.factoryScope)
+                    addFactoryRegistration(to: &lines, registrationName: registrationName, typeName: type.name, scope: type.factoryScope, isSingleton: isSingleton)
                 }
             }
         }
@@ -167,10 +170,16 @@ enum AutoRegisterable {
         to lines: inout [String],
         registrationName: String,
         typeName: String,
-        scope: String?
+        scope: String?,
+        isSingleton: Bool
     ) {
         lines.append("public var \(registrationName): Factory<\(typeName)> {".indent(level: 1))
         lines.append("self { fatalError(\"\(typeName) not registered\") }\(scope.flatMap { ".\($0)" } ?? "")".indent(level: 2))
+
+        if isSingleton {
+            lines.append(".singleton".indent(level: 3))
+        }
+        
         lines.append("}".indent(level: 1))
     }
 
@@ -179,10 +188,16 @@ enum AutoRegisterable {
         registrationName: String,
         parameterType: String,
         typeName: String,
-        scope: String?
+        scope: String?,
+        isSingleton: Bool
     ) {
         lines.append("public var \(registrationName): ParameterFactory<\(parameterType), \(typeName)> {".indent(level: 1))
         lines.append("self { _ in fatalError(\"\(typeName) not registered\") }\(scope.flatMap { ".\($0)" } ?? "")".indent(level: 2))
+
+        if isSingleton {
+            lines.append(".singleton".indent(level: 3))
+        }
+
         lines.append("}".indent(level: 1))
     }
 }

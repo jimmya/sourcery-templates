@@ -45,4 +45,8 @@ extension Annotations {
     var containerMapping: [String: String]? {
         self["containerMapping"] as? [String: String]
     }
+
+    var isSingleton: Bool {
+        (self["singleton"] as? Bool) ?? false
+    }
 }
