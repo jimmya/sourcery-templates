@@ -206,7 +206,7 @@ private extension Method {
                 resultType = returnTypeNameString
             }
 
-            resultType += isOptionalReturnType ? "" : "!"
+            resultType += isOptionalReturnType ? "?" : "!"
 
             lines.append("\(accessLevel) var stubbed\(name)Result: \(resultType)")
         }
