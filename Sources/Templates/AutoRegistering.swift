@@ -51,7 +51,7 @@ private extension AutoRegistering {
 
     static func getImplementingType(for type: Protocol) -> Type? {
         let registrationName = registrationName(for: type)
-        return (types.classes + types.structs).first(where: {
+        return (types.all).first(where: {
             $0.implements.contains(where: { $0.value == type })
             && $0.name.withLowercaseFirst() == registrationName
         })
@@ -67,7 +67,8 @@ private extension AutoRegistering {
             fatalError("Max 1 init method is supported for AutoRegisterable")
         }
 
-        if let initMethod = initMethods.first {
+        let isShared = registeringType.staticVariables.contains { $0.name == "shared" }
+        if !isShared, let initMethod = initMethods.first {
             var canGenerateInit = true
             var initComponents: [String] = initMethod.parameters.compactMap { parameter in
                 guard parameter.defaultValue == nil else {
@@ -86,7 +87,6 @@ private extension AutoRegistering {
             let joinedInitComponents = initComponents.joined(separator: ", ")
             lines.append("\(registrationName).register { \(registeringType.name)(\(joinedInitComponents)) }".indent(level: 2))
         } else {
-            let isShared = registeringType.staticVariables.contains { $0.name == "shared" }
             let instance = isShared ? ".shared" : "()"
             // If there is no init method in the protocol we can use the regular `Factory`
             lines.append("\(registrationName).register { \(registeringType.name)\(instance) }".indent(level: 2))
