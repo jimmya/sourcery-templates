@@ -75,7 +75,11 @@ extension Method {
     }
 
     var sanitizedReturnTypeName: String {
-        returnTypeName.name.components(separatedBy: " where ").first ?? returnTypeName.name
+        let genericComponents = returnTypeName.name.components(separatedBy: " where ")
+        if genericComponents.count > 1, let firstComponent = genericComponents.first {
+            return firstComponent
+        }
+        return returnTypeName.unwrappedTypeName
     }
 
     var returnTypeGenericClause: String? {
@@ -257,7 +261,8 @@ private extension Method {
         }
         if !returnTypeName.isVoid && !isInitializer {
             if generics.contains(where: { $0.name == sanitizedReturnTypeName }) {
-                lines.append("return stubbed\(methodName)Result as! \(sanitizedReturnTypeName)")
+                let cast = returnTypeName.isOptional ? "?" : "!"
+                lines.append("return stubbed\(methodName)Result as\(cast) \(sanitizedReturnTypeName)")
             } else {
                 lines.append("return stubbed\(methodName)Result")
             }
