@@ -162,6 +162,8 @@ enum AutoRegisterable {
             lines.append("}".indent())
             lines.append("}")
             lines.append(.emptyLine)
+            lines.append("extension \(propertyWrapperName): @unchecked Sendable where T: Sendable { }")
+            lines.append(.emptyLine)
         }
 
         return lines.joined(separator: .newLine) + .newLine
