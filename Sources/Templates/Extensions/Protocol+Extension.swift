@@ -44,7 +44,7 @@ private extension Protocol {
     }
 
     var mockType: String {
-        if based.contains(where: { $0.key == "AnyActor"}) {
+        if based.contains(where: { $0.key == "AnyActor" || $0.key == "Actor" }) {
             return "actor"
         }
         // If we have a method that returns `Self` we must declare the class final
