@@ -18,7 +18,7 @@ enum AutoRegistering {
             if let registrationValue = type.registrationValue {
                 // If the registration value is specified we can register it directly
                 let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
-                lines.append("\(registrationName).register { \(registrationValue) }".indent(level: 2))
+                lines.append("\(registrationName).register { \(registrationValue)() }".indent(level: 2))
             } else if let registrationValues = type.registrationValues {
                 // If multiple registration name-value pairs are specified we register them all
             	let nameAndValuePairs = registrationValues.components(separatedBy: ",")
@@ -27,7 +27,7 @@ enum AutoRegistering {
                     guard nameAndValue.count == 2 else { return }
                     let registrationName = nameAndValue[0]
                     let registrationValue = nameAndValue[1]
-                    lines.append("\(registrationName).register { \(registrationValue) }".indent(level: 2))
+                    lines.append("\(registrationName).register { \(registrationValue)() }".indent(level: 2))
                 }
             } else if let implementingType = getImplementingType(for: type) {
                 // No registration values are specified, auto-generate registration
