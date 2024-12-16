@@ -57,15 +57,15 @@ private extension Type {
         initParameters.append(contentsOf: implicitlyUnwrappedVariables.map { $0.generateInitAssignment(types: types, annotations: annotations).indent(level: 2) })
         lines.append(initParameters.joined(separator: "," + .newLine))
         lines.append(") -> \(name)\(method.isFailableInitializer ? "?" : "") {".indent())
-        let parameterNames = method.parameters.map { parameter in
-            parameter.argumentLabel ?? parameter.name
-        }
-        lines.append(generateStubbableInit(parameterNames: parameterNames))
+        lines.append(generateStubbableInit(methodParameters: method.parameters))
         lines.append("}".indent())
         return lines
     }
 
-    func generateStubbableInit(parameterNames: [String]) -> String {
+    func generateStubbableInit(methodParameters: [MethodParameter]) -> String {
+        let parameterNames = methodParameters.map {
+            $0.argumentLabel ?? $0.name
+        }
         let implicitlyUnwrappedVariables = storedVariables.filter { $0.isImplicitlyUnwrappedOptional }
         let containsImplicitlyUnwrappedOptionals = !implicitlyUnwrappedVariables.isEmpty
 
@@ -81,7 +81,14 @@ private extension Type {
         }
         lines.append(objectInit.indent(level: 2))
 
-        let parameterLines = parameterNames.map { "\($0): \($0)".indent(level: 3) }
+        let parameterLines = methodParameters.map {
+            if let argumentLabel = $0.argumentLabel {
+                "\(argumentLabel): \(argumentLabel)".indent(level: 3)
+            } else {
+                "\($0.name)".indent(level: 3)
+            }
+        }
+
         lines.append(parameterLines.joined(separator: "," + .newLine))
         if !parameterLines.isEmpty {
             lines.append(")".indent(level: 2))
