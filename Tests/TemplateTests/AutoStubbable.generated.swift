@@ -149,4 +149,16 @@ internal extension MockModelWithStubbablePropertyWithMultipleInitDeclaration {
     }
 }
 
+internal extension MockUnnamedExternalParameter {
+    static func stub(
+        firstValue: String = "",
+        secondValue: String = ""
+    ) -> MockUnnamedExternalParameter {
+        MockUnnamedExternalParameter(
+            firstValue,
+            secondValue: secondValue
+        )
+    }
+}
+
 // swiftlint:disable all
