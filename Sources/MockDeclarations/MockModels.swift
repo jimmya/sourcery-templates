@@ -87,3 +87,18 @@ struct MockModelWithOpaqueTypes {
     let closureWithOpagueReturnType: () -> any OpaqueType
     let closureWithOptionalOpagueReturnType: () -> (any OpaqueType)?
 }
+
+// sourcery: AutoStubbable
+struct MockUnnamedExternalParameter {
+
+    let string: String
+    let secondString: String
+
+    init(
+        _ firstValue: String,
+        secondValue: String
+    ) {
+        self.string = firstValue
+        self.secondString = secondValue
+    }
+}
