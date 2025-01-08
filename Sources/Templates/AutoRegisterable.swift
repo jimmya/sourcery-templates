@@ -52,12 +52,16 @@ enum AutoRegisterable {
         sortedProtocols.forEach { type in
             if let registrationValues = type.registrationValues {
                 // If the registration values are specified we can use the regular `Factory`
-            	let nameAndValuePairs = registrationValues.components(separatedBy: ",")
+                let nameAndValuePairs = registrationValues.components(separatedBy: ",")
                 nameAndValuePairs.forEach { pair in
                     let nameAndValue = pair.components(separatedBy: "=")
                     guard nameAndValue.count == 2 else { return }
                     let registrationName = nameAndValue[0]
                     addFactoryRegistration(to: &lines, registrationName: registrationName, typeName: type.name, scope: type.factoryScope)
+                }
+            } else if let autoRegisterTypes = type.autoRegisterTypes {
+                autoRegisterTypes.forEach {
+                    addFactoryRegistration(to: &lines, registrationName: $0.name.withLowercaseFirst(), typeName: type.name, scope: type.factoryScope)
                 }
             } else {
                 let initMethods = type.methods.filter(\.isInitializer)

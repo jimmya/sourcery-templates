@@ -21,13 +21,19 @@ enum AutoRegistering {
                 lines.append("\(registrationName).register { \(registrationValue) }".indent(level: 2))
             } else if let registrationValues = type.registrationValues {
                 // If multiple registration name-value pairs are specified we register them all
-            	let nameAndValuePairs = registrationValues.components(separatedBy: ",")
+                let nameAndValuePairs = registrationValues.components(separatedBy: ",")
                 nameAndValuePairs.forEach { pair in
                     let nameAndValue = pair.components(separatedBy: "=")
                     guard nameAndValue.count == 2 else { return }
                     let registrationName = nameAndValue[0]
                     let registrationValue = nameAndValue[1]
                     lines.append("\(registrationName).register { \(registrationValue) }".indent(level: 2))
+                }
+            } else if let autoRegisterTypes = type.autoRegisterTypes {
+                autoRegisterTypes.forEach {
+                    let registrationName = $0.name.withLowercaseFirst()
+                    let registrationValue = $0.name
+                    lines.append("\(registrationName).register { \(registrationValue)() }".indent(level: 2))
                 }
             } else if let implementingType = getImplementingType(for: type) {
                 // No registration values are specified, auto-generate registration
