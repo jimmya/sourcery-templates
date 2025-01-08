@@ -104,6 +104,11 @@ enum AutoMockable {
                     let registrationName = nameAndValue[0]
                     result.append((registrationName, mockName))
                 }
+            } else if let autoRegisterTypes = type.autoRegisterTypes {
+                autoRegisterTypes.forEach {
+                    let registrationName = $0.name.withLowercaseFirst()
+                    result.append((registrationName, mockName))
+                }
             } else {
                 let registrationName = type.name.withLowercaseFirst().withoutLastCamelCasedPart()
                 result.append((registrationName, mockName))

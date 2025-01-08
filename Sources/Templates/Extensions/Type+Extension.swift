@@ -6,6 +6,13 @@ extension Type {
         methods.filter { ($0.isInitializer || $0.isFailableInitializer) && !$0.isConvenienceInitializer }
     }
 
+    var autoRegisterTypes: [Type]? {
+        let autoRegisterTypes = types.all.filter {
+            $0.implements.contains(where: { $0.value == self }) && $0.isAutoRegister
+        }
+        return autoRegisterTypes.isEmpty ? nil : autoRegisterTypes
+    }
+
     func generateStub(types: Types, annotations: Annotations) -> [String] {
         var lines: [String] = []
         lines.append("\(accessLevel) extension \(name) {")
