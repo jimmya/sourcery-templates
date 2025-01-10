@@ -13,8 +13,8 @@ enum AutoRegisterable {
         let customContainerName = annotations.containerName
         if let customContainerName {
             lines.append("public final class \(customContainerName): SharedContainer {")
-            lines.append("public static var shared = \(customContainerName)()".indent())
-            lines.append("public var manager = ContainerManager()".indent())
+            lines.append("public static let shared = \(customContainerName)()".indent())
+            lines.append("public let manager = ContainerManager()".indent())
 
             let sortedPreviews: [(Type, Type)] = (types.classes + types.structs)
                 .filter { $0.name.hasPrefix("Preview") }
