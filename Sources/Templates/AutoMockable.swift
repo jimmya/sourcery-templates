@@ -12,7 +12,7 @@ enum AutoMockable {
             .sorted(by: { $0.value < $1.value })
 
         sortedContainerMappings?.forEach { module, containerName in
-            lines.append("public final class \(containerName)Mocks {")
+            lines.append("public final class \(containerName)Mocks: @unchecked Sendable {")
             lines.append(.emptyLine)
 
             let sortedExtensionVariables = types.extensions
