@@ -7,6 +7,8 @@
   - [Protocol mocks](#protocol-mocks)
   - [Model stubs](#model-stubs)
 - [Dependency container templates](#dependency-container-templates)
+  - [Usage](#usage)
+  - [Mock container](#mock-container)
 
 # Introduction
 
@@ -64,8 +66,8 @@ configurations:
         - Combine
       testableImports:
         - OtherPackage
-      mockPrefix: Prefix
-      mockSuffix: Suffix
+      mockPrefix: Prefix # Optional. Default naming is `Custom<Protocol>Mock
+      mockSuffix: Suffix # Optional. Default naming is `Custom<Protocol>Mock
 ```
 
 This configuration will:
@@ -77,11 +79,12 @@ This configuration will:
 - Mocks will be named `Prefix<Protocol>Suffix`
 
 > [!IMPORTANT]
+>
 > Protocols have to be annotated with `// sourcery: AutoMockable` to be used with the templates
 
 ## Running sourcery
 
-`$ sourcery` will analyze to project and use the configuration you created in `.sourcery.yml` and output the result in your defined output file.
+Running `$ sourcery` will analyze to project and use the configuration you created in `.sourcery.yml` and output the result in your defined output file.
 
 If you named the configuration differently you have to run
 
@@ -172,10 +175,14 @@ class DefaultMockProtocolDeclarationMock: ProtocolDeclaration {
 Template used:
 
 - AutoStubbable.swifttemplate
-  > [!IMPORTANT]
-  > Models have to be annotated with `// sourcery: AutoStubbable` to be analyzed by Sourcery
 
-This template generates stub methods for all your models. It'll attempt to default any property to make initialisation easy. This way you can focus on initialising what matters in your test.
+> [!IMPORTANT]
+>
+> Models have to be annotated with `// sourcery: AutoStubbable` to be analyzed by Sourcery
+
+This template generates stub methods for all your models. It will attempt to default any property to make initialisation easy. This way you can focus on initialising what matters in your test.
+
+If you have models with a lot of properties, this is an ideal way to handle those models in testing scenarios
 
 **Definition:**
 
@@ -221,19 +228,156 @@ class TestClass: XCTestCase {
         XCTAssertEqual(stubModel2.optionalProperty, nil) // True
 
         // This will create a model with all properties overridden
-        let stubModel2 = DomainModelDeclaration.stub(
+        let stubModel3 = DomainModelDeclaration.stub(
             integer: 10,
             optionalProperty: "Test"
         )
 
-        XCTAssertEqual(stubModel2.integer, 10) // True
-        XCTAssertEqual(stubModel2.optionalProperty, "Test") // True
+        XCTAssertEqual(stubModel3.integer, 10) // True
+        XCTAssertEqual(stubModel3.optionalProperty, "Test") // True
     }
 }
 ```
 
 # Dependency container templates
 
-As a bonus, it is possible to generate a dependency container using these templates, also greatly reducing time coding unnecessary lines. This template make it a breeze to maintain this dependency container. Just run your config.
+As a bonus, it is possible to generate a dependency container using these templates, also greatly reducing time writing and maintaining code.
 
-[Factory](https://github.com/hmlongco/Factory) is used to handle dependencies. This package has to be added to your project to make use of these templates.
+Templates used:
+
+- AutoRegistering.swifttemplate
+- AutoRegisterable.swifttemplate
+
+> [!IMPORTANT]
+>
+> The package [Factory](https://github.com/hmlongco/Factory) is used to handle dependencies. This package has to be added to your project to make use of these templates.
+
+Configuring a dependency container contains of two steps:
+
+1. Defining the dependency
+2. Registering the dependency
+
+## Usage
+
+**Configuration**
+
+```yaml
+configurations:
+  # 1. Defining dependencies
+  - package:
+      - path: APackage
+        target: ATarget
+    templates:
+      - <submodule path>/Sources/Templates/AutoRegisterable.swifttemplate
+    output: Container/ATargetRegisterable.generated.swift
+    args:
+      containerName: AContainer
+      propertyWrapperName: AContainerWrapper
+      imports: [Factory]
+
+    # 2. Registering dependencies
+    - package:
+      - path: APackage
+        target: ATarget
+    templates:
+      - <submodule path>/Sources/Templates/AutoRegistering.swifttemplate
+    output: Container/ATargetRegistering.generated.swift
+    args:
+      containerName: AContainer # This `containerName` should match the `AutoRegisterable` `containerName`
+      imports: [Factory]
+```
+
+**Usage**
+
+> [!IMPORTANT]
+>
+> Any `class` or `struct` you want to register in the container has to be annotated with `// sourcery: AutoRegister` and conform to a `protocol`.
+
+```swift
+protocol ADependencyProtocol { }
+
+// sourcery: AutoRegister
+struct ADependency: ADependencyProtocol {
+
+}
+```
+
+**Generated code**
+
+1. Defining the dependencies
+
+```swift
+public final class AContainer: SharedContainer {
+    public static var shared = AContainer()
+    public var manager = ContainerManager()
+}
+
+extension AContainer {
+
+    public var aDependency: Factory<ADependencyProtocol> {
+        self { fatalError("ADependencyProtocol not registered") }
+    }
+}
+
+@propertyWrapper public struct AContainerWrapper<T> {
+    public static func make(_ keyPath: KeyPath<AContainer, Factory<T>>) -> T {
+        AContainer.shared[keyPath: keyPath].resolve()
+    }
+
+    private var injected: Injected<T>
+
+    public init(_ keyPath: KeyPath<AContainer, Factory<T>>) {
+        self.injected = .init(keyPath)
+    }
+
+    /// Manages the wrapped dependency.
+    public var wrappedValue: T {
+        get { return injected.wrappedValue }
+        mutating set { injected.wrappedValue = newValue }
+    }
+
+    /// Unwraps the property wrapper granting access to the resolve/reset function.
+    public var projectedValue: Injected<T> {
+        get { return injected.projectedValue }
+        mutating set { injected.projectedValue = newValue }
+    }
+
+    /// Grants access to the internal Factory.
+    public var factory: Factory<T> {
+        injected.factory
+    }
+
+    /// Allows the user to force a Factory resolution at their discretion.
+    public mutating func resolve(reset options: FactoryResetOptions = .none) {
+        injected.resolve(reset: options)
+    }
+}
+
+extension UseCase: @unchecked Sendable where T: Sendable { }
+
+// swiftlint:enable all
+```
+
+2. Registering the dependencies
+
+```swift
+extension AContainer: AutoRegistering {
+    public func autoRegister() {
+        aDependency.register { ADependency() }
+    }
+}
+```
+
+**Usage**
+
+```swift
+class AClass {
+
+    @AContainerWrapper(\.aDependency) private var aDependency
+
+}
+```
+
+By separating the definition and the registration of the dependencies makes it really flexible. This way it is possible to define the dependencies in one package, and register the implementations in a different package.
+
+## Mock container
