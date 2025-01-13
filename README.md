@@ -7,12 +7,15 @@
   - [Protocol mocks](#protocol-mocks)
   - [Model stubs](#model-stubs)
 - [Dependency container templates](#dependency-container-templates)
-  - [Usage](#usage)
-  - [Mock container](#mock-container)
+  - [Setup](#setup)
+  - [Dependency options](#dependency-options)
+    - [Scoping](#scoping)
+    - [Composition](#composition)
+  - [Container mock](#container-mock)
 
 # Introduction
 
-This repository contains various templates to be used with [Sourcery](https://github.com/krzysztofzablocki/Sourcery). These templates will help greatly to reduce time writing implementations for testing purposes, time you can better spend on features or tech debt.
+This repository contains various templates to be used with [Sourcery](https://github.com/krzysztofzablocki/Sourcery). These templates will help to greatly reduce time writing implementations for testing purposes, time you can better spend on features or tech debt.
 
 > But Sourcery already has its own Mockable template.
 
@@ -252,12 +255,12 @@ Templates used:
 >
 > The package [Factory](https://github.com/hmlongco/Factory) is used to handle dependencies. This package has to be added to your project to make use of these templates.
 
-Configuring a dependency container contains of two steps:
+Configuring a dependency container consists of two steps:
 
 1. Defining the dependency
 2. Registering the dependency
 
-## Usage
+## Setup
 
 **Configuration**
 
@@ -378,6 +381,142 @@ class AClass {
 }
 ```
 
-By separating the definition and the registration of the dependencies makes it really flexible. This way it is possible to define the dependencies in one package, and register the implementations in a different package.
+By separating the definition and the registration of the dependencies, it becomes really flexible. This way it is possible to define the dependencies in one package, and register the implementations in a different package.
 
-## Mock container
+## Dependency options
+
+### Scoping
+
+The `Factory` package contains [scoping features](https://github.com/hmlongco/Factory?tab=readme-ov-file#scope). A dependency can be marked `singleton` for example. This is also supported by these templates, by passing a `factoryScope` argument.
+
+**Configuration**
+
+```swift
+protocol ADependencyProtocol { }
+
+// sourcery: AutoRegister, factoryScope: "singleton"
+struct ADependency: ADependencyProtocol {
+
+}
+```
+
+**Generated code**
+
+```swift
+extension AContainer {
+
+    public var aDependency: Factory<ADependencyProtocol> {
+        self { fatalError("ADependencyProtocol not registered") }
+    }.singleton // <- Dependency is now a singleton
+}
+```
+
+### Composition
+
+Composition is also supported, using a combination of the `AutoRegisterable` and `AutoRegister` annotation.
+
+**Configuration**
+
+```swift
+// sourcery: AutoRegisterable
+protocol ADependencyProtocol { }
+
+// sourcery: AutoRegister
+struct FirstDependencyImplementation: ADependencyProtocol {
+
+}
+
+// sourcery: AutoRegister
+struct SecondDependencyImplementation: ADependencyProtocol {
+
+}
+```
+
+**Generated code**
+
+```swift
+// -- Registerable file --
+
+extension AContainer {
+
+    public var firstDependencyImplementation: Factory<ADependencyProtocol> {
+        self { fatalError("ADependencyProtocol not registered") }
+    }
+    public var secondDependencyImplementation: Factory<ADependencyProtocol> {
+        self { fatalError("ADependencyProtocol not registered") }
+    }
+}
+
+// -- Registering file --
+
+extension AContainer: AutoRegistering {
+    public func autoRegister() {
+        firstDependencyImplementation.register { FirstDependencyImplementation() }
+        secondDependencyImplementation.register { SecondDependencyImplementation() }
+    }
+}
+```
+
+## Container mock
+
+It is possible to create a mock from the dependency container. Using this mock container you have all the dependencies at your disposal, except they are all mocks. So if a testcase is dependend on a lot of external factors, it is easier to define the whole mock container, instead of all the mock dependencies separately.
+
+To generate a mock container, an argument has to be added to the `AutoMockable` configuration.
+
+**Configuration**
+
+```yaml
+configurations:
+  - package:
+      - path: TestPackage
+        target: TestPackage
+    templates:
+      - <submodule location>/Sources/Templates/AutoMockable.swifttemplate
+    output: Mocks/Generated/Mocks.generated.swift
+    args:
+      imports:
+        - XCTest
+        - Foundation
+        - Combine
+      testableImports:
+        - OtherPackage
+      mockPrefix: Prefix
+      mockSuffix: Suffix
+      containerMapping: { ATarget: AContainer } # <- Argument to create Mock container
+```
+
+Adding this argument will create a `public final class AContainerMocks` to the file `Mocks/Generated/Mocks.generated.swift`
+
+**Generated code**
+
+```swift
+public final class AContainerMocks {
+
+    public lazy var aDependency = PrefixADependencySuffix() // `Prefix` and `Suffix` are defined in the yaml configuration
+}
+```
+
+**Usage**
+
+```swift
+class TestClass: XCTestCase {
+
+    var containerMocks: AContainerMocks!
+
+    override func setUp() {
+        super.setUp()
+
+        containerMocks = AContainerMocks()
+    }
+
+    override func tearDown() {
+        super.tearDown()
+
+        containerMocks = nil
+    }
+
+    func test() {
+        containerMocks.aDependency // Access to all mock dependencies within the mock container
+    }
+}
+```
