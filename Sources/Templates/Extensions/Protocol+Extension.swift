@@ -34,8 +34,13 @@ extension Protocol {
 private extension Protocol {
     /// Returns `class DefaultProtocolNameMock: InheritedTypes {`
     func generateClassDeclaration(annotations: Annotations) -> String {
+        var sendableNaming = ""
+        if self.inheritedTypes.contains(where: { $0 == "Sendable" }) {
+            sendableNaming = ", @unchecked Sendable"
+        }
+
         let mockNaming = annotations.mockName(typeName: name)
-        return "\(accessLevel) \(mockType) \(mockNaming): \(mockInheritedTypes) {"
+        return "\(accessLevel) \(mockType) \(mockNaming): \(mockInheritedTypes)\(sendableNaming) {"
     }
 
     var mockInheritedTypes: String {
