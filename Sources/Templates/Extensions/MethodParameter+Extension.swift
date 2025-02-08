@@ -23,8 +23,15 @@ extension MethodParameter {
         if let generic = method.generics.first(where: { $0.constraints == type }) {
             return generic.constraints ?? "Any"
         }
-        if method.isGeneric && typeName.isGeneric && !typeName.isArray && !typeName.isDictionary {
-            return "Any"
+        // If the parameter contains a generic defined in the method signature we can't use it in a detached variable.
+        // In that case all we can do is fallback to `Any`.
+        if let generic = typeName.generic {
+            let returnTypeContainsMethodGeneric = method.generics.contains(where: { methodGeneric in
+                generic.typeParameters.contains(where: { $0.typeName.name == methodGeneric.name })
+            })
+            if returnTypeContainsMethodGeneric {
+                return "Any"
+            }
         }
         if isVariadic {
             type = "[\(type)]"

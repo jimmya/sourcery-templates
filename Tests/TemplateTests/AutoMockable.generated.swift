@@ -447,16 +447,16 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
 
     internal var invokedMethodWithGenericConstraint: Bool { invokedMethodWithGenericConstraintCount > 0 }
     internal var invokedMethodWithGenericConstraintCount = 0
-    internal var invokedMethodWithGenericConstraintParameters: (property: Any, Void)?
-    internal var invokedMethodWithGenericConstraintParametersList: [(property: Any, Void)] = []
+    internal var invokedMethodWithGenericConstraintParameters: (property: Any, values: Set<String>)?
+    internal var invokedMethodWithGenericConstraintParametersList: [(property: Any, values: Set<String>)] = []
     internal var stubbedMethodWithGenericConstraintResult: (any Equatable)!
     internal var invokedMethodWithGenericConstraintExpectation = XCTestExpectation(description: "\(#function) expectation")
 
-    internal func methodWithGenericConstraint<T: Equatable>(property: SomeGenericStruct<T>) -> T {
+    internal func methodWithGenericConstraint<T: Equatable>(property: SomeGenericStruct<T>, values: Set<String>) -> T {
         defer { invokedMethodWithGenericConstraintExpectation.fulfill() }
         invokedMethodWithGenericConstraintCount += 1
-        invokedMethodWithGenericConstraintParameters = (property: property, ())
-        invokedMethodWithGenericConstraintParametersList.append((property: property, ()))
+        invokedMethodWithGenericConstraintParameters = (property: property, values: values)
+        invokedMethodWithGenericConstraintParametersList.append((property: property, values: values))
         return stubbedMethodWithGenericConstraintResult as! T
     }
 
