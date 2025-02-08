@@ -88,6 +88,12 @@ protocol MockProtocolWithOpaqueTypes {
     func someClosureOptionalOpaqueReturnType(completion: () -> (any OpaqueType)?)
     func someOptionalClosureOpaqueReturnType(completion: (() -> any OpaqueType)?)
     func someOptionalClosureOptionalOpaqueReturnType(completion: (() -> (any OpaqueType)?)?)
+
+    func methodWithGenericConstraint<T: Equatable>(property: SomeGenericStruct<T>) -> T
+}
+
+struct SomeGenericStruct<T> {
+
 }
 
 // sourcery: AutoMockable

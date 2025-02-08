@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.1.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable all
 
@@ -32,7 +32,7 @@ internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
     internal var invokedExecuteUrlRequestCount = 0
     internal var invokedExecuteUrlRequestParameters: (urlRequest: URLRequest, Void)?
     internal var invokedExecuteUrlRequestParametersList: [(urlRequest: URLRequest, Void)] = []
-    internal var stubbedExecuteUrlRequestResult: Decodable!
+    internal var stubbedExecuteUrlRequestResult: (any Decodable)!
     internal var invokedExecuteUrlRequestExpectation = XCTestExpectation(description: "\(#function) expectation")
 
     internal func execute<Response>(_ urlRequest: URLRequest) async throws -> Response where Response: Decodable {
@@ -51,7 +51,7 @@ internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
     internal var invokedExecuteUrlRequestDecoderCount = 0
     internal var invokedExecuteUrlRequestDecoderParameters: (urlRequest: URLRequest, decoder: JSONDecoder)?
     internal var invokedExecuteUrlRequestDecoderParametersList: [(urlRequest: URLRequest, decoder: JSONDecoder)] = []
-    internal var stubbedExecuteUrlRequestDecoderResult: Decodable!
+    internal var stubbedExecuteUrlRequestDecoderResult: (any Decodable)!
     internal var invokedExecuteUrlRequestDecoderExpectation = XCTestExpectation(description: "\(#function) expectation")
 
     internal func execute<Response>(_ urlRequest: URLRequest, decoder: JSONDecoder) async throws -> Response where Response: Decodable {
@@ -444,6 +444,21 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     }
 
     internal init() { }
+
+    internal var invokedMethodWithGenericConstraint: Bool { invokedMethodWithGenericConstraintCount > 0 }
+    internal var invokedMethodWithGenericConstraintCount = 0
+    internal var invokedMethodWithGenericConstraintParameters: (property: Any, Void)?
+    internal var invokedMethodWithGenericConstraintParametersList: [(property: Any, Void)] = []
+    internal var stubbedMethodWithGenericConstraintResult: (any Equatable)!
+    internal var invokedMethodWithGenericConstraintExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func methodWithGenericConstraint<T: Equatable>(property: SomeGenericStruct<T>) -> T {
+        defer { invokedMethodWithGenericConstraintExpectation.fulfill() }
+        invokedMethodWithGenericConstraintCount += 1
+        invokedMethodWithGenericConstraintParameters = (property: property, ())
+        invokedMethodWithGenericConstraintParametersList.append((property: property, ()))
+        return stubbedMethodWithGenericConstraintResult as! T
+    }
 
     internal var invokedSomeClosureOpaqueParameter: Bool { invokedSomeClosureOpaqueParameterCount > 0 }
     internal var invokedSomeClosureOpaqueParameterCount = 0

@@ -16,8 +16,15 @@ extension MethodParameter {
 
     func settableType(method: Method) -> String {
         var type = typeAttributes.isEscaping ? unwrappedTypeName : typeName.asSource
-        if let generic = method.generics.first(where: { $0.name == type }) {
+        if let generic = method.generics.first(where: { $0.name == type || $0.name == unwrappedTypeName }) {
+            let optionalSuffix = isOptional ? "?" : "!"
+            return generic.constraints.map { $0 + optionalSuffix } ?? "Any"
+        }
+        if let generic = method.generics.first(where: { $0.constraints == type }) {
             return generic.constraints ?? "Any"
+        }
+        if let generic = typeName.generic {
+            return "Any"
         }
         if isVariadic {
             type = "[\(type)]"

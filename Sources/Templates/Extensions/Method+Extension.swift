@@ -197,16 +197,18 @@ private extension Method {
 
             var resultType: String
 
+            let optionalSuffix = isOptionalReturnType ? "?" : "!"
+
             if let generic = generics.first(where: { $0.name == returnTypeNameString }) {
                 let genericConstraint = generic.constraints ?? "Any"
-                resultType = genericConstraint
+                resultType = "(any \(genericConstraint))" + optionalSuffix
             } else if returnTypeName.isOpaqueType {
-                resultType = returnTypeName.isOptional ? returnTypeName.withWrappedOptionalIfNeeded() : "(\(returnTypeName))"
+                resultType = returnTypeName.isOptional ? returnTypeName.withWrappedOptionalIfNeeded() : "(\(returnTypeName))!"
+            } else if generics.contains(where: { $0.constraints == returnTypeNameString }) {
+                resultType = "(any \(returnTypeNameString))" + optionalSuffix
             } else {
-                resultType = returnTypeNameString
+                resultType = returnTypeNameString + optionalSuffix
             }
-
-            resultType += isOptionalReturnType ? "?" : "!"
 
             lines.append("\(accessLevel) var stubbed\(name)Result: \(resultType)")
         }
