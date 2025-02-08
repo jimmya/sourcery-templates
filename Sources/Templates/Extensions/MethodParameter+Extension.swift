@@ -23,7 +23,7 @@ extension MethodParameter {
         if let generic = method.generics.first(where: { $0.constraints == type }) {
             return generic.constraints ?? "Any"
         }
-        if let generic = typeName.generic {
+        if typeName.isGeneric && !typeName.isArray && !typeName.isDictionary {
             return "Any"
         }
         if isVariadic {
