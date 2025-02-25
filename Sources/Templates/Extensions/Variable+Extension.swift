@@ -5,6 +5,10 @@ extension Variable {
         defaultValue != nil
     }
 
+    var isNonIsolated: Bool { 
+        modifiers.contains { $0.name == "nonisolated" }
+    }
+
     func generateMock(types: Types, accessLevel: String, annotations: Annotations) -> String {
         isMutable ? generateMutableMock(types: types, accessLevel: accessLevel, annotations: annotations) : generateComputedMock(types: types, accessLevel: accessLevel, annotations: annotations)
     }
@@ -42,16 +46,21 @@ private extension Variable {
             returnTypeName = typeName.isOptional ? "(\(closureSignature))?" : closureSignature
         }
 
-        return """
-            \(accessLevel) var invoked\(capitalizedName)Setter = false
-            \(accessLevel) var invoked\(capitalizedName)SetterCount = 0
-            \(accessLevel) var invoked\(capitalizedName): \(invokedObjectType)
-            \(accessLevel) var invoked\(capitalizedName)List: [\(listTypeName)] = []
-            \(accessLevel) var invoked\(capitalizedName)Getter = false
-            \(accessLevel) var invoked\(capitalizedName)GetterCount = 0
-            \(accessLevel) var stubbed\(capitalizedName): \(stubbedObjectType)
+        var isolationLevel = ""
+        if isNonIsolated {
+            isolationLevel = "nonisolated(unsafe) "
+        }
 
-            \(accessLevel) var \(name): \(returnTypeName) {
+        return """
+            \(accessLevel) \(isolationLevel)var invoked\(capitalizedName)Setter = false
+            \(accessLevel) \(isolationLevel)var invoked\(capitalizedName)SetterCount = 0
+            \(accessLevel) \(isolationLevel)var invoked\(capitalizedName): \(invokedObjectType)
+            \(accessLevel) \(isolationLevel)var invoked\(capitalizedName)List: [\(listTypeName)] = []
+            \(accessLevel) \(isolationLevel)var invoked\(capitalizedName)Getter = false
+            \(accessLevel) \(isolationLevel)var invoked\(capitalizedName)GetterCount = 0
+            \(accessLevel) \(isolationLevel)var stubbed\(capitalizedName): \(stubbedObjectType)
+
+            \(accessLevel) \(isolationLevel)var \(name): \(returnTypeName) {
                 get {
                     invoked\(capitalizedName)Getter = true
                     invoked\(capitalizedName)GetterCount += 1
@@ -86,12 +95,17 @@ private extension Variable {
             returnTypeName = typeName.isOptional ? "(\(closureSignature))?" : closureSignature
         }
 
-        return """
-            \(accessLevel) var invoked\(capitalizedName)Getter = false
-            \(accessLevel) var invoked\(capitalizedName)GetterCount = 0
-            \(accessLevel) var stubbed\(capitalizedName): \(stubbedObjectType)
+        var isolationLevel = ""
+        if isNonIsolated {
+            isolationLevel = "nonisolated(unsafe) "
+        }
 
-            \(accessLevel) var \(name): \(returnTypeName) {
+        return """
+            \(accessLevel) \(isolationLevel)var invoked\(capitalizedName)Getter = false
+            \(accessLevel) \(isolationLevel)var invoked\(capitalizedName)GetterCount = 0
+            \(accessLevel) \(isolationLevel)var stubbed\(capitalizedName): \(stubbedObjectType)
+
+            \(accessLevel) \(isolationLevel)var \(name): \(returnTypeName) {
                 invoked\(capitalizedName)Getter = true
                 invoked\(capitalizedName)GetterCount += 1
                 return stubbed\(capitalizedName)
