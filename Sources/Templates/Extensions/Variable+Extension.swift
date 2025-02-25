@@ -5,6 +5,10 @@ extension Variable {
         defaultValue != nil
     }
 
+    var isNonIsolated: Bool { 
+        modifiers.contains { $0.name == "nonisolated" }
+    }
+
     func generateMock(types: Types, accessLevel: String, annotations: Annotations) -> String {
         isMutable ? generateMutableMock(types: types, accessLevel: accessLevel, annotations: annotations) : generateComputedMock(types: types, accessLevel: accessLevel, annotations: annotations)
     }
@@ -42,12 +46,8 @@ private extension Variable {
             returnTypeName = typeName.isOptional ? "(\(closureSignature))?" : closureSignature
         }
 
-        let isNonisolated = modifiers.contains {
-            $0.name == "nonisolated"
-        }
-
         var isolationLevel = ""
-        if isNonisolated {
+        if isNonIsolated {
             isolationLevel = "nonisolated(unsafe) "
         }
 
@@ -95,12 +95,8 @@ private extension Variable {
             returnTypeName = typeName.isOptional ? "(\(closureSignature))?" : closureSignature
         }
 
-        let isNonisolated = modifiers.contains {
-            $0.name == "nonisolated"
-        }
-
         var isolationLevel = ""
-        if isNonisolated {
+        if isNonIsolated {
             isolationLevel = "nonisolated(unsafe) "
         }
 
