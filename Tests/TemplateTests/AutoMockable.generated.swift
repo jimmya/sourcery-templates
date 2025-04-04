@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.1.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable all
 
@@ -588,7 +588,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
 
     internal var invokedSomeOptionalOpaqueReturningFunction: Bool { invokedSomeOptionalOpaqueReturningFunctionCount > 0 }
     internal var invokedSomeOptionalOpaqueReturningFunctionCount = 0
-    internal var stubbedSomeOptionalOpaqueReturningFunctionResult: (any OpaqueType)?
+    internal var stubbedSomeOptionalOpaqueReturningFunctionResult: (any OpaqueType)??
     internal var invokedSomeOptionalOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
 
     internal func someOptionalOpaqueReturningFunction() -> (any OpaqueType)? {
@@ -736,6 +736,24 @@ internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithRetu
         defer { invokedMethodExpectation.fulfill() }
         invokedMethodCount += 1
         return stubbedMethodResult
+    }
+}
+
+internal class DefaultMockProtocolWithTypedThrowMethodMock: MockProtocolWithTypedThrowMethod {
+
+    internal init() { }
+
+    internal var stubbedMethodThrowableError: SomeError?
+    internal var invokedMethod: Bool { invokedMethodCount > 0 }
+    internal var invokedMethodCount = 0
+    internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func method() throws(SomeError) {
+        defer { invokedMethodExpectation.fulfill() }
+        invokedMethodCount += 1
+        if let error = stubbedMethodThrowableError {
+            throw error
+        }
     }
 }
 
