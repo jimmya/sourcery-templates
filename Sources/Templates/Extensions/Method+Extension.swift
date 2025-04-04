@@ -150,7 +150,8 @@ private extension Method {
     func mockStubParameters(name: String, type: Type, types: Types, accessLevel: String, annotations: Annotations) -> [String] {
         var lines: [String] = []
         if self.throws {
-            lines.append("\(accessLevel) var stubbed\(name)ThrowableError: Error?")
+            let throwableType = throwsTypeName?.name ?? "Error"
+            lines.append("\(accessLevel) var stubbed\(name)ThrowableError: \(throwableType)?")
         }
         if !isInitializer {
             lines.append("\(accessLevel) var invoked\(name): Bool { invoked\(name)Count > 0 }")
@@ -284,12 +285,15 @@ private extension Method {
                 "{",
             ]
         } else {
+            let throwPart = self.throws ?
+                throwsTypeName.map { "throws(\($0.name))" } ?? "throws"
+                : nil
             parts = [
                 type.accessLevel,
                 "func",
                 methodName,
                 isAsync ? "async" : nil,
-                self.throws ? "throws" : nil,
+                throwPart,
                 mockReturnType(type: type, annotations: annotations),
                 "{",
             ]

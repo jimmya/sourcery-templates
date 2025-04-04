@@ -14,7 +14,7 @@ let package = Package(
         ])
     ],
     dependencies: [
-        .package(url: "https://github.com/krzysztofzablocki/Sourcery", exact: "2.0.2"),
+        .package(url: "https://github.com/krzysztofzablocki/Sourcery", branch: "master"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
