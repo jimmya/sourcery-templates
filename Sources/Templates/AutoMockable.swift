@@ -5,6 +5,15 @@ enum AutoMockable {
         var lines: [String] = []
         lines.append(contentsOf: annotations.testableImports.map { "@testable import \($0)" })
         lines.append(contentsOf: annotations.imports.map { "import \($0)" })
+
+        if annotations.testingFrameworkTypes.contains(.swiftTesting) {
+            lines.append("import Testing")
+        }
+
+        if annotations.testingFrameworkTypes.contains(.xctest) {
+            lines.append("import XCTest")
+        }
+
         lines.append(.emptyLine)
 
         let sortedContainerMappings = annotations

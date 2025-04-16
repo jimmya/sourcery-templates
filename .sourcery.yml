@@ -6,8 +6,9 @@ configurations:
       - Sources/Templates/AutoMockable.swifttemplate
     output: Tests/TemplateTests
     args:
-      imports: [Foundation, XCTest]
+      imports: [Foundation]
       testableImports: [MockDeclarations]
+      testingFrameworks: [swift-testing, xctest]
   - package:
       path: .
       target:

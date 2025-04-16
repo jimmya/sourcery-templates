@@ -21,6 +21,12 @@ extension Annotations {
         self["mockSuffix"] as? String
     }
 
+    var testingFrameworkTypes: [TestingFramework] {
+        testingFrameworks.compactMap {
+            TestingFramework(rawValue: $0)
+        }
+    }
+
     /// Will add a prefix and suffix to the input `String`
     ///
     /// The default prefix and suffix are `Default` and `Mock` respectively.
@@ -46,3 +52,17 @@ extension Annotations {
         self["containerMapping"] as? [String: String]
     }
 }
+
+private extension Annotations {
+
+    var testingFrameworks: [String] {
+        let frameworks = self["testingFrameworks"] as? [String]
+
+        return if let frameworks, !frameworks.isEmpty {
+            frameworks
+        } else {
+            ["xctest"]
+        }
+    }
+}
+
