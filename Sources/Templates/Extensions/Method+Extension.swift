@@ -224,7 +224,7 @@ private extension Method {
 
             if annotations.testingFrameworkTypes.contains(.swiftTesting) {
                 lines.append("\(accessLevel) var invoked\(name)Confirmation: Confirmation?")
-                lines.append("\(accessLevel) var invoked\(name)ConfirmationCount: Int = 1")
+                lines.append("\(accessLevel) var invoked\(name)ConfirmationIncrement = 1")
             }
         }
         return lines.map { $0.indent() }
@@ -247,7 +247,7 @@ private extension Method {
                 lines.append("invoked\(methodName)Expectation.fulfill()".indent())
             }
             if annotations.testingFrameworkTypes.contains(.swiftTesting) {
-                lines.append("invoked\(methodName)Confirmation?.confirm(count: invoked\(methodName)ConfirmationCount)".indent())
+                lines.append("invoked\(methodName)Confirmation?.confirm(count: invoked\(methodName)ConfirmationIncrement)".indent())
             }
             lines.append("}")
         }
