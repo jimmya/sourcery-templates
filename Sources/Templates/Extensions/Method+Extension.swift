@@ -31,7 +31,14 @@ extension Method {
     ///   - allMethods: List containing all methods in the type, used to avoid collisions
     ///   - type: The type this mock is generated for
     /// - Returns: List of lines containing the mock
-    func generateMock(takenNames: inout Set<String>, allMethods: [Method], in type: Type, types: Types, accessLevel: String, annotations: Annotations) -> [String] {
+    func generateMock(
+        takenNames: inout Set<String>,
+        allMethods: [Method],
+        in type: Type,
+        types: Types,
+        accessLevel: String,
+        annotations: Annotations
+    ) -> [String] {
         let methodName = generateMockName(allMethods: allMethods, takenNames: &takenNames).replacingOccurrences(of: "?", with: "")
         // Parameters captured or returned when method is called
         var lines = mockStubParameters(name: methodName, type: type, types: types, accessLevel: accessLevel, annotations: annotations)
@@ -40,7 +47,7 @@ extension Method {
         // Function declaration `func something() {`
         lines.append(mockFunctionDeclaration(type: type, annotations: annotations).indent())
         // Filling or captured variables or returning stubbed values when method is called
-        lines.append(contentsOf: mockReceivedParameters(methodName: methodName))
+        lines.append(contentsOf: mockReceivedParameters(methodName: methodName, annotations: annotations))
         // Close method
         lines.append("}".indent())
         return lines
@@ -210,8 +217,15 @@ private extension Method {
 
             lines.append("\(accessLevel) var stubbed\(name)Result: \(resultType)")
         }
-        if !isInitializer { // Expectations aren't possible in the initializer
-            lines.append("\(accessLevel) var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
+        if !isInitializer { // Expectations/Confirmations aren't possible in the initializer
+            if annotations.testingFrameworkTypes.contains(.xctest) {
+                lines.append("\(accessLevel) var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
+            }
+
+            if annotations.testingFrameworkTypes.contains(.swiftTesting) {
+                lines.append("\(accessLevel) var invoked\(name)Confirmation: Confirmation?")
+                lines.append("\(accessLevel) var invoked\(name)ConfirmationCount: Int = 1")
+            }
         }
         return lines.map { $0.indent() }
     }
@@ -224,11 +238,18 @@ private extension Method {
     /// Generates filling captured variables, calling closures or returning stub value in a function
     /// - Parameter methodName: Unique name of the method to generate stub parameters for
     /// - Returns: List of lines containing the generated code
-    func mockReceivedParameters(methodName: String) -> [String] {
+    func mockReceivedParameters(methodName: String, annotations: Annotations) -> [String] {
         var lines: [String] = []
         if !isInitializer {
-            // Call expectation in defer, only makes sense in a non-init method.
-            lines.append("defer { invoked\(methodName)Expectation.fulfill() }")
+            // Call expectation/confirmation in defer, only makes sense in a non-init method.
+            lines.append("defer {")
+            if annotations.testingFrameworkTypes.contains(.xctest) {
+                lines.append("invoked\(methodName)Expectation.fulfill()".indent())
+            }
+            if annotations.testingFrameworkTypes.contains(.swiftTesting) {
+                lines.append("invoked\(methodName)Confirmation?.confirm(count: invoked\(methodName)ConfirmationCount)".indent())
+            }
+            lines.append("}")
         }
         if !isInitializer {
             lines.append("invoked\(methodName)Count += 1")

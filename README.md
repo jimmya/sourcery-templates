@@ -2,6 +2,7 @@
 - [Installation](#installation)
   - [Prerequisites](#prerequisites)
 - [Configuration](#configuration)
+  - [Testing frameworks](#testing-frameworks)
   - [Running sourcery](#running-sourcery)
 - [Unit testing templates](#unit-testing-templates)
   - [Protocol mocks](#protocol-mocks)
@@ -84,6 +85,19 @@ This configuration will:
 > [!IMPORTANT]
 >
 > Protocols have to be annotated with `// sourcery: AutoMockable` to be used with the templates
+
+## Testing frameworks
+`XCTest` and `Swift-Testing` are both supported.
+```yaml
+args:
+    testingFrameworks: [xctest, swift-testing]
+```
+
+Based on your choice, the appropriate `XCTest` or `Testing` import will be done and mocks will be configured based on your testing framework choice.
+
+I.e. `XCTestExpectation` will be replaced with `Confirmation`
+
+If the `testingFrameworks` arguments is omitted or empty, `XCTest` will be used.
 
 ## Running sourcery
 
