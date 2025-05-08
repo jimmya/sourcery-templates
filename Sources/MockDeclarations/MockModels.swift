@@ -1,4 +1,5 @@
 import NestedMockDeclarations
+import Foundation
 
 // sourcery: AutoStubbable
 struct MockModelWithNestedModel {
@@ -101,4 +102,11 @@ struct MockUnnamedExternalParameter {
         self.string = firstValue
         self.secondString = secondValue
     }
+}
+
+// sourcery: AutoStubbable
+struct MockModelWithMeasurements {
+    let duration: Measurement<UnitDuration>
+    let length: Measurement<UnitLength>
+    let temperature: Measurement<UnitTemperature>
 }

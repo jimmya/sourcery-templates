@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.1.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable all
 
@@ -91,6 +91,20 @@ internal extension MockModelWithInitMethodDeclaration {
         MockModelWithInitMethodDeclaration(
             property: property,
             failableOptionalProperty: failableOptionalProperty
+        )
+    }
+}
+
+internal extension MockModelWithMeasurements {
+    static func stub(
+        duration: Measurement<UnitDuration> = Measurement(value: 0, unit: .minutes),
+        length: Measurement<UnitLength> = Measurement(value: 0, unit: .kilometers),
+        temperature: Measurement<UnitTemperature> = Measurement(value: 0, unit: .celsius)
+    ) -> MockModelWithMeasurements {
+        MockModelWithMeasurements(
+            duration: duration,
+            length: length,
+            temperature: temperature
         )
     }
 }

@@ -54,6 +54,9 @@ extension TypeName {
         case ("Void", _): return ""
         case ("Locale", true): return ".init(identifier: \"en_US\")"
         case ("URL", true): return "URL(fileURLWithPath: \"\")"
+        case ("Measurement<UnitDuration>", true): return "Measurement(value: 0, unit: .minutes)"
+        case ("Measurement<UnitLength>", true): return "Measurement(value: 0, unit: .kilometers)"
+        case ("Measurement<UnitTemperature>", true): return "Measurement(value: 0, unit: .celsius)"
         case ("UIApplication", true): return ".shared" // UIApplication is special
         case (_, true):
             if type?.isAutoStubbable == true {
