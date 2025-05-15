@@ -36,6 +36,13 @@ protocol MockProtocolWithReturnSelf {
     func method() -> Self
 }
 
+// sourcery: AutoMockable
+protocol MockProtocolWithTypedThrowMethod {
+    func method() throws(SomeError)
+}
+
+enum SomeError: Error { }
+
 class SomeType { }
 
 // sourcery: AutoMockable

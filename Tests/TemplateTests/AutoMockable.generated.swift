@@ -860,6 +860,24 @@ internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithRetu
     }
 }
 
+internal class DefaultMockProtocolWithTypedThrowMethodMock: MockProtocolWithTypedThrowMethod {
+
+    internal init() { }
+
+    internal var stubbedMethodThrowableError: SomeError?
+    internal var invokedMethod: Bool { invokedMethodCount > 0 }
+    internal var invokedMethodCount = 0
+    internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
+
+    internal func method() throws(SomeError) {
+        defer { invokedMethodExpectation.fulfill() }
+        invokedMethodCount += 1
+        if let error = stubbedMethodThrowableError {
+            throw error
+        }
+    }
+}
+
 internal class DefaultOpaqueTypeMock: OpaqueType {
 
     internal init() { }
