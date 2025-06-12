@@ -76,6 +76,16 @@ enum AutoMockable {
             lines.append("}".indent())
             lines.append("}")
             lines.append(.emptyLine)
+
+            if annotations.testingFrameworkTypes.contains(.swiftTesting) {
+                lines.append("extension Trait where Self == ContainerTrait<\(containerName)> {");
+                lines.append("public static var \(containerName.withLowercaseFirst()): ContainerTrait<\(containerName)> {".indent());
+                lines.append(".init(shared: \(containerName).$shared, container: \(containerName)())".indent(level: 2));
+                lines.append("}".indent());
+                lines.append("}");
+
+                lines.append(.emptyLine)
+            }
         }
 
         let sortedProtocols = types.protocols
