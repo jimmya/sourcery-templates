@@ -19,11 +19,13 @@ internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
     internal var invokedExecuteExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedExecuteConfirmation: Confirmation?
     internal var invokedExecuteConfirmationIncrement = 1
+    internal var invokedExecuteContinuation: CheckedContinuation<(), Never>?
 
     internal func execute(_ urlRequest: URLRequest) async throws {
         defer {
             invokedExecuteExpectation.fulfill()
             invokedExecuteConfirmation?.confirm(count: invokedExecuteConfirmationIncrement)
+            invokedExecuteContinuation?.resume()
         }
         invokedExecuteCount += 1
         invokedExecuteParameters = (urlRequest: urlRequest, ())
@@ -42,11 +44,13 @@ internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
     internal var invokedExecuteUrlRequestExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedExecuteUrlRequestConfirmation: Confirmation?
     internal var invokedExecuteUrlRequestConfirmationIncrement = 1
+    internal var invokedExecuteUrlRequestContinuation: CheckedContinuation<(), Never>?
 
     internal func execute<Response>(_ urlRequest: URLRequest) async throws -> Response where Response: Decodable {
         defer {
             invokedExecuteUrlRequestExpectation.fulfill()
             invokedExecuteUrlRequestConfirmation?.confirm(count: invokedExecuteUrlRequestConfirmationIncrement)
+            invokedExecuteUrlRequestContinuation?.resume()
         }
         invokedExecuteUrlRequestCount += 1
         invokedExecuteUrlRequestParameters = (urlRequest: urlRequest, ())
@@ -66,11 +70,13 @@ internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
     internal var invokedExecuteUrlRequestDecoderExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedExecuteUrlRequestDecoderConfirmation: Confirmation?
     internal var invokedExecuteUrlRequestDecoderConfirmationIncrement = 1
+    internal var invokedExecuteUrlRequestDecoderContinuation: CheckedContinuation<(), Never>?
 
     internal func execute<Response>(_ urlRequest: URLRequest, decoder: JSONDecoder) async throws -> Response where Response: Decodable {
         defer {
             invokedExecuteUrlRequestDecoderExpectation.fulfill()
             invokedExecuteUrlRequestDecoderConfirmation?.confirm(count: invokedExecuteUrlRequestDecoderConfirmationIncrement)
+            invokedExecuteUrlRequestDecoderContinuation?.resume()
         }
         invokedExecuteUrlRequestDecoderCount += 1
         invokedExecuteUrlRequestDecoderParameters = (urlRequest: urlRequest, decoder: decoder)
@@ -94,11 +100,13 @@ internal class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosure
     internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedMethodConfirmation: Confirmation?
     internal var invokedMethodConfirmationIncrement = 1
+    internal var invokedMethodContinuation: CheckedContinuation<(), Never>?
 
     internal func method(closureProperty: @escaping (Bool, Int) -> Int) {
         defer {
             invokedMethodExpectation.fulfill()
             invokedMethodConfirmation?.confirm(count: invokedMethodConfirmationIncrement)
+            invokedMethodContinuation?.resume()
         }
         invokedMethodCount += 1
         invokedMethodParameters = (closureProperty: closureProperty, ())
@@ -120,11 +128,13 @@ internal class DefaultMockProtocolWithGenericFunctionMock: MockProtocolWithGener
     internal var invokedDoSomethingExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedDoSomethingConfirmation: Confirmation?
     internal var invokedDoSomethingConfirmationIncrement = 1
+    internal var invokedDoSomethingContinuation: CheckedContinuation<(), Never>?
 
     internal func doSomething<T>(parameter: T, anotherParameter: Int) {
         defer {
             invokedDoSomethingExpectation.fulfill()
             invokedDoSomethingConfirmation?.confirm(count: invokedDoSomethingConfirmationIncrement)
+            invokedDoSomethingContinuation?.resume()
         }
         invokedDoSomethingCount += 1
         invokedDoSomethingParameters = (parameter: parameter, anotherParameter: anotherParameter)
@@ -155,11 +165,13 @@ internal class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeTyp
     internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedMethodConfirmation: Confirmation?
     internal var invokedMethodConfirmationIncrement = 1
+    internal var invokedMethodContinuation: CheckedContinuation<(), Never>?
 
     internal func method() {
         defer {
             invokedMethodExpectation.fulfill()
             invokedMethodConfirmation?.confirm(count: invokedMethodConfirmationIncrement)
+            invokedMethodContinuation?.resume()
         }
         invokedMethodCount += 1
     }
@@ -174,11 +186,13 @@ internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMulti
     internal var invokedAnotherMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedAnotherMethodConfirmation: Confirmation?
     internal var invokedAnotherMethodConfirmationIncrement = 1
+    internal var invokedAnotherMethodContinuation: CheckedContinuation<(), Never>?
 
     internal func anotherMethod() {
         defer {
             invokedAnotherMethodExpectation.fulfill()
             invokedAnotherMethodConfirmation?.confirm(count: invokedAnotherMethodConfirmationIncrement)
+            invokedAnotherMethodContinuation?.resume()
         }
         invokedAnotherMethodCount += 1
     }
@@ -191,11 +205,13 @@ internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMulti
     internal var invokedAnotherMethodWithExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedAnotherMethodWithConfirmation: Confirmation?
     internal var invokedAnotherMethodWithConfirmationIncrement = 1
+    internal var invokedAnotherMethodWithContinuation: CheckedContinuation<(), Never>?
 
     internal func anotherMethod(with input: String) async throws {
         defer {
             invokedAnotherMethodWithExpectation.fulfill()
             invokedAnotherMethodWithConfirmation?.confirm(count: invokedAnotherMethodWithConfirmationIncrement)
+            invokedAnotherMethodWithContinuation?.resume()
         }
         invokedAnotherMethodWithCount += 1
         invokedAnotherMethodWithParameters = (input: input, ())
@@ -492,11 +508,13 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeClosureOpaqueParameterExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedSomeClosureOpaqueParameterConfirmation: Confirmation?
     internal var invokedSomeClosureOpaqueParameterConfirmationIncrement = 1
+    internal var invokedSomeClosureOpaqueParameterContinuation: CheckedContinuation<(), Never>?
 
     internal func someClosureOpaqueParameter(completion: (any OpaqueType) -> Void) {
         defer {
             invokedSomeClosureOpaqueParameterExpectation.fulfill()
             invokedSomeClosureOpaqueParameterConfirmation?.confirm(count: invokedSomeClosureOpaqueParameterConfirmationIncrement)
+            invokedSomeClosureOpaqueParameterContinuation?.resume()
         }
         invokedSomeClosureOpaqueParameterCount += 1
         if let result = stubbedSomeClosureOpaqueParameterCompletionResult {
@@ -510,11 +528,13 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeClosureOpaqueReturnTypeExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedSomeClosureOpaqueReturnTypeConfirmation: Confirmation?
     internal var invokedSomeClosureOpaqueReturnTypeConfirmationIncrement = 1
+    internal var invokedSomeClosureOpaqueReturnTypeContinuation: CheckedContinuation<(), Never>?
 
     internal func someClosureOpaqueReturnType(completion: () -> any OpaqueType) {
         defer {
             invokedSomeClosureOpaqueReturnTypeExpectation.fulfill()
             invokedSomeClosureOpaqueReturnTypeConfirmation?.confirm(count: invokedSomeClosureOpaqueReturnTypeConfirmationIncrement)
+            invokedSomeClosureOpaqueReturnTypeContinuation?.resume()
         }
         invokedSomeClosureOpaqueReturnTypeCount += 1
         if shouldInvokeSomeClosureOpaqueReturnTypeCompletion {
@@ -528,11 +548,13 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeClosureOptionalOpaqueParameterExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedSomeClosureOptionalOpaqueParameterConfirmation: Confirmation?
     internal var invokedSomeClosureOptionalOpaqueParameterConfirmationIncrement = 1
+    internal var invokedSomeClosureOptionalOpaqueParameterContinuation: CheckedContinuation<(), Never>?
 
     internal func someClosureOptionalOpaqueParameter(completion: ((any OpaqueType)?) -> Void) {
         defer {
             invokedSomeClosureOptionalOpaqueParameterExpectation.fulfill()
             invokedSomeClosureOptionalOpaqueParameterConfirmation?.confirm(count: invokedSomeClosureOptionalOpaqueParameterConfirmationIncrement)
+            invokedSomeClosureOptionalOpaqueParameterContinuation?.resume()
         }
         invokedSomeClosureOptionalOpaqueParameterCount += 1
         if let result = stubbedSomeClosureOptionalOpaqueParameterCompletionResult {
@@ -546,11 +568,13 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeClosureOptionalOpaqueReturnTypeExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedSomeClosureOptionalOpaqueReturnTypeConfirmation: Confirmation?
     internal var invokedSomeClosureOptionalOpaqueReturnTypeConfirmationIncrement = 1
+    internal var invokedSomeClosureOptionalOpaqueReturnTypeContinuation: CheckedContinuation<(), Never>?
 
     internal func someClosureOptionalOpaqueReturnType(completion: () -> (any OpaqueType)?) {
         defer {
             invokedSomeClosureOptionalOpaqueReturnTypeExpectation.fulfill()
             invokedSomeClosureOptionalOpaqueReturnTypeConfirmation?.confirm(count: invokedSomeClosureOptionalOpaqueReturnTypeConfirmationIncrement)
+            invokedSomeClosureOptionalOpaqueReturnTypeContinuation?.resume()
         }
         invokedSomeClosureOptionalOpaqueReturnTypeCount += 1
         if shouldInvokeSomeClosureOptionalOpaqueReturnTypeCompletion {
@@ -565,11 +589,13 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedSomeOpaqueParameterFunctionConfirmation: Confirmation?
     internal var invokedSomeOpaqueParameterFunctionConfirmationIncrement = 1
+    internal var invokedSomeOpaqueParameterFunctionContinuation: CheckedContinuation<(), Never>?
 
     internal func someOpaqueParameterFunction(opaqueObject: any OpaqueType) {
         defer {
             invokedSomeOpaqueParameterFunctionExpectation.fulfill()
             invokedSomeOpaqueParameterFunctionConfirmation?.confirm(count: invokedSomeOpaqueParameterFunctionConfirmationIncrement)
+            invokedSomeOpaqueParameterFunctionContinuation?.resume()
         }
         invokedSomeOpaqueParameterFunctionCount += 1
         invokedSomeOpaqueParameterFunctionParameters = (opaqueObject: opaqueObject, ())
@@ -582,11 +608,13 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedSomeOpaqueReturningFunctionConfirmation: Confirmation?
     internal var invokedSomeOpaqueReturningFunctionConfirmationIncrement = 1
+    internal var invokedSomeOpaqueReturningFunctionContinuation: CheckedContinuation<(), Never>?
 
     internal func someOpaqueReturningFunction() -> any OpaqueType {
         defer {
             invokedSomeOpaqueReturningFunctionExpectation.fulfill()
             invokedSomeOpaqueReturningFunctionConfirmation?.confirm(count: invokedSomeOpaqueReturningFunctionConfirmationIncrement)
+            invokedSomeOpaqueReturningFunctionContinuation?.resume()
         }
         invokedSomeOpaqueReturningFunctionCount += 1
         return stubbedSomeOpaqueReturningFunctionResult
@@ -598,11 +626,13 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOptionalClosureOpaqueParameterExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedSomeOptionalClosureOpaqueParameterConfirmation: Confirmation?
     internal var invokedSomeOptionalClosureOpaqueParameterConfirmationIncrement = 1
+    internal var invokedSomeOptionalClosureOpaqueParameterContinuation: CheckedContinuation<(), Never>?
 
     internal func someOptionalClosureOpaqueParameter(completion: ((any OpaqueType) -> Void)?) {
         defer {
             invokedSomeOptionalClosureOpaqueParameterExpectation.fulfill()
             invokedSomeOptionalClosureOpaqueParameterConfirmation?.confirm(count: invokedSomeOptionalClosureOpaqueParameterConfirmationIncrement)
+            invokedSomeOptionalClosureOpaqueParameterContinuation?.resume()
         }
         invokedSomeOptionalClosureOpaqueParameterCount += 1
         if let result = stubbedSomeOptionalClosureOpaqueParameterCompletionResult {
@@ -616,11 +646,13 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOptionalClosureOpaqueReturnTypeExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedSomeOptionalClosureOpaqueReturnTypeConfirmation: Confirmation?
     internal var invokedSomeOptionalClosureOpaqueReturnTypeConfirmationIncrement = 1
+    internal var invokedSomeOptionalClosureOpaqueReturnTypeContinuation: CheckedContinuation<(), Never>?
 
     internal func someOptionalClosureOpaqueReturnType(completion: (() -> any OpaqueType)?) {
         defer {
             invokedSomeOptionalClosureOpaqueReturnTypeExpectation.fulfill()
             invokedSomeOptionalClosureOpaqueReturnTypeConfirmation?.confirm(count: invokedSomeOptionalClosureOpaqueReturnTypeConfirmationIncrement)
+            invokedSomeOptionalClosureOpaqueReturnTypeContinuation?.resume()
         }
         invokedSomeOptionalClosureOpaqueReturnTypeCount += 1
         if shouldInvokeSomeOptionalClosureOpaqueReturnTypeCompletion {
@@ -634,11 +666,13 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOptionalClosureOptionalOpaqueParameterExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedSomeOptionalClosureOptionalOpaqueParameterConfirmation: Confirmation?
     internal var invokedSomeOptionalClosureOptionalOpaqueParameterConfirmationIncrement = 1
+    internal var invokedSomeOptionalClosureOptionalOpaqueParameterContinuation: CheckedContinuation<(), Never>?
 
     internal func someOptionalClosureOptionalOpaqueParameter(completion: (((any OpaqueType)?) -> Void)?) {
         defer {
             invokedSomeOptionalClosureOptionalOpaqueParameterExpectation.fulfill()
             invokedSomeOptionalClosureOptionalOpaqueParameterConfirmation?.confirm(count: invokedSomeOptionalClosureOptionalOpaqueParameterConfirmationIncrement)
+            invokedSomeOptionalClosureOptionalOpaqueParameterContinuation?.resume()
         }
         invokedSomeOptionalClosureOptionalOpaqueParameterCount += 1
         if let result = stubbedSomeOptionalClosureOptionalOpaqueParameterCompletionResult {
@@ -652,11 +686,13 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOptionalClosureOptionalOpaqueReturnTypeExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedSomeOptionalClosureOptionalOpaqueReturnTypeConfirmation: Confirmation?
     internal var invokedSomeOptionalClosureOptionalOpaqueReturnTypeConfirmationIncrement = 1
+    internal var invokedSomeOptionalClosureOptionalOpaqueReturnTypeContinuation: CheckedContinuation<(), Never>?
 
     internal func someOptionalClosureOptionalOpaqueReturnType(completion: (() -> (any OpaqueType)?)?) {
         defer {
             invokedSomeOptionalClosureOptionalOpaqueReturnTypeExpectation.fulfill()
             invokedSomeOptionalClosureOptionalOpaqueReturnTypeConfirmation?.confirm(count: invokedSomeOptionalClosureOptionalOpaqueReturnTypeConfirmationIncrement)
+            invokedSomeOptionalClosureOptionalOpaqueReturnTypeContinuation?.resume()
         }
         invokedSomeOptionalClosureOptionalOpaqueReturnTypeCount += 1
         if shouldInvokeSomeOptionalClosureOptionalOpaqueReturnTypeCompletion {
@@ -671,11 +707,13 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOptionalOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedSomeOptionalOpaqueParameterFunctionConfirmation: Confirmation?
     internal var invokedSomeOptionalOpaqueParameterFunctionConfirmationIncrement = 1
+    internal var invokedSomeOptionalOpaqueParameterFunctionContinuation: CheckedContinuation<(), Never>?
 
     internal func someOptionalOpaqueParameterFunction(opaqueObject: (any OpaqueType)?) {
         defer {
             invokedSomeOptionalOpaqueParameterFunctionExpectation.fulfill()
             invokedSomeOptionalOpaqueParameterFunctionConfirmation?.confirm(count: invokedSomeOptionalOpaqueParameterFunctionConfirmationIncrement)
+            invokedSomeOptionalOpaqueParameterFunctionContinuation?.resume()
         }
         invokedSomeOptionalOpaqueParameterFunctionCount += 1
         invokedSomeOptionalOpaqueParameterFunctionParameters = (opaqueObject: opaqueObject, ())
@@ -688,11 +726,13 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOptionalOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedSomeOptionalOpaqueReturningFunctionConfirmation: Confirmation?
     internal var invokedSomeOptionalOpaqueReturningFunctionConfirmationIncrement = 1
+    internal var invokedSomeOptionalOpaqueReturningFunctionContinuation: CheckedContinuation<(), Never>?
 
     internal func someOptionalOpaqueReturningFunction() -> (any OpaqueType)? {
         defer {
             invokedSomeOptionalOpaqueReturningFunctionExpectation.fulfill()
             invokedSomeOptionalOpaqueReturningFunctionConfirmation?.confirm(count: invokedSomeOptionalOpaqueReturningFunctionConfirmationIncrement)
+            invokedSomeOptionalOpaqueReturningFunctionContinuation?.resume()
         }
         invokedSomeOptionalOpaqueReturningFunctionCount += 1
         return stubbedSomeOptionalOpaqueReturningFunctionResult
@@ -709,11 +749,13 @@ internal class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWit
     internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedMethodConfirmation: Confirmation?
     internal var invokedMethodConfirmationIncrement = 1
+    internal var invokedMethodContinuation: CheckedContinuation<(), Never>?
 
     internal func method(closureProperty: ((Bool, Int) -> Int)?) {
         defer {
             invokedMethodExpectation.fulfill()
             invokedMethodConfirmation?.confirm(count: invokedMethodConfirmationIncrement)
+            invokedMethodContinuation?.resume()
         }
         invokedMethodCount += 1
         if let result = stubbedMethodClosurePropertyResult {
@@ -810,11 +852,13 @@ internal class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPro
     internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedMethodConfirmation: Confirmation?
     internal var invokedMethodConfirmationIncrement = 1
+    internal var invokedMethodContinuation: CheckedContinuation<(), Never>?
 
     internal func method() {
         defer {
             invokedMethodExpectation.fulfill()
             invokedMethodConfirmation?.confirm(count: invokedMethodConfirmationIncrement)
+            invokedMethodContinuation?.resume()
         }
         invokedMethodCount += 1
     }
@@ -829,11 +873,13 @@ public class DefaultMockProtocolWithPublicAccessLevelMock: MockProtocolWithPubli
     public var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
     public var invokedMethodConfirmation: Confirmation?
     public var invokedMethodConfirmationIncrement = 1
+    public var invokedMethodContinuation: CheckedContinuation<(), Never>?
 
     public func method() {
         defer {
             invokedMethodExpectation.fulfill()
             invokedMethodConfirmation?.confirm(count: invokedMethodConfirmationIncrement)
+            invokedMethodContinuation?.resume()
         }
         invokedMethodCount += 1
     }
@@ -849,11 +895,13 @@ internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithRetu
     internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedMethodConfirmation: Confirmation?
     internal var invokedMethodConfirmationIncrement = 1
+    internal var invokedMethodContinuation: CheckedContinuation<(), Never>?
 
     internal func method() -> DefaultMockProtocolWithReturnSelfMock {
         defer {
             invokedMethodExpectation.fulfill()
             invokedMethodConfirmation?.confirm(count: invokedMethodConfirmationIncrement)
+            invokedMethodContinuation?.resume()
         }
         invokedMethodCount += 1
         return stubbedMethodResult
@@ -868,9 +916,16 @@ internal class DefaultMockProtocolWithTypedThrowMethodMock: MockProtocolWithType
     internal var invokedMethod: Bool { invokedMethodCount > 0 }
     internal var invokedMethodCount = 0
     internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedMethodConfirmation: Confirmation?
+    internal var invokedMethodConfirmationIncrement = 1
+    internal var invokedMethodContinuation: CheckedContinuation<(), Never>?
 
     internal func method() throws(SomeError) {
-        defer { invokedMethodExpectation.fulfill() }
+        defer {
+            invokedMethodExpectation.fulfill()
+            invokedMethodConfirmation?.confirm(count: invokedMethodConfirmationIncrement)
+            invokedMethodContinuation?.resume()
+        }
         invokedMethodCount += 1
         if let error = stubbedMethodThrowableError {
             throw error
@@ -893,11 +948,13 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedAnonymousClosureParameterNameExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedAnonymousClosureParameterNameConfirmation: Confirmation?
     internal var invokedAnonymousClosureParameterNameConfirmationIncrement = 1
+    internal var invokedAnonymousClosureParameterNameContinuation: CheckedContinuation<(), Never>?
 
     internal func anonymousClosureParameterName(closure: (String) -> String) {
         defer {
             invokedAnonymousClosureParameterNameExpectation.fulfill()
             invokedAnonymousClosureParameterNameConfirmation?.confirm(count: invokedAnonymousClosureParameterNameConfirmationIncrement)
+            invokedAnonymousClosureParameterNameContinuation?.resume()
         }
         invokedAnonymousClosureParameterNameCount += 1
         if let result = stubbedAnonymousClosureParameterNameClosureResult {
@@ -911,11 +968,13 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedAnonymousClosurenameExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedAnonymousClosurenameConfirmation: Confirmation?
     internal var invokedAnonymousClosurenameConfirmationIncrement = 1
+    internal var invokedAnonymousClosurenameContinuation: CheckedContinuation<(), Never>?
 
     internal func anonymousClosurename(_ internalName: (String) -> String) {
         defer {
             invokedAnonymousClosurenameExpectation.fulfill()
             invokedAnonymousClosurenameConfirmation?.confirm(count: invokedAnonymousClosurenameConfirmationIncrement)
+            invokedAnonymousClosurenameContinuation?.resume()
         }
         invokedAnonymousClosurenameCount += 1
         if let result = stubbedAnonymousClosurenameInternalNameResult {
@@ -930,11 +989,13 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedAnonymousNameExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedAnonymousNameConfirmation: Confirmation?
     internal var invokedAnonymousNameConfirmationIncrement = 1
+    internal var invokedAnonymousNameContinuation: CheckedContinuation<(), Never>?
 
     internal func anonymousName(_ internalName: String) {
         defer {
             invokedAnonymousNameExpectation.fulfill()
             invokedAnonymousNameConfirmation?.confirm(count: invokedAnonymousNameConfirmationIncrement)
+            invokedAnonymousNameContinuation?.resume()
         }
         invokedAnonymousNameCount += 1
         invokedAnonymousNameParameters = (internalName: internalName, ())
@@ -947,11 +1008,13 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedExternalClosurenameExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedExternalClosurenameConfirmation: Confirmation?
     internal var invokedExternalClosurenameConfirmationIncrement = 1
+    internal var invokedExternalClosurenameContinuation: CheckedContinuation<(), Never>?
 
     internal func externalClosurename(externalName internalName: (String) -> String) {
         defer {
             invokedExternalClosurenameExpectation.fulfill()
             invokedExternalClosurenameConfirmation?.confirm(count: invokedExternalClosurenameConfirmationIncrement)
+            invokedExternalClosurenameContinuation?.resume()
         }
         invokedExternalClosurenameCount += 1
         if let result = stubbedExternalClosurenameInternalNameResult {
@@ -966,11 +1029,13 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedExternalNameExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedExternalNameConfirmation: Confirmation?
     internal var invokedExternalNameConfirmationIncrement = 1
+    internal var invokedExternalNameContinuation: CheckedContinuation<(), Never>?
 
     internal func externalName(externalName internalName: String) {
         defer {
             invokedExternalNameExpectation.fulfill()
             invokedExternalNameConfirmation?.confirm(count: invokedExternalNameConfirmationIncrement)
+            invokedExternalNameContinuation?.resume()
         }
         invokedExternalNameCount += 1
         invokedExternalNameParameters = (internalName: internalName, ())
@@ -983,11 +1048,13 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedInternalClosurenameExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedInternalClosurenameConfirmation: Confirmation?
     internal var invokedInternalClosurenameConfirmationIncrement = 1
+    internal var invokedInternalClosurenameContinuation: CheckedContinuation<(), Never>?
 
     internal func internalClosurename(internalName: (String) -> String) {
         defer {
             invokedInternalClosurenameExpectation.fulfill()
             invokedInternalClosurenameConfirmation?.confirm(count: invokedInternalClosurenameConfirmationIncrement)
+            invokedInternalClosurenameContinuation?.resume()
         }
         invokedInternalClosurenameCount += 1
         if let result = stubbedInternalClosurenameInternalNameResult {
@@ -1002,11 +1069,13 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedInternalNameExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedInternalNameConfirmation: Confirmation?
     internal var invokedInternalNameConfirmationIncrement = 1
+    internal var invokedInternalNameContinuation: CheckedContinuation<(), Never>?
 
     internal func internalName(internalName: String) {
         defer {
             invokedInternalNameExpectation.fulfill()
             invokedInternalNameConfirmation?.confirm(count: invokedInternalNameConfirmationIncrement)
+            invokedInternalNameContinuation?.resume()
         }
         invokedInternalNameCount += 1
         invokedInternalNameParameters = (internalName: internalName, ())
@@ -1027,11 +1096,13 @@ internal class DefaultURLSessionLogicMock: URLSessionLogic {
     internal var invokedDataExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedDataConfirmation: Confirmation?
     internal var invokedDataConfirmationIncrement = 1
+    internal var invokedDataContinuation: CheckedContinuation<(), Never>?
 
     internal func data(for request: URLRequest) async throws -> (Data, URLResponse) {
         defer {
             invokedDataExpectation.fulfill()
             invokedDataConfirmation?.confirm(count: invokedDataConfirmationIncrement)
+            invokedDataContinuation?.resume()
         }
         invokedDataCount += 1
         invokedDataParameters = (request: request, ())
