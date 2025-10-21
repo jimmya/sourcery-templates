@@ -11,6 +11,10 @@ extension Method {
         "\(shortName)(\(methodParameters))"
     }
 
+    var isNonIsolated: Bool { 
+        modifiers.contains { $0.name == "nonisolated" }
+    }
+
     /// Concatenates all function parameters in a string
     var methodParameters: String {
         parameters.map { parameter in
@@ -156,13 +160,19 @@ private extension Method {
     /// - Returns: List of lines containing the generated parameters
     func mockStubParameters(name: String, type: Type, types: Types, accessLevel: String, annotations: Annotations) -> [String] {
         var lines: [String] = []
+
+        var isolationLevel = ""
+        if isNonIsolated {
+            isolationLevel = "nonisolated(unsafe) "
+        }
+
         if self.throws {
             let throwableType = throwsTypeName?.name ?? "Error"
-            lines.append("\(accessLevel) var stubbed\(name)ThrowableError: \(throwableType)?")
+            lines.append("\(accessLevel) \(isolationLevel)var stubbed\(name)ThrowableError: \(throwableType)?")
         }
         if !isInitializer {
             lines.append("\(accessLevel) var invoked\(name): Bool { invoked\(name)Count > 0 }")
-            lines.append("\(accessLevel) var invoked\(name)Count = 0")
+            lines.append("\(accessLevel) \(isolationLevel)var invoked\(name)Count = 0")
         }
         let mockableParameters = parameters.filter { !$0.typeName.isClosure || $0.typeAttributes.isEscaping }
         if !mockableParameters.isEmpty {
@@ -170,14 +180,14 @@ private extension Method {
             if mockableParameters.count == 1 {
                 parameters.append(", Void")
             }
-            lines.append("\(accessLevel) var invoked\(name)Parameters: (\(parameters))?")
-            lines.append("\(accessLevel) var invoked\(name)ParametersList: [(\(parameters))] = []")
+            lines.append("\(accessLevel) \(isolationLevel)var invoked\(name)Parameters: (\(parameters))?")
+            lines.append("\(accessLevel) \(isolationLevel)var invoked\(name)ParametersList: [(\(parameters))] = []")
         }
         parameters.filter { $0.typeName.isClosure }.forEach { parameter in
             guard let closure = parameter.typeName.closure else { return }
 
             if closure.parameters.count == 0 {
-                lines.append("\(accessLevel) var shouldInvoke\(name)\(parameter.name.capitalizingFirstLetter()) = false")
+                lines.append("\(accessLevel) \(isolationLevel)var shouldInvoke\(name)\(parameter.name.capitalizingFirstLetter()) = false")
             } else if 
                 closure.parameters.count == 1,
                 let closureParameter = closure.parameters.first,
@@ -189,13 +199,13 @@ private extension Method {
                     type = "(\(type))"
                 }
 
-                lines.append("\(accessLevel) var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: \(type)?")
+                lines.append("\(accessLevel) \(isolationLevel)var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: \(type)?")
             } else {
                 var parameters = closure.parameters.map { $0.typeName.withWrappedOptionalIfNeeded() }.joined(separator: ", ")
                 if closure.parameters.count == 1 {
                     parameters.append(", Void")
                 }
-                lines.append("\(accessLevel) var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: (\(parameters))?")
+                lines.append("\(accessLevel) \(isolationLevel)var stubbed\(name)\(parameter.name.capitalizingFirstLetter())Result: (\(parameters))?")
             }
         }
         if !returnTypeName.isVoid && !isInitializer {
@@ -216,15 +226,15 @@ private extension Method {
 
             resultType += isOptionalReturnType ? "?" : "!"
 
-            lines.append("\(accessLevel) var stubbed\(name)Result: \(resultType)")
+            lines.append("\(accessLevel) \(isolationLevel)var stubbed\(name)Result: \(resultType)")
         }
         if !isInitializer { // Expectations/Confirmations aren't possible in the initializer
             if annotations.testingFrameworkTypes.contains(.xctest) {
-                lines.append("\(accessLevel) var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
+                lines.append("\(accessLevel) \(isolationLevel)var invoked\(name)Expectation = XCTestExpectation(description: \"\\(#function) expectation\")")
             }
 
             if annotations.testingFrameworkTypes.contains(.swiftTesting) {
-                lines.append("\(accessLevel) var invoked\(name)Continuation: CheckedContinuation<(), Never>?")
+                lines.append("\(accessLevel) \(isolationLevel)var invoked\(name)Continuation: CheckedContinuation<(), Never>?")
             }
         }
         return lines.map { $0.indent() }
@@ -296,10 +306,13 @@ private extension Method {
     /// - Parameter type: Used to construct a return type in case return type is `Self`
     /// - Returns: Generated function declaration
     func mockFunctionDeclaration(type: Type, annotations: Annotations) -> String {
+        let isolationLevel: String? = isNonIsolated ? "nonisolated" : nil
+
         let parts: [String?]
         if isInitializer {
             parts = [
                 type.accessLevel,
+                isolationLevel,
                 "required",
                 name.replacingOccurrences(of: "?", with: ""), // Remove `?` from failable initialisers.
                 "{",
@@ -310,6 +323,7 @@ private extension Method {
                 : nil
             parts = [
                 type.accessLevel,
+                isolationLevel,
                 "func",
                 methodName,
                 isAsync ? "async" : nil,
