@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.3.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable all
 
@@ -833,6 +833,28 @@ internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithRetu
         }
         invokedMethodCount += 1
         return stubbedMethodResult
+    }
+}
+
+internal class DefaultMockProtocolWithTypeCompositionMock: MockProtocolWithTypeComposition {
+
+    internal init() { }
+
+    internal var invokedDoSomethingWithTypeComposition: Bool { invokedDoSomethingWithTypeCompositionCount > 0 }
+    internal var invokedDoSomethingWithTypeCompositionCount = 0
+    internal var invokedDoSomethingWithTypeCompositionParameters: (object: (any AnyObject & Sendable)?, Void)?
+    internal var invokedDoSomethingWithTypeCompositionParametersList: [(object: (any AnyObject & Sendable)?, Void)] = []
+    internal var invokedDoSomethingWithTypeCompositionExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedDoSomethingWithTypeCompositionContinuation: CheckedContinuation<(), Never>?
+
+    internal func doSomethingWithTypeComposition(_ object: (any AnyObject & Sendable)?) {
+        defer {
+            invokedDoSomethingWithTypeCompositionExpectation.fulfill()
+            invokedDoSomethingWithTypeCompositionContinuation?.resume()
+        }
+        invokedDoSomethingWithTypeCompositionCount += 1
+        invokedDoSomethingWithTypeCompositionParameters = (object: object, ())
+        invokedDoSomethingWithTypeCompositionParametersList.append((object: object, ()))
     }
 }
 

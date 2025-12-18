@@ -22,13 +22,12 @@ extension MethodParameter {
         if isVariadic {
             type = "[\(type)]"
         }
-        if typeName.isOpaqueType {
+        if typeName.isOpaqueType || typeName.isComposedType {
             type = typeName.withWrappedOptionalIfNeeded()
         }
         if let closure = typeName.closure {
             type = closure.typeSignature
         }
-
         return type
     }
 
