@@ -18,7 +18,7 @@ extension Method {
     /// Concatenates all function parameters in a string
     var methodParameters: String {
         parameters.map { parameter in
-            if parameter.typeName.isOpaqueType {
+            if parameter.typeName.isOpaqueType || parameter.typeName.isComposedType {
                 return "\(parameter.combinedName): \(parameter.typeName.withWrappedOptionalIfNeeded())"
             } else if let closure = parameter.typeName.closure {
                 return closure.signature(fromMethodParameter: parameter)

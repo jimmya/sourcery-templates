@@ -140,3 +140,8 @@ protocol BasicRequestExecutorLogic {
     /// - Returns: The JSON decoded response object with the generic response type
     func execute<Response>(_ urlRequest: URLRequest, decoder: JSONDecoder) async throws -> Response where Response: Decodable
 }
+
+// sourcery: AutoMockable
+protocol MockProtocolWithTypeComposition {
+    func doSomethingWithTypeComposition(_ object: (any AnyObject & Sendable)?)
+}
