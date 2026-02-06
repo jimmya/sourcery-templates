@@ -48,6 +48,10 @@ extension Method {
         var lines = mockStubParameters(name: methodName, type: type, types: types, accessLevel: accessLevel, annotations: annotations)
         // Attributes `@objc` etc.
         lines.append(mockAttributes())
+        // Function isolation in case a @MainActor closure parameter is present
+        if parameters.contains(where: { $0.typeName.closure?.signature(fromMethodParameter: $0).contains("@MainActor") == true }) {
+            lines.append("@MainActor".indent())
+        }
         // Function declaration `func something() {`
         lines.append(mockFunctionDeclaration(type: type, annotations: annotations).indent())
         // Filling or captured variables or returning stubbed values when method is called
