@@ -23,18 +23,23 @@ extension ClosureType {
     /// If the parameter is optional, the closure will be wrapped
     ///
     /// - Parameter parameter: parameter to create the signature for
-    /// - Returns: `<parameterName>: <@escaping> (<parameters>) <async> <throws> -> <returnType>`
+    /// - Returns: `<parameterName>: <@escaping> <@Sendable> <@MainActor> (<parameters>) <async> <throws> -> <returnType>`
     func signature(fromMethodParameter parameter: MethodParameter) -> String {
         let parameters = parameters.map { $0.typeName.withWrappedOptionalIfNeeded() }.joined(separator: ", ")
 
         let returnType = returnTypeName.withWrappedOptionalIfNeeded()
 
         let escapingString = parameter.typeAttributes.isEscaping ? "@escaping" : nil
+        let sendableString = parameter.typeAttributes.isSendable ? "@Sendable" : nil
+        let mainActorString = parameter.typeAttributes.isMainActor ? "@MainActor" : nil
+
         let isOptional = parameter.typeName.isOptional
 
         return [
             "\(parameter.combinedName):",
             escapingString,
+            sendableString,
+            mainActorString,
             "\(isOptional ? "(" : "")(\(parameters))",
             isAsync ? "async" : nil,
             self.throws ? "throws" : nil,
