@@ -17,7 +17,7 @@ internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
     internal var invokedExecuteParameters: (urlRequest: URLRequest, Void)?
     internal var invokedExecuteParametersList: [(urlRequest: URLRequest, Void)] = []
     internal var invokedExecuteExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedExecuteContinuation: CheckedContinuation<(), Never>?
+    internal var invokedExecuteContinuation: CheckedContinuation<(), Error>?
 
     internal func execute(_ urlRequest: URLRequest) async throws {
         defer {
@@ -39,7 +39,7 @@ internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
     internal var invokedExecuteUrlRequestParametersList: [(urlRequest: URLRequest, Void)] = []
     internal var stubbedExecuteUrlRequestResult: Decodable!
     internal var invokedExecuteUrlRequestExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedExecuteUrlRequestContinuation: CheckedContinuation<(), Never>?
+    internal var invokedExecuteUrlRequestContinuation: CheckedContinuation<(), Error>?
 
     internal func execute<Response>(_ urlRequest: URLRequest) async throws -> Response where Response: Decodable {
         defer {
@@ -62,7 +62,7 @@ internal class DefaultBasicRequestExecutorLogicMock: BasicRequestExecutorLogic {
     internal var invokedExecuteUrlRequestDecoderParametersList: [(urlRequest: URLRequest, decoder: JSONDecoder)] = []
     internal var stubbedExecuteUrlRequestDecoderResult: Decodable!
     internal var invokedExecuteUrlRequestDecoderExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedExecuteUrlRequestDecoderContinuation: CheckedContinuation<(), Never>?
+    internal var invokedExecuteUrlRequestDecoderContinuation: CheckedContinuation<(), Error>?
 
     internal func execute<Response>(_ urlRequest: URLRequest, decoder: JSONDecoder) async throws -> Response where Response: Decodable {
         defer {
@@ -89,7 +89,7 @@ internal class DefaultMockProtocolWithClosureMethodMock: MockProtocolWithClosure
     internal var invokedMethodParametersList: [(closureProperty: (Bool, Int) -> Int, Void)] = []
     internal var stubbedMethodClosurePropertyResult: (Bool, Int)?
     internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedMethodContinuation: CheckedContinuation<(), Never>?
+    internal var invokedMethodContinuation: CheckedContinuation<(), Error>?
 
     internal func method(closureProperty: @escaping (Bool, Int) -> Int) {
         defer {
@@ -114,7 +114,7 @@ internal class DefaultMockProtocolWithGenericFunctionMock: MockProtocolWithGener
     internal var invokedDoSomethingParameters: (parameter: Any, anotherParameter: Int)?
     internal var invokedDoSomethingParametersList: [(parameter: Any, anotherParameter: Int)] = []
     internal var invokedDoSomethingExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedDoSomethingContinuation: CheckedContinuation<(), Never>?
+    internal var invokedDoSomethingContinuation: CheckedContinuation<(), Error>?
 
     internal func doSomething<T>(parameter: T, anotherParameter: Int) {
         defer {
@@ -148,7 +148,7 @@ internal class DefaultMockProtocolWithGenericInheritanceDeclarationMock: SomeTyp
     internal var invokedMethod: Bool { invokedMethodCount > 0 }
     internal var invokedMethodCount = 0
     internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedMethodContinuation: CheckedContinuation<(), Never>?
+    internal var invokedMethodContinuation: CheckedContinuation<(), Error>?
 
     internal func method() {
         defer {
@@ -166,7 +166,7 @@ internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMulti
     internal var invokedAnotherMethod: Bool { invokedAnotherMethodCount > 0 }
     internal var invokedAnotherMethodCount = 0
     internal var invokedAnotherMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedAnotherMethodContinuation: CheckedContinuation<(), Never>?
+    internal var invokedAnotherMethodContinuation: CheckedContinuation<(), Error>?
 
     internal func anotherMethod() {
         defer {
@@ -182,7 +182,7 @@ internal class DefaultMockProtocolWithMultipleMethodsMock: MockProtocolWithMulti
     internal var invokedAnotherMethodWithParameters: (input: String, Void)?
     internal var invokedAnotherMethodWithParametersList: [(input: String, Void)] = []
     internal var invokedAnotherMethodWithExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedAnotherMethodWithContinuation: CheckedContinuation<(), Never>?
+    internal var invokedAnotherMethodWithContinuation: CheckedContinuation<(), Error>?
 
     internal func anotherMethod(with input: String) async throws {
         defer {
@@ -482,7 +482,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeClosureOpaqueParameterCount = 0
     internal var stubbedSomeClosureOpaqueParameterCompletionResult: (any OpaqueType)?
     internal var invokedSomeClosureOpaqueParameterExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedSomeClosureOpaqueParameterContinuation: CheckedContinuation<(), Never>?
+    internal var invokedSomeClosureOpaqueParameterContinuation: CheckedContinuation<(), Error>?
 
     internal func someClosureOpaqueParameter(completion: (any OpaqueType) -> Void) {
         defer {
@@ -499,7 +499,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeClosureOpaqueReturnTypeCount = 0
     internal var shouldInvokeSomeClosureOpaqueReturnTypeCompletion = false
     internal var invokedSomeClosureOpaqueReturnTypeExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedSomeClosureOpaqueReturnTypeContinuation: CheckedContinuation<(), Never>?
+    internal var invokedSomeClosureOpaqueReturnTypeContinuation: CheckedContinuation<(), Error>?
 
     internal func someClosureOpaqueReturnType(completion: () -> any OpaqueType) {
         defer {
@@ -516,7 +516,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeClosureOptionalOpaqueParameterCount = 0
     internal var stubbedSomeClosureOptionalOpaqueParameterCompletionResult: ((any OpaqueType)?, Void)?
     internal var invokedSomeClosureOptionalOpaqueParameterExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedSomeClosureOptionalOpaqueParameterContinuation: CheckedContinuation<(), Never>?
+    internal var invokedSomeClosureOptionalOpaqueParameterContinuation: CheckedContinuation<(), Error>?
 
     internal func someClosureOptionalOpaqueParameter(completion: ((any OpaqueType)?) -> Void) {
         defer {
@@ -533,7 +533,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeClosureOptionalOpaqueReturnTypeCount = 0
     internal var shouldInvokeSomeClosureOptionalOpaqueReturnTypeCompletion = false
     internal var invokedSomeClosureOptionalOpaqueReturnTypeExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedSomeClosureOptionalOpaqueReturnTypeContinuation: CheckedContinuation<(), Never>?
+    internal var invokedSomeClosureOptionalOpaqueReturnTypeContinuation: CheckedContinuation<(), Error>?
 
     internal func someClosureOptionalOpaqueReturnType(completion: () -> (any OpaqueType)?) {
         defer {
@@ -551,7 +551,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOpaqueParameterFunctionParameters: (opaqueObject: any OpaqueType, Void)?
     internal var invokedSomeOpaqueParameterFunctionParametersList: [(opaqueObject: any OpaqueType, Void)] = []
     internal var invokedSomeOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedSomeOpaqueParameterFunctionContinuation: CheckedContinuation<(), Never>?
+    internal var invokedSomeOpaqueParameterFunctionContinuation: CheckedContinuation<(), Error>?
 
     internal func someOpaqueParameterFunction(opaqueObject: any OpaqueType) {
         defer {
@@ -567,7 +567,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOpaqueReturningFunctionCount = 0
     internal var stubbedSomeOpaqueReturningFunctionResult: (any OpaqueType)!
     internal var invokedSomeOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedSomeOpaqueReturningFunctionContinuation: CheckedContinuation<(), Never>?
+    internal var invokedSomeOpaqueReturningFunctionContinuation: CheckedContinuation<(), Error>?
 
     internal func someOpaqueReturningFunction() -> any OpaqueType {
         defer {
@@ -582,7 +582,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOptionalClosureOpaqueParameterCount = 0
     internal var stubbedSomeOptionalClosureOpaqueParameterCompletionResult: (any OpaqueType)?
     internal var invokedSomeOptionalClosureOpaqueParameterExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedSomeOptionalClosureOpaqueParameterContinuation: CheckedContinuation<(), Never>?
+    internal var invokedSomeOptionalClosureOpaqueParameterContinuation: CheckedContinuation<(), Error>?
 
     internal func someOptionalClosureOpaqueParameter(completion: ((any OpaqueType) -> Void)?) {
         defer {
@@ -599,7 +599,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOptionalClosureOpaqueReturnTypeCount = 0
     internal var shouldInvokeSomeOptionalClosureOpaqueReturnTypeCompletion = false
     internal var invokedSomeOptionalClosureOpaqueReturnTypeExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedSomeOptionalClosureOpaqueReturnTypeContinuation: CheckedContinuation<(), Never>?
+    internal var invokedSomeOptionalClosureOpaqueReturnTypeContinuation: CheckedContinuation<(), Error>?
 
     internal func someOptionalClosureOpaqueReturnType(completion: (() -> any OpaqueType)?) {
         defer {
@@ -616,7 +616,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOptionalClosureOptionalOpaqueParameterCount = 0
     internal var stubbedSomeOptionalClosureOptionalOpaqueParameterCompletionResult: ((any OpaqueType)?, Void)?
     internal var invokedSomeOptionalClosureOptionalOpaqueParameterExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedSomeOptionalClosureOptionalOpaqueParameterContinuation: CheckedContinuation<(), Never>?
+    internal var invokedSomeOptionalClosureOptionalOpaqueParameterContinuation: CheckedContinuation<(), Error>?
 
     internal func someOptionalClosureOptionalOpaqueParameter(completion: (((any OpaqueType)?) -> Void)?) {
         defer {
@@ -633,7 +633,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOptionalClosureOptionalOpaqueReturnTypeCount = 0
     internal var shouldInvokeSomeOptionalClosureOptionalOpaqueReturnTypeCompletion = false
     internal var invokedSomeOptionalClosureOptionalOpaqueReturnTypeExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedSomeOptionalClosureOptionalOpaqueReturnTypeContinuation: CheckedContinuation<(), Never>?
+    internal var invokedSomeOptionalClosureOptionalOpaqueReturnTypeContinuation: CheckedContinuation<(), Error>?
 
     internal func someOptionalClosureOptionalOpaqueReturnType(completion: (() -> (any OpaqueType)?)?) {
         defer {
@@ -651,7 +651,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOptionalOpaqueParameterFunctionParameters: (opaqueObject: (any OpaqueType)?, Void)?
     internal var invokedSomeOptionalOpaqueParameterFunctionParametersList: [(opaqueObject: (any OpaqueType)?, Void)] = []
     internal var invokedSomeOptionalOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedSomeOptionalOpaqueParameterFunctionContinuation: CheckedContinuation<(), Never>?
+    internal var invokedSomeOptionalOpaqueParameterFunctionContinuation: CheckedContinuation<(), Error>?
 
     internal func someOptionalOpaqueParameterFunction(opaqueObject: (any OpaqueType)?) {
         defer {
@@ -667,7 +667,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
     internal var invokedSomeOptionalOpaqueReturningFunctionCount = 0
     internal var stubbedSomeOptionalOpaqueReturningFunctionResult: (any OpaqueType)??
     internal var invokedSomeOptionalOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedSomeOptionalOpaqueReturningFunctionContinuation: CheckedContinuation<(), Never>?
+    internal var invokedSomeOptionalOpaqueReturningFunctionContinuation: CheckedContinuation<(), Error>?
 
     internal func someOptionalOpaqueReturningFunction() -> (any OpaqueType)? {
         defer {
@@ -687,7 +687,7 @@ internal class DefaultMockProtocolWithOptionalClosureMethodMock: MockProtocolWit
     internal var invokedMethodCount = 0
     internal var stubbedMethodClosurePropertyResult: (Bool, Int)?
     internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedMethodContinuation: CheckedContinuation<(), Never>?
+    internal var invokedMethodContinuation: CheckedContinuation<(), Error>?
 
     internal func method(closureProperty: ((Bool, Int) -> Int)?) {
         defer {
@@ -787,7 +787,7 @@ internal class DefaultMockProtocolWithPropertyAndMethodMock: MockProtocolWithPro
     internal var invokedMethod: Bool { invokedMethodCount > 0 }
     internal var invokedMethodCount = 0
     internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedMethodContinuation: CheckedContinuation<(), Never>?
+    internal var invokedMethodContinuation: CheckedContinuation<(), Error>?
 
     internal func method() {
         defer {
@@ -805,7 +805,7 @@ public class DefaultMockProtocolWithPublicAccessLevelMock: MockProtocolWithPubli
     public var invokedMethod: Bool { invokedMethodCount > 0 }
     public var invokedMethodCount = 0
     public var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
-    public var invokedMethodContinuation: CheckedContinuation<(), Never>?
+    public var invokedMethodContinuation: CheckedContinuation<(), Error>?
 
     public func method() {
         defer {
@@ -824,7 +824,7 @@ internal final class DefaultMockProtocolWithReturnSelfMock: MockProtocolWithRetu
     internal var invokedMethodCount = 0
     internal var stubbedMethodResult: DefaultMockProtocolWithReturnSelfMock!
     internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedMethodContinuation: CheckedContinuation<(), Never>?
+    internal var invokedMethodContinuation: CheckedContinuation<(), Error>?
 
     internal func method() -> DefaultMockProtocolWithReturnSelfMock {
         defer {
@@ -845,7 +845,7 @@ internal class DefaultMockProtocolWithTypeCompositionMock: MockProtocolWithTypeC
     internal var invokedDoSomethingWithTypeCompositionParameters: (object: (any AnyObject & Sendable)?, Void)?
     internal var invokedDoSomethingWithTypeCompositionParametersList: [(object: (any AnyObject & Sendable)?, Void)] = []
     internal var invokedDoSomethingWithTypeCompositionExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedDoSomethingWithTypeCompositionContinuation: CheckedContinuation<(), Never>?
+    internal var invokedDoSomethingWithTypeCompositionContinuation: CheckedContinuation<(), Error>?
 
     internal func doSomethingWithTypeComposition(_ object: (any AnyObject & Sendable)?) {
         defer {
@@ -866,7 +866,7 @@ internal class DefaultMockProtocolWithTypedThrowMethodMock: MockProtocolWithType
     internal var invokedMethod: Bool { invokedMethodCount > 0 }
     internal var invokedMethodCount = 0
     internal var invokedMethodExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedMethodContinuation: CheckedContinuation<(), Never>?
+    internal var invokedMethodContinuation: CheckedContinuation<(), Error>?
 
     internal func method() throws(SomeError) {
         defer {
@@ -893,7 +893,7 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedAnonymousClosureParameterNameCount = 0
     internal var stubbedAnonymousClosureParameterNameClosureResult: String?
     internal var invokedAnonymousClosureParameterNameExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedAnonymousClosureParameterNameContinuation: CheckedContinuation<(), Never>?
+    internal var invokedAnonymousClosureParameterNameContinuation: CheckedContinuation<(), Error>?
 
     internal func anonymousClosureParameterName(closure: (String) -> String) {
         defer {
@@ -910,7 +910,7 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedAnonymousClosurenameCount = 0
     internal var stubbedAnonymousClosurenameInternalNameResult: String?
     internal var invokedAnonymousClosurenameExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedAnonymousClosurenameContinuation: CheckedContinuation<(), Never>?
+    internal var invokedAnonymousClosurenameContinuation: CheckedContinuation<(), Error>?
 
     internal func anonymousClosurename(_ internalName: (String) -> String) {
         defer {
@@ -928,7 +928,7 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedAnonymousNameParameters: (internalName: String, Void)?
     internal var invokedAnonymousNameParametersList: [(internalName: String, Void)] = []
     internal var invokedAnonymousNameExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedAnonymousNameContinuation: CheckedContinuation<(), Never>?
+    internal var invokedAnonymousNameContinuation: CheckedContinuation<(), Error>?
 
     internal func anonymousName(_ internalName: String) {
         defer {
@@ -944,7 +944,7 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedExternalClosurenameCount = 0
     internal var stubbedExternalClosurenameInternalNameResult: String?
     internal var invokedExternalClosurenameExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedExternalClosurenameContinuation: CheckedContinuation<(), Never>?
+    internal var invokedExternalClosurenameContinuation: CheckedContinuation<(), Error>?
 
     internal func externalClosurename(externalName internalName: (String) -> String) {
         defer {
@@ -962,7 +962,7 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedExternalNameParameters: (internalName: String, Void)?
     internal var invokedExternalNameParametersList: [(internalName: String, Void)] = []
     internal var invokedExternalNameExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedExternalNameContinuation: CheckedContinuation<(), Never>?
+    internal var invokedExternalNameContinuation: CheckedContinuation<(), Error>?
 
     internal func externalName(externalName internalName: String) {
         defer {
@@ -978,7 +978,7 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedInternalClosurenameCount = 0
     internal var stubbedInternalClosurenameInternalNameResult: String?
     internal var invokedInternalClosurenameExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedInternalClosurenameContinuation: CheckedContinuation<(), Never>?
+    internal var invokedInternalClosurenameContinuation: CheckedContinuation<(), Error>?
 
     internal func internalClosurename(internalName: (String) -> String) {
         defer {
@@ -996,7 +996,7 @@ internal class DefaultParameterNamingsMock: ParameterNamings {
     internal var invokedInternalNameParameters: (internalName: String, Void)?
     internal var invokedInternalNameParametersList: [(internalName: String, Void)] = []
     internal var invokedInternalNameExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedInternalNameContinuation: CheckedContinuation<(), Never>?
+    internal var invokedInternalNameContinuation: CheckedContinuation<(), Error>?
 
     internal func internalName(internalName: String) {
         defer {
@@ -1020,7 +1020,7 @@ internal class DefaultURLSessionLogicMock: URLSessionLogic {
     internal var invokedDataParametersList: [(request: URLRequest, Void)] = []
     internal var stubbedDataResult: (Data, URLResponse)!
     internal var invokedDataExpectation = XCTestExpectation(description: "\(#function) expectation")
-    internal var invokedDataContinuation: CheckedContinuation<(), Never>?
+    internal var invokedDataContinuation: CheckedContinuation<(), Error>?
 
     internal func data(for request: URLRequest) async throws -> (Data, URLResponse) {
         defer {

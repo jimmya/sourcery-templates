@@ -238,7 +238,7 @@ private extension Method {
             }
 
             if annotations.testingFrameworkTypes.contains(.swiftTesting) {
-                lines.append("\(accessLevel) \(isolationLevel)var invoked\(name)Continuation: CheckedContinuation<(), Never>?")
+                lines.append("\(accessLevel) \(isolationLevel)var invoked\(name)Continuation: CheckedContinuation<(), Error>?")
             }
         }
         return lines.map { $0.indent() }
