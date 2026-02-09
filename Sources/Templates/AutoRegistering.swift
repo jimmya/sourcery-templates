@@ -7,7 +7,8 @@ enum AutoRegistering {
         lines.append("")
 
         let containerName = annotations.containerName ?? "Container"
-        lines.append("extension \(containerName): AutoRegistering {")
+        let retroactiveConformance = annotations.retroactiveConformance ?? false
+        lines.append("extension \(containerName): \(retroactiveConformance ? "@retroactive " : "")AutoRegistering {")
         lines.append("public func autoRegister() {".indent())
 
         let sortedProtocols = types.protocols

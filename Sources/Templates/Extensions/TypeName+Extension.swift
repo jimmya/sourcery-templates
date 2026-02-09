@@ -154,8 +154,16 @@ extension TypeName {
         return splitName.contains { Constants.opaqueKeywords.contains(String($0)) } && splitName.count == 2
     }
 
+    var isComposedType: Bool {
+        name.components(separatedBy: " & ").count > 1
+    }
+
     func withWrappedOptionalIfNeeded() -> String {
-        isOpaqueType && isOptional ? "(\(unwrappedTypeName))?" : name
+        if isComposedType {
+            isOptional ? "(\(unwrappedTypeName))?" : "(\(name))"
+        } else {
+            isOpaqueType && isOptional ? "(\(unwrappedTypeName))?" : name
+        }
     }
 
     func dropOpaqueKeywordIfNeeded() -> String {

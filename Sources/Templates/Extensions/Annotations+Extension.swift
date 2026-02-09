@@ -44,6 +44,10 @@ extension Annotations {
         self["containerName"] as? String
     }
 
+    var retroactiveConformance: Bool? {
+        self["retroactiveConformance"] as? Bool
+    }
+
     var propertyWrapperName: String? {
         self["propertyWrapperName"] as? String
     }
