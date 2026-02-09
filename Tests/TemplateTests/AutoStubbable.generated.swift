@@ -123,22 +123,22 @@ internal extension MockModelWithNestedModel {
 
 internal extension MockModelWithOpaqueTypes {
     static func stub(
-        opagueType: any OpaqueType = DefaultOpaqueTypeMock(),
-        optionalOpagueType: (any OpaqueType)? = nil,
-        closureWithOpagueType: @escaping (any OpaqueType) -> Void = { _ in },
-        closureWithOptionalOpagueType: @escaping ((any OpaqueType)?) -> Void = { _ in },
-        optionalClosureWithOpagueType: ((any OpaqueType) -> Void)? = nil,
-        closureWithOpagueReturnType: @escaping () -> any OpaqueType = { DefaultOpaqueTypeMock() },
-        closureWithOptionalOpagueReturnType: @escaping () -> (any OpaqueType)? = { nil }
+        opaqueType: any OpaqueType = DefaultOpaqueTypeMock(),
+        optionalOpaqueType: (any OpaqueType)? = nil,
+        closureWithOpaqueType: @escaping (any OpaqueType) -> Void = { _ in },
+        closureWithOptionalOpaqueType: @escaping ((any OpaqueType)?) -> Void = { _ in },
+        optionalClosureWithOpaqueType: ((any OpaqueType) -> Void)? = nil,
+        closureWithOpaqueReturnType: @escaping () -> any OpaqueType = { DefaultOpaqueTypeMock() },
+        closureWithOptionalOpaqueReturnType: @escaping () -> (any OpaqueType)? = { nil }
     ) -> MockModelWithOpaqueTypes {
         MockModelWithOpaqueTypes(
-            opagueType: opagueType,
-            optionalOpagueType: optionalOpagueType,
-            closureWithOpagueType: closureWithOpagueType,
-            closureWithOptionalOpagueType: closureWithOptionalOpagueType,
-            optionalClosureWithOpagueType: optionalClosureWithOpagueType,
-            closureWithOpagueReturnType: closureWithOpagueReturnType,
-            closureWithOptionalOpagueReturnType: closureWithOptionalOpagueReturnType
+            opaqueType: opaqueType,
+            optionalOpaqueType: optionalOpaqueType,
+            closureWithOpaqueType: closureWithOpaqueType,
+            closureWithOptionalOpaqueType: closureWithOptionalOpaqueType,
+            optionalClosureWithOpaqueType: optionalClosureWithOpaqueType,
+            closureWithOpaqueReturnType: closureWithOpaqueReturnType,
+            closureWithOptionalOpaqueReturnType: closureWithOptionalOpaqueReturnType
         )
     }
 }
