@@ -228,9 +228,12 @@ private extension Method {
                 resultType = returnTypeNameString
             }
 
-            resultType += isOptionalReturnType ? "?" : "!"
-
-            lines.append("\(accessLevel) \(isolationLevel)var stubbed\(name)Result: \(resultType)")
+            if resultType.last == "?", isOptionalReturnType {
+                lines.append("\(accessLevel) \(isolationLevel)var stubbed\(name)Result: \(resultType)")
+            } else {
+                resultType += isOptionalReturnType ? "?" : "!"
+                lines.append("\(accessLevel) \(isolationLevel)var stubbed\(name)Result: \(resultType)")
+            }
         }
         if !isInitializer { // Expectations/Confirmations aren't possible in the initializer
             if annotations.testingFrameworkTypes.contains(.xctest) {
