@@ -238,7 +238,8 @@ private extension Method {
             }
 
             if annotations.testingFrameworkTypes.contains(.swiftTesting) {
-                lines.append("\(accessLevel) \(isolationLevel)var invoked\(name)Continuation: CheckedContinuation<(), Error>?")
+                lines.append("\(accessLevel) \(isolationLevel)var invoked\(name)Continuation: CheckedContinuation<(), Never>?")
+                lines.append("\(accessLevel) \(isolationLevel)var invoked\(name)ThrowingContinuation: CheckedContinuation<(), Error>?")
             }
         }
         return lines.map { $0.indent() }
@@ -262,6 +263,7 @@ private extension Method {
             }
             if annotations.testingFrameworkTypes.contains(.swiftTesting) {
                 lines.append("invoked\(methodName)Continuation?.resume()".indent())
+                lines.append("invoked\(methodName)ThrowingContinuation?.resume()".indent())
             }
             lines.append("}")
         }
