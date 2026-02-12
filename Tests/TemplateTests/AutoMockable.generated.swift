@@ -665,7 +665,7 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
 
     internal var invokedSomeOptionalOpaqueReturningFunction: Bool { invokedSomeOptionalOpaqueReturningFunctionCount > 0 }
     internal var invokedSomeOptionalOpaqueReturningFunctionCount = 0
-    internal var stubbedSomeOptionalOpaqueReturningFunctionResult: (any OpaqueType)??
+    internal var stubbedSomeOptionalOpaqueReturningFunctionResult: (any OpaqueType)?
     internal var invokedSomeOptionalOpaqueReturningFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
     internal var invokedSomeOptionalOpaqueReturningFunctionContinuation: CheckedContinuation<(), Never>?
 

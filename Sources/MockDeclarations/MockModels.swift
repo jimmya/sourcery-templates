@@ -80,13 +80,13 @@ struct MockModelWithImplicitlyUnwrappedOptional {
 // sourcery: AutoStubbable
 struct MockModelWithOpaqueTypes {
     
-    let opagueType: any OpaqueType
-    let optionalOpagueType: (any OpaqueType)?
-    let closureWithOpagueType: (any OpaqueType) -> Void
-    let closureWithOptionalOpagueType: ((any OpaqueType)?) -> Void
-    let optionalClosureWithOpagueType: ((any OpaqueType) -> Void)?
-    let closureWithOpagueReturnType: () -> any OpaqueType
-    let closureWithOptionalOpagueReturnType: () -> (any OpaqueType)?
+    let opaqueType: any OpaqueType
+    let optionalOpaqueType: (any OpaqueType)?
+    let closureWithOpaqueType: (any OpaqueType) -> Void
+    let closureWithOptionalOpaqueType: ((any OpaqueType)?) -> Void
+    let optionalClosureWithOpaqueType: ((any OpaqueType) -> Void)?
+    let closureWithOpaqueReturnType: () -> any OpaqueType
+    let closureWithOptionalOpaqueReturnType: () -> (any OpaqueType)?
 }
 
 // sourcery: AutoStubbable
