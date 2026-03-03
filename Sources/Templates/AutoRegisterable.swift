@@ -34,7 +34,7 @@ enum AutoRegisterable {
 
             if !sortedPreviews.isEmpty {
                 lines.append(.emptyLine)
-                lines.append("private init() {".indent())
+                lines.append("init() {".indent())
                 sortedPreviews.forEach { (classType, protocolType) in
                     let registrationName = protocolType.name.withLowercaseFirst().withoutLastCamelCasedPart()
                     lines.append("\(registrationName).context(.preview) { \(classType.name)() }".indent(level: 2))
