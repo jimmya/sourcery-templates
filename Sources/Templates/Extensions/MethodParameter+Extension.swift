@@ -19,6 +19,10 @@ extension MethodParameter {
         if let generic = method.generics.first(where: { $0.name == type }) {
             return generic.constraints ?? "Any"
         }
+        if let generic = method.generics.first(where: { type.hasPrefix("\($0.name).")}) {
+            let suffix = type.components(separatedBy: ".").last.map { ".\($0)" } ?? ""
+            return (generic.constraints ?? "Any") + suffix
+        }
         if isVariadic {
             type = "[\(type)]"
         }

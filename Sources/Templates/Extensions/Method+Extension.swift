@@ -199,6 +199,11 @@ private extension Method {
             {
                 var type = closureParameter.typeName.withWrappedOptionalIfNeeded()
 
+                if let generic = generics.first(where: { $0.name == type }) {
+                    let genericConstraint = generic.constraints ?? "Any"
+                    type = genericConstraint
+                }
+
                 if closureParameter.typeName.isOpaqueType {
                     type = "(\(type))"
                 }
@@ -289,7 +294,12 @@ private extension Method {
                 lines.append("}")
             } else {
                 let assign = hasInoutVar ? "var" : "let"
-                lines.append("if \(assign) result = stubbed\(methodName)\(parameter.name.capitalizingFirstLetter())Result {")
+                let cast = if closure.parameters.count == 1, let generic = generics.first(where: { $0.name == closure.parameters[0].typeName.name }) {
+                    " as? \(generic.name)"
+                } else {
+                    ""
+                }
+                lines.append("if \(assign) result = stubbed\(methodName)\(parameter.name.capitalizingFirstLetter())Result\(cast) {")
                 lines.append("    \(mockClosureInvocation(closure: closure, parameter: parameter, hasInoutVar: hasInoutVar))")
                 lines.append("}")
             }
