@@ -158,11 +158,12 @@ extension TypeName {
         name.components(separatedBy: " & ").count > 1
     }
 
-    func withWrappedOptionalIfNeeded() -> String {
+    func withWrappedOptionalIfNeeded(isInout: Bool = false) -> String {
+        let inoutPrefix = isInout ? "inout " : ""
         if isComposedType {
-            isOptional ? "(\(unwrappedTypeName))?" : "(\(name))"
+            return isOptional ? "(\(inoutPrefix)\(unwrappedTypeName))?" : "(\(inoutPrefix)\(name))"
         } else {
-            isOpaqueType && isOptional ? "(\(unwrappedTypeName))?" : name
+            return isOpaqueType && isOptional ? "(\(inoutPrefix)\(unwrappedTypeName))?" : "\(inoutPrefix)\(name)"
         }
     }
 

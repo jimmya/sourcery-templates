@@ -5,7 +5,7 @@ extension ClosureType {
     /// The signature of the closure
     /// Returns `(<parameters>) <async> <throws> -> <returnType>`
     var typeSignature: String {
-        let parameters = self.parameters.map { $0.typeName.withWrappedOptionalIfNeeded() }.joined(separator: ", ")
+        let parameters = self.parameters.map { $0.typeName.withWrappedOptionalIfNeeded(isInout: $0.inout) }.joined(separator: ", ")
 
         return [
             "(\(parameters))",
@@ -25,7 +25,7 @@ extension ClosureType {
     /// - Parameter parameter: parameter to create the signature for
     /// - Returns: `<parameterName>: <@escaping> <@Sendable> <@MainActor> (<parameters>) <async> <throws> -> <returnType>`
     func signature(fromMethodParameter parameter: MethodParameter) -> String {
-        let parameters = parameters.map { $0.typeName.withWrappedOptionalIfNeeded() }.joined(separator: ", ")
+        let parameters = parameters.map { $0.typeName.withWrappedOptionalIfNeeded(isInout: $0.inout) }.joined(separator: ", ")
 
         let returnType = returnTypeName.withWrappedOptionalIfNeeded()
 

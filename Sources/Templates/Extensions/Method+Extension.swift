@@ -282,13 +282,15 @@ private extension Method {
         }
         parameters.filter { $0.typeName.isClosure }.forEach { parameter in
             guard let closure = parameter.typeName.closure else { return }
+            let hasInoutVar = closure.parameters.contains(where: { $0.inout })
             if closure.parameters.count == 0 {
                 lines.append("if shouldInvoke\(methodName)\(parameter.name.capitalizingFirstLetter()) {")
-                lines.append("    \(mockClosureInvocation(closure: closure, parameter: parameter))")
+                lines.append("    \(mockClosureInvocation(closure: closure, parameter: parameter, hasInoutVar: hasInoutVar))")
                 lines.append("}")
             } else {
-                lines.append("if let result = stubbed\(methodName)\(parameter.name.capitalizingFirstLetter())Result {")
-                lines.append("    \(mockClosureInvocation(closure: closure, parameter: parameter))")
+                let assign = hasInoutVar ? "var" : "let"
+                lines.append("if \(assign) result = stubbed\(methodName)\(parameter.name.capitalizingFirstLetter())Result {")
+                lines.append("    \(mockClosureInvocation(closure: closure, parameter: parameter, hasInoutVar: hasInoutVar))")
                 lines.append("}")
             }
         }
@@ -367,10 +369,11 @@ private extension Method {
         return newName
     }
 
-    func mockClosureInvocation(closure: ClosureType, parameter: MethodParameter) -> String {
+    func mockClosureInvocation(closure: ClosureType, parameter: MethodParameter, hasInoutVar: Bool) -> String {
+        let inoutPrefix = hasInoutVar ? "&" : ""
         let invocations: String
         if closure.parameters.count == 1, let closureParameter = closure.parameters.first, !closureParameter.typeName.isOptional {
-            invocations = "result"
+            invocations = "\(inoutPrefix)result"
         } else {
             invocations = (0..<closure.parameters.count).map { "result.\($0)" }.joined(separator: ", ")
         }
