@@ -14,8 +14,11 @@ extension MethodParameter {
             .joined(separator: " ")
     }
 
-    func settableType(method: Method) -> String {
+    func settableType(method: Method, mockName: String) -> String {
         var type = typeAttributes.isEscaping ? unwrappedTypeName : typeName.asSource
+        if type == "Self" {
+            return mockName
+        }
         if let generic = method.generics.first(where: { $0.name == type }) {
             return generic.constraints ?? "Any"
         }

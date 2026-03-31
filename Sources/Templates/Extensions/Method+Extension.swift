@@ -1,24 +1,17 @@
 import SourceryRuntime
 
 extension Method {
-    
-    /// The preferred property when you need the method name including generics and parameters
-    ///
-    /// No Sourcery Method property supports optional opaque types, this property does
-    ///
-    /// - Returns: `"foo<T>(object: (any Protocol)?)"`
-    var methodName: String {
-        "\(shortName)(\(methodParameters))"
-    }
 
     var isNonIsolated: Bool { 
         modifiers.contains { $0.name == "nonisolated" }
     }
 
     /// Concatenates all function parameters in a string
-    var methodParameters: String {
+    func methodParameters(mockName: String) -> String {
         parameters.map { parameter in
-            if parameter.typeName.isOpaqueType || parameter.typeName.isComposedType {
+            if parameter.typeName.name == "Self" {
+                return "\(parameter.combinedName): \(mockName)"
+            } else if parameter.typeName.isOpaqueType || parameter.typeName.isComposedType {
                 return "\(parameter.combinedName): \(parameter.typeName.withWrappedOptionalIfNeeded())"
             } else if let closure = parameter.typeName.closure {
                 return closure.signature(fromMethodParameter: parameter)
@@ -27,6 +20,15 @@ extension Method {
             return parameter.asSource
 
         }.joined(separator: ", ")
+    }
+
+    /// The preferred property when you need the method name including generics and parameters
+    ///
+    /// No Sourcery Method property supports optional opaque types, this method does
+    ///
+    /// - Returns: `"foo<T>(object: (any Protocol)?)"`
+    func methodName(mockName: String) -> String {
+        "\(shortName)(\(methodParameters(mockName: mockName)))"
     }
 
     /// Generate mock for a method
@@ -163,6 +165,7 @@ private extension Method {
     ///   - type: Used to construct a return type in case return type is `Self`
     /// - Returns: List of lines containing the generated parameters
     func mockStubParameters(name: String, type: Type, types: Types, accessLevel: String, annotations: Annotations) -> [String] {
+        let mockName = annotations.mockName(typeName: type.name)
         var lines: [String] = []
 
         var isolationLevel = ""
@@ -180,7 +183,7 @@ private extension Method {
         }
         let mockableParameters = parameters.filter { !$0.typeName.isClosure || $0.typeAttributes.isEscaping }
         if !mockableParameters.isEmpty {
-            var parameters = mockableParameters.map { "\($0.name): \($0.settableType(method: self))" }.joined(separator: ", ")
+            var parameters = mockableParameters.map { "\($0.name): \($0.settableType(method: self, mockName: mockName))" }.joined(separator: ", ")
             if mockableParameters.count == 1 {
                 parameters.append(", Void")
             }
@@ -219,7 +222,6 @@ private extension Method {
         }
         if !returnTypeName.isVoid && !isInitializer {
             // Stored property cannot have covariant `Self` type
-            let mockName = annotations.mockName(typeName: type.name)
             let returnTypeNameString = returnTypeName.name == "Self" ? "\(mockName)" : sanitizedReturnTypeName
 
             var resultType: String
@@ -325,6 +327,7 @@ private extension Method {
     /// - Parameter type: Used to construct a return type in case return type is `Self`
     /// - Returns: Generated function declaration
     func mockFunctionDeclaration(type: Type, annotations: Annotations) -> String {
+        let mockName = annotations.mockName(typeName: type.name)
         let isolationLevel: String? = isNonIsolated ? "nonisolated" : nil
 
         let parts: [String?]
@@ -344,7 +347,7 @@ private extension Method {
                 type.accessLevel,
                 isolationLevel,
                 "func",
-                methodName,
+                methodName(mockName: mockName),
                 isAsync ? "async" : nil,
                 throwPart,
                 mockReturnType(type: type, annotations: annotations),
