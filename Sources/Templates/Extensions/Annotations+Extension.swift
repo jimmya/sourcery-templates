@@ -55,6 +55,14 @@ extension Annotations {
     var containerMapping: [String: String]? {
         self["containerMapping"] as? [String: String]
     }
+
+    var globalActorAttribute: String? {
+        guard let globalActor = self["globalActor"] as? String, !globalActor.isEmpty else {
+            return nil
+        }
+
+        return globalActor.hasPrefix("@") ? globalActor : "@\(globalActor)"
+    }
 }
 
 private extension Annotations {
@@ -69,4 +77,3 @@ private extension Annotations {
         }
     }
 }
-

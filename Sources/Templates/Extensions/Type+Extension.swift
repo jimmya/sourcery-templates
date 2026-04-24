@@ -36,6 +36,9 @@ private extension Type {
     /// The init is generated based on the order of the properties of the struct.
     func generateMemberwiseInitMethodStub(types: Types, annotations: Annotations) -> [String] {
         var lines: [String] = []
+        if let globalActorAttribute = annotations.globalActorAttribute {
+            lines.append(globalActorAttribute.indent())
+        }
         lines.append("static func stub(".indent())
         let availableVariables = storedVariables.filter { !$0.hasDefaultValue }
         let variableLines = availableVariables.map { variable in
@@ -59,6 +62,9 @@ private extension Type {
     func generateInitMethodStub(types: Types, index: Int, method: Method, annotations: Annotations) -> [String] {
         let implicitlyUnwrappedVariables = storedVariables.filter { $0.isImplicitlyUnwrappedOptional }
         var lines: [String] = []
+        if let globalActorAttribute = annotations.globalActorAttribute {
+            lines.append(globalActorAttribute.indent())
+        }
         lines.append("static func \(stubMethodName(index: index, count: initMethods.count))(".indent())
         var initParameters: [String] = method.parameters.map { $0.generateInitAssignment(types: types, annotations: annotations).indent(level: 2) }
         initParameters.append(contentsOf: implicitlyUnwrappedVariables.map { $0.generateInitAssignment(types: types, annotations: annotations).indent(level: 2) })
