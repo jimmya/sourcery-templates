@@ -7,7 +7,7 @@
 
 public extension SomeNestedModel {
     static func stub(
-        id: String = ""
+        id: String = "",
     ) -> SomeNestedModel {
         SomeNestedModel(
             id: id

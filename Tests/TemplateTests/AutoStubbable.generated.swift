@@ -8,7 +8,7 @@ import NestedMockDeclarations
 
 internal extension MockImplementingSomeProtocol {
     static func stub(
-        property: Int = 0
+        property: Int = 0,
     ) -> MockImplementingSomeProtocol {
         MockImplementingSomeProtocol(
             property: property
@@ -19,7 +19,7 @@ internal extension MockImplementingSomeProtocol {
 internal extension MockModelDeclaration {
     static func stub(
         property: Int = 0,
-        optionalProperty: String? = nil
+        optionalProperty: String? = nil,
     ) -> MockModelDeclaration {
         MockModelDeclaration(
             property: property,
@@ -30,7 +30,7 @@ internal extension MockModelDeclaration {
 
 internal extension MockModelWithClosure {
     static func stub(
-        doSomething: @escaping () -> Void = { }
+        doSomething: @escaping () -> Void = { },
     ) -> MockModelWithClosure {
         MockModelWithClosure(
             doSomething: doSomething
@@ -41,7 +41,7 @@ internal extension MockModelWithClosure {
 internal extension MockModelWithImplicitlyUnwrappedOptional {
     static func stub(
         property: Int = 0,
-        implicitlyUnwrappedProperty: Int = 0
+        implicitlyUnwrappedProperty: Int = 0,
     ) -> MockModelWithImplicitlyUnwrappedOptional {
         MockModelWithImplicitlyUnwrappedOptional(
             property: property,
@@ -53,7 +53,7 @@ internal extension MockModelWithImplicitlyUnwrappedOptional {
 internal extension MockModelWithInitMethodAndImplicitlyUnwrappedOptionalDeclaration {
     static func stub(
         property: Int = 0,
-        implicitlyUnwrappedProperty: Int = 0
+        implicitlyUnwrappedProperty: Int = 0,
     ) -> MockModelWithInitMethodAndImplicitlyUnwrappedOptionalDeclaration {
         var object = MockModelWithInitMethodAndImplicitlyUnwrappedOptionalDeclaration(
             property: property
@@ -66,7 +66,7 @@ internal extension MockModelWithInitMethodAndImplicitlyUnwrappedOptionalDeclarat
 internal extension MockModelWithInitMethodDeclaration {
     static func stub0(
         property: Int = 0,
-        somesome: String? = nil
+        somesome: String? = nil,
     ) -> MockModelWithInitMethodDeclaration {
         MockModelWithInitMethodDeclaration(
             property: property,
@@ -76,7 +76,7 @@ internal extension MockModelWithInitMethodDeclaration {
 
     static func stub1(
         property: Int = 0,
-        optionalProperty: String? = nil
+        optionalProperty: String? = nil,
     ) -> MockModelWithInitMethodDeclaration {
         MockModelWithInitMethodDeclaration(
             property: property,
@@ -86,7 +86,7 @@ internal extension MockModelWithInitMethodDeclaration {
 
     static func stub2(
         property: Int = 0,
-        failableOptionalProperty: String? = nil
+        failableOptionalProperty: String? = nil,
     ) -> MockModelWithInitMethodDeclaration? {
         MockModelWithInitMethodDeclaration(
             property: property,
@@ -99,7 +99,7 @@ internal extension MockModelWithMeasurements {
     static func stub(
         duration: Measurement<UnitDuration> = Measurement(value: 0, unit: .minutes),
         length: Measurement<UnitLength> = Measurement(value: 0, unit: .kilometers),
-        temperature: Measurement<UnitTemperature> = Measurement(value: 0, unit: .celsius)
+        temperature: Measurement<UnitTemperature> = Measurement(value: 0, unit: .celsius),
     ) -> MockModelWithMeasurements {
         MockModelWithMeasurements(
             duration: duration,
@@ -112,7 +112,7 @@ internal extension MockModelWithMeasurements {
 internal extension MockModelWithNestedModel {
     static func stub(
         id: Int = 0,
-        nested: SomeNestedModel = SomeNestedModel.stub()
+        nested: SomeNestedModel = SomeNestedModel.stub(),
     ) -> MockModelWithNestedModel {
         MockModelWithNestedModel(
             id: id,
@@ -129,7 +129,7 @@ internal extension MockModelWithOpaqueTypes {
         closureWithOptionalOpaqueType: @escaping ((any OpaqueType)?) -> Void = { _ in },
         optionalClosureWithOpaqueType: ((any OpaqueType) -> Void)? = nil,
         closureWithOpaqueReturnType: @escaping () -> any OpaqueType = { DefaultOpaqueTypeMock() },
-        closureWithOptionalOpaqueReturnType: @escaping () -> (any OpaqueType)? = { nil }
+        closureWithOptionalOpaqueReturnType: @escaping () -> (any OpaqueType)? = { nil },
     ) -> MockModelWithOpaqueTypes {
         MockModelWithOpaqueTypes(
             opaqueType: opaqueType,
@@ -145,7 +145,7 @@ internal extension MockModelWithOpaqueTypes {
 
 internal extension MockModelWithProtocolProperty {
     static func stub(
-        property: SomeProtocol = MockImplementingSomeProtocol.stub()
+        property: SomeProtocol = MockImplementingSomeProtocol.stub(),
     ) -> MockModelWithProtocolProperty {
         MockModelWithProtocolProperty(
             property: property
@@ -155,7 +155,7 @@ internal extension MockModelWithProtocolProperty {
 
 internal extension MockModelWithStubbablePropertyWithMultipleInitDeclaration {
     static func stub(
-        property: MockModelWithInitMethodDeclaration = MockModelWithInitMethodDeclaration.stub0()
+        property: MockModelWithInitMethodDeclaration = MockModelWithInitMethodDeclaration.stub0(),
     ) -> MockModelWithStubbablePropertyWithMultipleInitDeclaration {
         MockModelWithStubbablePropertyWithMultipleInitDeclaration(
             property: property
@@ -166,7 +166,7 @@ internal extension MockModelWithStubbablePropertyWithMultipleInitDeclaration {
 internal extension MockUnnamedExternalParameter {
     static func stub(
         firstValue: String = "",
-        secondValue: String = ""
+        secondValue: String = "",
     ) -> MockUnnamedExternalParameter {
         MockUnnamedExternalParameter(
             firstValue,
