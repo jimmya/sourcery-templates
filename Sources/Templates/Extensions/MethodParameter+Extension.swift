@@ -30,7 +30,9 @@ extension MethodParameter {
             type = "[\(type)]"
         }
         if typeName.isOpaqueType || typeName.isComposedType {
+            // A stored property can't hold a `some` type, so store the parameter as an existential.
             type = typeName.withWrappedOptionalIfNeeded()
+                .replacingOccurrences(of: #"\bsome\b"#, with: "any", options: .regularExpression)
         }
         if let closure = typeName.closure {
             type = closure.typeSignature

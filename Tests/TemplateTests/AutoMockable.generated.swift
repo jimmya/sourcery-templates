@@ -546,6 +546,23 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
         }
     }
 
+    internal var invokedSomeGenericOpaqueParameterFunction: Bool { invokedSomeGenericOpaqueParameterFunctionCount > 0 }
+    internal var invokedSomeGenericOpaqueParameterFunctionCount = 0
+    internal var invokedSomeGenericOpaqueParameterFunctionParameters: (opaqueObject: any OpaqueType, Void)?
+    internal var invokedSomeGenericOpaqueParameterFunctionParametersList: [(opaqueObject: any OpaqueType, Void)] = []
+    internal var invokedSomeGenericOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedSomeGenericOpaqueParameterFunctionContinuation: CheckedContinuation<(), Never>?
+
+    internal func someGenericOpaqueParameterFunction(opaqueObject: some OpaqueType) {
+        defer {
+            invokedSomeGenericOpaqueParameterFunctionExpectation.fulfill()
+            invokedSomeGenericOpaqueParameterFunctionContinuation?.resume()
+        }
+        invokedSomeGenericOpaqueParameterFunctionCount += 1
+        invokedSomeGenericOpaqueParameterFunctionParameters = (opaqueObject: opaqueObject, ())
+        invokedSomeGenericOpaqueParameterFunctionParametersList.append((opaqueObject: opaqueObject, ()))
+    }
+
     internal var invokedSomeOpaqueParameterFunction: Bool { invokedSomeOpaqueParameterFunctionCount > 0 }
     internal var invokedSomeOpaqueParameterFunctionCount = 0
     internal var invokedSomeOpaqueParameterFunctionParameters: (opaqueObject: any OpaqueType, Void)?
@@ -644,6 +661,23 @@ internal class DefaultMockProtocolWithOpaqueTypesMock: MockProtocolWithOpaqueTyp
         if shouldInvokeSomeOptionalClosureOptionalOpaqueReturnTypeCompletion {
             _ = completion?()
         }
+    }
+
+    internal var invokedSomeOptionalGenericOpaqueParameterFunction: Bool { invokedSomeOptionalGenericOpaqueParameterFunctionCount > 0 }
+    internal var invokedSomeOptionalGenericOpaqueParameterFunctionCount = 0
+    internal var invokedSomeOptionalGenericOpaqueParameterFunctionParameters: (opaqueObject: (any OpaqueType)?, Void)?
+    internal var invokedSomeOptionalGenericOpaqueParameterFunctionParametersList: [(opaqueObject: (any OpaqueType)?, Void)] = []
+    internal var invokedSomeOptionalGenericOpaqueParameterFunctionExpectation = XCTestExpectation(description: "\(#function) expectation")
+    internal var invokedSomeOptionalGenericOpaqueParameterFunctionContinuation: CheckedContinuation<(), Never>?
+
+    internal func someOptionalGenericOpaqueParameterFunction(opaqueObject: (some OpaqueType)?) {
+        defer {
+            invokedSomeOptionalGenericOpaqueParameterFunctionExpectation.fulfill()
+            invokedSomeOptionalGenericOpaqueParameterFunctionContinuation?.resume()
+        }
+        invokedSomeOptionalGenericOpaqueParameterFunctionCount += 1
+        invokedSomeOptionalGenericOpaqueParameterFunctionParameters = (opaqueObject: opaqueObject, ())
+        invokedSomeOptionalGenericOpaqueParameterFunctionParametersList.append((opaqueObject: opaqueObject, ()))
     }
 
     internal var invokedSomeOptionalOpaqueParameterFunction: Bool { invokedSomeOptionalOpaqueParameterFunctionCount > 0 }
