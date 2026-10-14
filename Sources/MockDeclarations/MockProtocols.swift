@@ -86,6 +86,8 @@ protocol MockProtocolWithOpaqueTypes {
     func someOptionalOpaqueReturningFunction() -> (any OpaqueType)?
     func someOpaqueParameterFunction(opaqueObject: any OpaqueType)
     func someOptionalOpaqueParameterFunction(opaqueObject: (any OpaqueType)?)
+    func someGenericOpaqueParameterFunction(opaqueObject: some OpaqueType)
+    func someOptionalGenericOpaqueParameterFunction(opaqueObject: (some OpaqueType)?)
     func someClosureOpaqueParameter(completion: (any OpaqueType) -> Void)
     func someClosureOptionalOpaqueParameter(completion: ((any OpaqueType)?) -> Void)
     func someOptionalClosureOpaqueParameter(completion: ((any OpaqueType) -> Void)?)
