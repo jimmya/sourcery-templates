@@ -39,6 +39,6 @@ extension MethodParameter {
     }
 
     func generateInitAssignment(types: Types, annotations: Annotations) -> String {
-        "\(argumentLabel ?? name): \(typeName.generateStubbableName(type: type)) = \(typeName.generateDefaultValue(type: type, includeComplexType: true, types: types, annotations: annotations))"
+        "\(argumentLabel ?? name): \(typeName.generateStubbableName(type: type)) = \(typeName.generateDefaultValue(type: type, includeComplexType: true, types: types, annotations: annotations)),"
     }
 }

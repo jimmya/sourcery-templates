@@ -44,7 +44,7 @@ private extension Type {
         let variableLines = availableVariables.map { variable in
             variable.generateInitAssignment(types: types, annotations: annotations).indent(level: 2)
         }
-        let joinedVariableLines = variableLines.joined(separator: "," + .newLine)
+        let joinedVariableLines = variableLines.joined(separator: .newLine)
         lines.append(joinedVariableLines)
         lines.append(") -> \(name) {".indent())
         lines.append("\(name)(".indent(level: 2))
@@ -68,7 +68,7 @@ private extension Type {
         lines.append("static func \(stubMethodName(index: index, count: initMethods.count))(".indent())
         var initParameters: [String] = method.parameters.map { $0.generateInitAssignment(types: types, annotations: annotations).indent(level: 2) }
         initParameters.append(contentsOf: implicitlyUnwrappedVariables.map { $0.generateInitAssignment(types: types, annotations: annotations).indent(level: 2) })
-        lines.append(initParameters.joined(separator: "," + .newLine))
+        lines.append(initParameters.joined(separator: .newLine))
         lines.append(") -> \(name)\(method.isFailableInitializer ? "?" : "") {".indent())
         lines.append(generateStubbableInit(methodParameters: method.parameters))
         lines.append("}".indent())

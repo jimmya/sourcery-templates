@@ -14,7 +14,7 @@ extension Variable {
     }
 
     func generateInitAssignment(types: Types, annotations: Annotations) -> String {
-        "\(name): \(typeName.generateStubbableName(type: type)) = \(typeName.generateDefaultValue(type: type, includeComplexType: true, types: types, annotations: annotations))"
+        "\(name): \(typeName.generateStubbableName(type: type)) = \(typeName.generateDefaultValue(type: type, includeComplexType: true, types: types, annotations: annotations)),"
     }
 }
 
