@@ -50,6 +50,8 @@ private extension Variable {
         if isNonIsolated {
             isolationLevel = "nonisolated(unsafe) "
         }
+        // `nonisolated(unsafe)` only applies to stored properties; computed properties use `nonisolated`
+        let propertyIsolationLevel = isNonIsolated ? "nonisolated " : ""
 
         return """
             \(accessLevel) \(isolationLevel)var invoked\(capitalizedName)Setter = false
@@ -60,7 +62,7 @@ private extension Variable {
             \(accessLevel) \(isolationLevel)var invoked\(capitalizedName)GetterCount = 0
             \(accessLevel) \(isolationLevel)var stubbed\(capitalizedName): \(stubbedObjectType)
 
-            \(accessLevel) \(isolationLevel)var \(name): \(returnTypeName) {
+            \(accessLevel) \(propertyIsolationLevel)var \(name): \(returnTypeName) {
                 get {
                     invoked\(capitalizedName)Getter = true
                     invoked\(capitalizedName)GetterCount += 1
@@ -99,13 +101,15 @@ private extension Variable {
         if isNonIsolated {
             isolationLevel = "nonisolated(unsafe) "
         }
+        // `nonisolated(unsafe)` only applies to stored properties; computed properties use `nonisolated`
+        let propertyIsolationLevel = isNonIsolated ? "nonisolated " : ""
 
         return """
             \(accessLevel) \(isolationLevel)var invoked\(capitalizedName)Getter = false
             \(accessLevel) \(isolationLevel)var invoked\(capitalizedName)GetterCount = 0
             \(accessLevel) \(isolationLevel)var stubbed\(capitalizedName): \(stubbedObjectType)
 
-            \(accessLevel) \(isolationLevel)var \(name): \(returnTypeName) {
+            \(accessLevel) \(propertyIsolationLevel)var \(name): \(returnTypeName) {
                 invoked\(capitalizedName)Getter = true
                 invoked\(capitalizedName)GetterCount += 1
                 return stubbed\(capitalizedName)
