@@ -10,7 +10,7 @@ extension ClosureType {
         return [
             "(\(parameters))",
             isAsync ? "async" : nil,
-            self.throws ? "throws" : nil,
+            throwsKeyword(isTyped: false),
             "->",
             returnTypeName.withWrappedOptionalIfNeeded()
         ]
@@ -18,6 +18,17 @@ extension ClosureType {
             .joined(separator: " ")
     }
     
+    /// The `throws` keyword of the closure, e.g. `throws` or `throws(MyError)`.
+    ///
+    /// - Parameter isTyped: Whether to keep the thrown error type. The method's parameter has to keep it to conform
+    ///   to the protocol. A typed-throws function type that is *stored* (e.g. the captured parameters) needs iOS 18,
+    ///   so the stored `typeSignature` always uses a plain `throws`.
+    func throwsKeyword(isTyped: Bool) -> String? {
+        guard self.throws else { return nil }
+        guard isTyped, let throwsTypeName else { return "throws" }
+        return "throws(\(throwsTypeName.name))"
+    }
+
     /// Create closure signature as parameter
     ///
     /// If the parameter is optional, the closure will be wrapped
@@ -42,7 +53,7 @@ extension ClosureType {
             mainActorString,
             "\(isOptional ? "(" : "")(\(parameters))",
             isAsync ? "async" : nil,
-            self.throws ? "throws" : nil,
+            throwsKeyword(isTyped: true),
             "->",
             "\(returnType)\(isOptional ? ")?" : "")"
         ]
